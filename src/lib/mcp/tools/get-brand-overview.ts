@@ -1,4 +1,5 @@
 import { defineTool } from "@lovable.dev/mcp-js";
+import { z } from "zod";
 
 export default defineTool({
   name: "get_brand_overview",
@@ -6,6 +7,14 @@ export default defineTool({
   description:
     "Return the public overview of the STYVEX brand: positioning, market, and current build stage.",
   inputSchema: {},
+  outputSchema: {
+    name: z.string(),
+    market: z.string(),
+    category: z.string(),
+    stage: z.string(),
+    publicSurface: z.array(z.string()),
+    notYetBuilt: z.array(z.string()),
+  },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: () => {
     const overview = {

@@ -1,4 +1,5 @@
 import { defineTool } from "@lovable.dev/mcp-js";
+import { z } from "zod";
 
 export default defineTool({
   name: "get_project_status",
@@ -6,6 +7,12 @@ export default defineTool({
   description:
     "Return the public build status of the STYVEX app: what is in place today and what still requires configuration.",
   inputSchema: {},
+  outputSchema: {
+    stack: z.string(),
+    inPlace: z.array(z.string()),
+    pending: z.array(z.string()),
+    hasDatabaseAccess: z.boolean(),
+  },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: () => {
     const status = {

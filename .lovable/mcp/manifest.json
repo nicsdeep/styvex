@@ -26,7 +26,44 @@
           "type": "object",
           "properties": {}
         },
-        "outputSchema": null
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "market": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string"
+            },
+            "stage": {
+              "type": "string"
+            },
+            "publicSurface": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "notYetBuilt": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "name",
+            "market",
+            "category",
+            "stage",
+            "publicSurface",
+            "notYetBuilt"
+          ]
+        }
       },
       {
         "name": "get_project_status",
@@ -42,7 +79,36 @@
           "type": "object",
           "properties": {}
         },
-        "outputSchema": null
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "stack": {
+              "type": "string"
+            },
+            "inPlace": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pending": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "hasDatabaseAccess": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "stack",
+            "inPlace",
+            "pending",
+            "hasDatabaseAccess"
+          ]
+        }
       }
     ]
   }
