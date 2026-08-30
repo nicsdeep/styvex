@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "sdk_version": "0.28.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "styvex-foundation",
+      "version": "0.1.0",
+      "title": "Styvex Foundation"
+    },
+    "tools": [
+      {
+        "name": "get_brand_overview",
+        "title": "Get brand overview",
+        "description": "Return the public overview of the STYVEX brand: positioning, market, and current build stage.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_project_status",
+        "title": "Get project status",
+        "description": "Return the public build status of the STYVEX app: what is in place today and what still requires configuration.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
