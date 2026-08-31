@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import logoAsset from "@/assets/styvex_logo.svg.asset.json";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
