@@ -1,24 +1,154 @@
-# Styvex Foundation
+# STYVEX
 
-Create a new Lovable project named STYVEX. Build ONLY the minimum secure foundation for a future U.S. women's fashion/lifestyle ecommerce store; do not create storefront/product pages, sample data, product/review/customer records, payments, or unnecessary database tables. The intended GitHub repository is existing `nicsdeep/styvex`: verify/connect to that existing repo if the platform connection flow permits, and do not create another repository. The user has an existing Supabase project with ref `xfbdzfpsgclqgilzioqy`; connect to that existing project via the proper Lovable/Supabase integration if possible, and do not create a new Supabase project. Do not use, display, commit, or embed any database credentials/service role keys. Establish a clean React + TypeScript + Vite + Tailwind project foundation. Ensure gitignore and environment-variable conventions protect all secrets; client settings only via public env vars if needed, and server secrets remain in the secret manager. Add the minimum Supabase migration folder/configuration or documentation needed so future schema migrations are version controlled in the GitHub repository, without creating unnecessary schema. At the end, report GitHub connection status, Supabase connection status, files changed, whether changes synchronized to GitHub, and anything still requiring user configuration. Stop after foundation.
+### Modern Women's Fashion & Lifestyle — Built for the U.S. Market
 
-This project was built with [Lovable](https://lovable.dev).
+STYVEX is a modern U.S.-focused women's fashion and lifestyle ecommerce brand designed to make discovering and purchasing stylish, relevant products simple, trustworthy, and enjoyable.
 
-## Build with Lovable
+Our initial focus includes **women's clothing, handbags, jewelry, fashion accessories, and carefully selected lifestyle products**. STYVEX is being developed as a scalable retail brand with a strong emphasis on product discovery, customer experience, mobile shopping, conversion optimization, SEO, social commerce, analytics, and long-term customer relationships.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5a1972c4-2683-4fef-866b-61e60ea9dec0).
+## 🎯 Vision
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+Build a distinctive ecommerce shopping experience that customers in the United States trust, enjoy using, and want to return to.
 
-## Development
+STYVEX will combine:
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+* Curated and trend-aware products
+* High-quality product presentation
+* Fast, intuitive shopping
+* Mobile-first experience
+* Personalized product discovery
+* Strong search and filtering
+* Secure customer accounts
+* Reliable order management
+* Reviews and wishlists
+* Promotions and merchandising
+* SEO and organic discovery
+* Social and paid advertising integration
+* Customer analytics and retention
+* Data-driven product decisions
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+## 🛍️ Initial Product Categories
+
+* Women's Clothing
+* Handbags & Bags
+* Jewelry
+* Fashion Accessories
+* Lifestyle Products
+* Selected Trending Products
+
+The catalog will evolve based on customer demand, product performance, market research, and purchasing behavior.
+
+## 🏗️ Technology
+
+STYVEX is being built using a modern web architecture designed for scalability and maintainability.
+
+* **Frontend:** React + TypeScript
+* **Build:** Vite
+* **UI:** Tailwind CSS
+* **Backend:** Supabase
+* **Database:** PostgreSQL
+* **Authentication:** Supabase Auth
+* **Storage:** Supabase Storage
+* **Server-side functionality:** Supabase Edge Functions where appropriate
+* **Source control:** GitHub
+* **Development:** Lovable + OpenAI Codex
+
+## 🔐 Security
+
+Security is a core requirement of the project.
+
+* Secrets must never be committed to GitHub.
+* Database passwords must never be stored in source code.
+* Supabase service-role/secret keys must never be exposed to the client.
+* Database access must use appropriate Row Level Security policies.
+* Environment variables must be used for sensitive configuration.
+* Database changes should be managed through version-controlled migrations.
+
+## 🗄️ Database
+
+Supabase provides the PostgreSQL backend for STYVEX.
+
+The database will eventually support:
+
+* Products
+* Product variants
+* Categories
+* Collections
+* Product images
+* Inventory
+* Customers
+* Addresses
+* Shopping carts
+* Orders
+* Order items
+* Reviews
+* Wishlists
+* Discounts and promotions
+* Marketing attribution
+* Customer events
+* Product analytics
+
+The schema will be developed incrementally through version-controlled migrations.
+
+## 🤖 AI-Assisted Development
+
+STYVEX is designed to support development by both humans and AI coding agents.
+
+**Lovable** is used for rapid application development and interface implementation.
+
+**OpenAI Codex** can be used for engineering, refactoring, debugging, testing, optimization, and continued development.
+
+GitHub provides the shared source of truth so development can continue across different tools without depending on a single AI conversation.
+
+Every contributor or AI agent should inspect the existing code, documentation, and database migrations before making significant changes.
+
+## 📈 Growth
+
+The architecture will support future integration with:
+
+* Google Analytics
+* Google Ads
+* Meta
+* TikTok
+* Email marketing
+* Influencer marketing
+* Affiliate marketing
+* UTM and campaign attribution
+* Customer retention systems
+* Product performance analytics
+
+Payment providers will be integrated at a later stage.
+
+## 🚧 Current Status
+
+**Stage: Foundation & Architecture**
+
+Current priorities:
+
+1. Establish the application architecture
+2. Connect and configure Supabase
+3. Establish secure environment configuration
+4. Establish database migration workflow
+5. Design the ecommerce database
+6. Establish authentication and security
+7. Build the storefront
+8. Implement the customer shopping journey
+9. Integrate analytics and marketing
+10. Add payment processing
+11. Test, optimize, and launch
+
+## 🌐 Brand
+
+**STYVEX**
+
+**Domain:** `styvex.com`
+
+**Market:** United States
+
+**Category:** Women's Fashion & Lifestyle
+
+---
+
+### Development Principle
+
+> **Build it properly once. Make it understandable. Make it scalable. Make it easy for the next developer—or AI agent—to continue.**
