@@ -1,0 +1,25 @@
+<svg width="440" height="120" viewBox="0 0 440 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Styvex logo">
+  <title>Styvex</title>
+
+  <defs>
+    <clipPath id="ring-overlap">
+      <circle cx="76" cy="60" r="28"/>
+    </clipPath>
+  </defs>
+
+  <!-- Icon: interlocking rings -->
+  <g>
+    <circle cx="52" cy="60" r="28" fill="none" stroke="#534AB7" stroke-width="9"/>
+    <circle cx="76" cy="60" r="28" fill="none" stroke="#534AB7" stroke-width="9"/>
+    <circle cx="76" cy="60" r="28" fill="#AFA9EC" opacity="0.55" clip-path="url(#ring-overlap)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="128" y="72"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="40"
+        font-weight="500"
+        letter-spacing="3"
+        fill="#1A1A1A">styvex</text>
+
+</svg>

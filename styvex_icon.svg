@@ -1,0 +1,14 @@
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Styvex icon">
+  <title>Styvex icon</title>
+
+  <defs>
+    <clipPath id="ring-overlap-i">
+      <circle cx="96" cy="80" r="42"/>
+    </clipPath>
+  </defs>
+
+  <circle cx="64" cy="80" r="42" fill="none" stroke="#534AB7" stroke-width="14"/>
+  <circle cx="96" cy="80" r="42" fill="none" stroke="#534AB7" stroke-width="14"/>
+  <circle cx="96" cy="80" r="42" fill="#AFA9EC" opacity="0.55" clip-path="url(#ring-overlap-i)"/>
+
+</svg>
