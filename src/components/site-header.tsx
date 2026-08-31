@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Search, User, Heart, ShoppingBag, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/cart-context";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
@@ -11,6 +12,8 @@ const NAV_LINKS = [
 ];
 
 export function SiteHeader() {
+  const { totalItems } = useCart();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:px-12">
@@ -89,8 +92,13 @@ export function SiteHeader() {
             <Heart className="h-5 w-5" />
             <span className="sr-only">Wishlist</span>
           </Link>
-          <Link to="/cart" className="text-muted-foreground hover:text-foreground">
+          <Link to="/cart" className="relative text-muted-foreground hover:text-foreground">
             <ShoppingBag className="h-5 w-5" />
+            {totalItems > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[0.6rem] font-bold text-background">
+                {totalItems}
+              </span>
+            )}
             <span className="sr-only">Cart</span>
           </Link>
         </div>

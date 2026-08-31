@@ -1,0 +1,43 @@
+{
+  "categories": [
+    {
+      "slug": "womens-clothing",
+      "name": "Women's Clothing",
+      "description": "Discover the latest in women's fashion."
+    }
+  ],
+  "products": [
+    {
+      "slug": "the-classic-silk-blouse",
+      "name": "The Classic Silk Blouse",
+      "description": "A timeless wardrobe staple crafted from 100% pure silk.",
+      "price": 145.00,
+      "category_slug": "womens-clothing",
+      "is_featured": true,
+      "images": [
+        {
+          "image_url": "https://example.com/images/silk-blouse-front.jpg",
+          "display_order": 1
+        },
+        {
+          "image_url": "https://example.com/images/silk-blouse-back.jpg",
+          "display_order": 2
+        }
+      ],
+      "variants": [
+        {
+          "sku": "BL-SILK-WHT-S",
+          "size": "S",
+          "color": "Ivory White",
+          "inventory_quantity": 10
+        },
+        {
+          "sku": "BL-SILK-WHT-M",
+          "size": "M",
+          "color": "Ivory White",
+          "inventory_quantity": 15
+        }
+      ]
+    }
+  ]
+}
