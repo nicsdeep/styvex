@@ -27,10 +27,22 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
+      <img
+        src="/favicon.svg"
+        alt="STYVEX interlocking rings icon"
+        width={112}
+        height={112}
+        className="mb-8 h-28 w-28"
+      />
       <p className="text-xs uppercase tracking-[0.5em] text-muted-foreground">Coming soon</p>
-      <h1 className="mt-6 text-6xl font-light tracking-[0.35em] text-foreground sm:text-8xl">
-        STYVEX
-      </h1>
+      <img
+        src={logoAsset.url}
+        alt="STYVEX"
+        width={330}
+        height={90}
+        className="mt-6 h-auto w-[280px] max-w-full sm:w-[360px]"
+      />
+      <h1 className="sr-only">STYVEX</h1>
       <div className="mt-8 h-px w-24 bg-foreground/20" />
       <p className="mt-8 max-w-md text-sm leading-relaxed text-muted-foreground">
         A women&rsquo;s fashion and lifestyle destination, currently in development.
