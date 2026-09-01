@@ -102,8 +102,8 @@ function CategoryComponent() {
                     name={product.name}
                     price={product.price}
                     slug={product.slug}
-                    imageUrl={firstImage}
-                    categoryName={categoryName}
+                    imageUrl={product.product_images?.[0]?.image_url || null}
+                    categoryName={product.categories?.name || ""}
                   />
                 );
               })}
