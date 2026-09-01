@@ -146,7 +146,7 @@ function ProductPage() {
       name: product.name,
       price: product.price,
       slug: product.slug,
-      imageUrl: product.product_images?.[0]?.image_url,
+      imageUrl: product.product_images?.[0]?.image_url || "",
       size: selectedSize || undefined,
       color: selectedColor || undefined,
       quantity: 1,

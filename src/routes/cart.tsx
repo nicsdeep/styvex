@@ -60,7 +60,7 @@ function CartPage() {
                           )}
                         </div>
                         <div className="flex flex-col justify-center">
-                          <Link to={`/product/${item.slug}`} className="text-sm font-medium hover:underline">
+                          <Link to={`/product/${item.slug}` as any} className="text-sm font-medium hover:underline">
                             {item.name}
                           </Link>
                           <div className="mt-2 text-xs text-muted-foreground">

@@ -90,8 +90,8 @@ function WishlistPage() {
                     id={product.id}
                     name={product.name}
                     price={product.price}
-                    primaryImage={primaryImage}
-                    secondaryImage={secondaryImage}
+                    imageUrl={primaryImage}
+                    
                     slug={product.slug}
                     isNew={false}
                   />

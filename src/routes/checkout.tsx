@@ -101,9 +101,9 @@ function CheckoutPage() {
               
               <div className="flex flex-col gap-4 mb-6">
                 {items.map((item) => (
-                  <div key={`${item.productId}-${item.variantId}`} className="flex gap-4">
+                  <div key={`${item.productId}-${item.id}`} className="flex gap-4">
                     <div className="relative h-20 w-16 overflow-hidden bg-background">
-                      <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                      <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
                       <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-[0.6rem] text-background">
                         {item.quantity}
                       </span>

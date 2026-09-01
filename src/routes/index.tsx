@@ -56,10 +56,10 @@ function SplitHero() {
         <h1 className="mb-6 max-w-2xl text-4xl font-semibold uppercase tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-left-8 duration-1000">
           Define Your <br className="hidden sm:block" /> Signature.
         </h1>
-        <p className="mb-10 max-w-md text-sm text-muted-foreground sm:text-base md:text-lg animate-in fade-in slide-in-from-left-8 duration-1000" style={{ animationDelay: '200ms', fillMode: 'forwards' }}>
+        <p className="mb-10 max-w-md text-sm text-muted-foreground sm:text-base md:text-lg animate-in fade-in slide-in-from-left-8 duration-1000 fill-mode-forwards" style={{ animationDelay: '200ms' }}>
           Discover the latest arrivals in women's fashion. Curated for the modern lifestyle. Quality that speaks for itself.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000" style={{ animationDelay: '400ms', fillMode: 'forwards' }}>
+        <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-forwards" style={{ animationDelay: '400ms' }}>
           <Link
             to="/shop"
             className="flex items-center justify-center bg-foreground px-8 py-4 text-xs font-bold uppercase tracking-widest text-background transition-transform hover:scale-105"
@@ -67,7 +67,7 @@ function SplitHero() {
             Shop All
           </Link>
           <Link
-            to="/category/womens-clothing"
+            to={"/category/womens-clothing" as any}
             className="flex items-center justify-center border border-foreground bg-transparent px-8 py-4 text-xs font-bold uppercase tracking-widest text-foreground transition-transform hover:scale-105 hover:bg-foreground hover:text-background"
           >
             Shop Clothing
@@ -86,7 +86,7 @@ function SplitHero() {
         />
         <div className="absolute bottom-12 left-12 bg-white/90 p-6 backdrop-blur-sm shadow-xl">
            <h3 className="text-xl font-medium tracking-tight mb-2">The Spring Edit</h3>
-           <Link to="/category/handbags" className="text-sm font-semibold uppercase tracking-widest border-b border-black pb-1 hover:text-muted-foreground transition-colors">
+           <Link to={"/category/handbags" as any} className="text-sm font-semibold uppercase tracking-widest border-b border-black pb-1 hover:text-muted-foreground transition-colors">
               Explore Handbags
            </Link>
         </div>
@@ -113,7 +113,7 @@ function CategoryPills() {
           {categories.map((cat, i) => (
              <Link 
               key={i} 
-              to={cat.link}
+              to={cat.link as any}
               className="whitespace-nowrap rounded-full border border-border bg-muted/50 px-6 py-2 text-xs font-semibold uppercase tracking-widest transition-colors hover:bg-foreground hover:text-background"
              >
                {cat.name}
@@ -161,7 +161,7 @@ function ProductCarousel({ products, title, viewAllLink }: { products: any[], ti
                     slug={product.slug}
                     imageUrl={product.product_images?.[0]?.image_url}
                     categoryName={product.categories?.name}
-                    badges={product.price < 50 ? ["Bestseller"] : undefined}
+                    badges={product.price < 50 ? ["Bestseller"] : []}
                   />
                 </div>
               ))}
@@ -288,7 +288,7 @@ function Index() {
                 Unwind in style with our latest collection of premium loungewear and lifestyle essentials.
               </p>
               <Link
-                to="/category/lifestyle"
+                to={"/category/lifestyle" as any}
                 className="bg-white px-8 py-3 text-xs font-bold uppercase tracking-widest text-black transition-transform hover:scale-105"
               >
                 Shop Now

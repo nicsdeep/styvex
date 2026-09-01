@@ -96,8 +96,8 @@ function SearchPage() {
                       name={product.name}
                       price={product.price}
                       slug={product.slug}
-                      primaryImage={primaryImage}
-                      secondaryImage={secondaryImage}
+                      imageUrl={primaryImage}
+                      
                       categoryName={product.categories?.name}
                     />
                   );

@@ -11,7 +11,7 @@ export interface ProductCardProps {
   name: string;
   price: number;
   compareAtPrice?: number | null;
-  imageUrl?: string | null;
+  imageUrl?: string | null | undefined;
   secondaryImageUrl?: string | null;
   categoryName?: string;
   slug: string;
@@ -172,7 +172,7 @@ export function ProductCard({
           </p>
         )}
         <div className="flex flex-col gap-1">
-          <Link to={`/product/${slug}`} className="text-sm font-medium leading-snug hover:underline line-clamp-2">
+          <Link to={`/product/${slug}` as any} className="text-sm font-medium leading-snug hover:underline line-clamp-2">
             {name}
           </Link>
           <div className="flex items-center gap-2 text-sm">
