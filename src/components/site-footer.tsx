@@ -24,6 +24,17 @@ export function SiteFooter() {
       toast.error("Please provide a valid email format.");
       return;
     }
+
+    const subscribedEmails = JSON.parse(localStorage.getItem("styvex_subscribed_emails") || "[]");
+    
+    if (subscribedEmails.includes(email.toLowerCase())) {
+      toast.info("You are already subscribed with this email address!");
+      setEmail("");
+      return;
+    }
+    
+    subscribedEmails.push(email.toLowerCase());
+    localStorage.setItem("styvex_subscribed_emails", JSON.stringify(subscribedEmails));
     
     toast.success("Successfully subscribed to STYVEX newsletter!");
     setEmail("");
