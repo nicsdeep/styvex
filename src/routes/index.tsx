@@ -64,31 +64,72 @@ function Index() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex flex-1 flex-col">
-        {/* 1. Hero Section */}
-        <section className="relative h-[80vh] w-full bg-muted">
-          {/* Placeholder for Hero Image */}
-          <div className="absolute inset-0 bg-secondary/20" />
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative h-[80vh] w-full min-h-[600px]">
+          <img
+            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2940&auto=format&fit=crop"
+            alt="Editorial fashion showcase"
+            className="h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-black/20" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-            <h1 className="max-w-3xl text-4xl font-light uppercase tracking-widest text-foreground sm:text-5xl md:text-6xl">
+            <h1 className="mb-6 max-w-4xl text-4xl font-light uppercase tracking-[0.2em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
               Elevate Your Everyday
             </h1>
-            <p className="mt-6 max-w-xl text-sm text-muted-foreground sm:text-base">
-              Discover the new season collection of meticulously crafted essentials for the modern woman.
+            <p className="mb-10 max-w-lg text-sm font-light text-white/90 sm:text-base md:text-lg">
+              Discover the new collection. Curated pieces for the modern aesthetic.
             </p>
-            <div className="mt-10 flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/shop"
-                className="bg-foreground px-8 py-4 text-xs font-semibold uppercase tracking-widest text-background transition-colors hover:bg-foreground/90"
+                className="bg-white px-8 py-4 text-xs font-semibold uppercase tracking-widest text-black transition-transform hover:scale-105"
               >
-                Shop New Arrivals
+                Shop the Collection
               </Link>
             </div>
           </div>
         </section>
 
-        {/* 2. Featured Categories */}
-        <section className="py-20 px-6 md:px-12 lg:px-24">
+        {/* Featured Categories */}
+        <section className="py-24 px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto">
+          <div className="mb-12 flex items-center justify-between">
+            <h2 className="text-2xl font-light uppercase tracking-widest text-foreground">Featured Categories</h2>
+            <Link to="/shop" className="text-sm font-medium uppercase tracking-widest text-muted-foreground hover:text-foreground hover:underline">
+              View All
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <Link to="/?category=womens-clothing" className="group relative aspect-[4/5] md:aspect-square overflow-hidden bg-muted">
+              <img 
+                src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=1287&auto=format&fit=crop" 
+                alt="Women's Clothing" 
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-black/20" />
+              <div className="absolute bottom-8 left-8">
+                <h3 className="text-2xl font-light uppercase tracking-widest text-white mb-2">Clothing</h3>
+                <span className="inline-block border-b border-white text-sm font-medium text-white pb-1">Explore</span>
+              </div>
+            </Link>
+            <Link to="/?category=jewelry" className="group relative aspect-[4/5] md:aspect-square overflow-hidden bg-muted">
+              <img 
+                src="https://images.unsplash.com/photo-1599643478514-4a8e235a9602?q=80&w=1287&auto=format&fit=crop" 
+                alt="Jewelry" 
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-black/20" />
+              <div className="absolute bottom-8 left-8">
+                <h3 className="text-2xl font-light uppercase tracking-widest text-white mb-2">Jewelry</h3>
+                <span className="inline-block border-b border-white text-sm font-medium text-white pb-1">Explore</span>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* New Arrivals Grid */}
+        <section className="bg-secondary/30 py-24 px-6 md:px-12 lg:px-24">
           <div className="mx-auto max-w-[1400px]">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {/* Placeholders for category blocks */}
@@ -235,6 +276,29 @@ function Index() {
                 <p className="text-xs text-muted-foreground">Your payment information is always protected</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* As Seen On Social */}
+        <section className="py-24 px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto">
+          <div className="mb-12 text-center">
+            <h2 className="text-2xl font-light uppercase tracking-widest text-foreground mb-4">#Styvex</h2>
+            <p className="text-sm text-muted-foreground">Follow us on Instagram @styvex</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {[
+              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1000&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1509631179647-0c708c226c45?q=80&w=1000&auto=format&fit=crop"
+            ].map((img, i) => (
+              <div key={i} className="group relative aspect-square overflow-hidden bg-muted cursor-pointer">
+                <img src={img} alt={`Social ${i}`} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20 flex items-center justify-center">
+                  <span className="opacity-0 group-hover:opacity-100 text-white font-medium tracking-widest uppercase text-xs transition-opacity">Shop Look</span>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       </main>
