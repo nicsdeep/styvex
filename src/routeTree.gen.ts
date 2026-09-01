@@ -13,15 +13,22 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as CollectionSlugRouteImport } from './routes/collection.$slug'
+import { Route as PoliciesPrivacyRouteImport } from './routes/policies.privacy'
+import { Route as PoliciesReturnsRouteImport } from './routes/policies.returns'
+import { Route as PoliciesShippingRouteImport } from './routes/policies.shipping'
+import { Route as PoliciesTermsRouteImport } from './routes/policies.terms'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
@@ -45,6 +52,16 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
@@ -58,6 +75,11 @@ const SearchRoute = SearchRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackOrderRoute = TrackOrderRouteImport.update({
+  id: '/track-order',
+  path: '/track-order',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WishlistRoute = WishlistRouteImport.update({
@@ -92,6 +114,26 @@ const CollectionSlugRoute = CollectionSlugRouteImport.update({
   path: '/collection/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PoliciesPrivacyRoute = PoliciesPrivacyRouteImport.update({
+  id: '/policies/privacy',
+  path: '/policies/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliciesReturnsRoute = PoliciesReturnsRouteImport.update({
+  id: '/policies/returns',
+  path: '/policies/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliciesShippingRoute = PoliciesShippingRouteImport.update({
+  id: '/policies/shipping',
+  path: '/policies/shipping',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliciesTermsRoute = PoliciesTermsRouteImport.update({
+  id: '/policies/terms',
+  path: '/policies/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
@@ -109,15 +151,22 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/mcp': typeof McpRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
+  '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/category/$slug': typeof CategorySlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/collection/$slug': typeof CollectionSlugRoute
+  '/policies/privacy': typeof PoliciesPrivacyRoute
+  '/policies/returns': typeof PoliciesReturnsRoute
+  '/policies/shipping': typeof PoliciesShippingRoute
+  '/policies/terms': typeof PoliciesTermsRoute
   '/product/$slug': typeof ProductSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -126,15 +175,22 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/mcp': typeof McpRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
+  '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/category/$slug': typeof CategorySlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/collection/$slug': typeof CollectionSlugRoute
+  '/policies/privacy': typeof PoliciesPrivacyRoute
+  '/policies/returns': typeof PoliciesReturnsRoute
+  '/policies/shipping': typeof PoliciesShippingRoute
+  '/policies/terms': typeof PoliciesTermsRoute
   '/product/$slug': typeof ProductSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -144,15 +200,22 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/mcp': typeof McpRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
+  '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/category/$slug': typeof CategorySlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/collection/$slug': typeof CollectionSlugRoute
+  '/policies/privacy': typeof PoliciesPrivacyRoute
+  '/policies/returns': typeof PoliciesReturnsRoute
+  '/policies/shipping': typeof PoliciesShippingRoute
+  '/policies/terms': typeof PoliciesTermsRoute
   '/product/$slug': typeof ProductSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -163,15 +226,22 @@ export interface FileRouteTypes {
     | '/account'
     | '/cart'
     | '/checkout'
+    | '/contact'
+    | '/faq'
     | '/mcp'
     | '/search'
     | '/shop'
+    | '/track-order'
     | '/wishlist'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/category/$slug'
     | '/checkout/success'
     | '/collection/$slug'
+    | '/policies/privacy'
+    | '/policies/returns'
+    | '/policies/shipping'
+    | '/policies/terms'
     | '/product/$slug'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
@@ -180,15 +250,22 @@ export interface FileRouteTypes {
     | '/account'
     | '/cart'
     | '/checkout'
+    | '/contact'
+    | '/faq'
     | '/mcp'
     | '/search'
     | '/shop'
+    | '/track-order'
     | '/wishlist'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/category/$slug'
     | '/checkout/success'
     | '/collection/$slug'
+    | '/policies/privacy'
+    | '/policies/returns'
+    | '/policies/shipping'
+    | '/policies/terms'
     | '/product/$slug'
     | '/.mcp/invoke-tool/$tool'
   id:
@@ -197,15 +274,22 @@ export interface FileRouteTypes {
     | '/account'
     | '/cart'
     | '/checkout'
+    | '/contact'
+    | '/faq'
     | '/mcp'
     | '/search'
     | '/shop'
+    | '/track-order'
     | '/wishlist'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/category/$slug'
     | '/checkout/success'
     | '/collection/$slug'
+    | '/policies/privacy'
+    | '/policies/returns'
+    | '/policies/shipping'
+    | '/policies/terms'
     | '/product/$slug'
     | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
@@ -215,14 +299,21 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   McpRoute: typeof McpRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
+  TrackOrderRoute: typeof TrackOrderRoute
   WishlistRoute: typeof WishlistRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CategorySlugRoute: typeof CategorySlugRoute
   CollectionSlugRoute: typeof CollectionSlugRoute
+  PoliciesPrivacyRoute: typeof PoliciesPrivacyRoute
+  PoliciesReturnsRoute: typeof PoliciesReturnsRoute
+  PoliciesShippingRoute: typeof PoliciesShippingRoute
+  PoliciesTermsRoute: typeof PoliciesTermsRoute
   ProductSlugRoute: typeof ProductSlugRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -257,6 +348,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp': {
       id: '/mcp'
       path: '/mcp'
@@ -276,6 +381,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track-order': {
+      id: '/track-order'
+      path: '/track-order'
+      fullPath: '/track-order'
+      preLoaderRoute: typeof TrackOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wishlist': {
@@ -320,6 +432,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/policies/privacy': {
+      id: '/policies/privacy'
+      path: '/policies/privacy'
+      fullPath: '/policies/privacy'
+      preLoaderRoute: typeof PoliciesPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policies/returns': {
+      id: '/policies/returns'
+      path: '/policies/returns'
+      fullPath: '/policies/returns'
+      preLoaderRoute: typeof PoliciesReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policies/shipping': {
+      id: '/policies/shipping'
+      path: '/policies/shipping'
+      fullPath: '/policies/shipping'
+      preLoaderRoute: typeof PoliciesShippingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policies/terms': {
+      id: '/policies/terms'
+      path: '/policies/terms'
+      fullPath: '/policies/terms'
+      preLoaderRoute: typeof PoliciesTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
@@ -354,15 +494,22 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   McpRoute: McpRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
+  TrackOrderRoute: TrackOrderRoute,
   WishlistRoute: WishlistRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   CategorySlugRoute: CategorySlugRoute,
   CollectionSlugRoute: CollectionSlugRoute,
+  PoliciesPrivacyRoute: PoliciesPrivacyRoute,
+  PoliciesReturnsRoute: PoliciesReturnsRoute,
+  PoliciesShippingRoute: PoliciesShippingRoute,
+  PoliciesTermsRoute: PoliciesTermsRoute,
   ProductSlugRoute: ProductSlugRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }

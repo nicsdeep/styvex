@@ -47,10 +47,11 @@ export function SiteFooter() {
           <div>
             <h3 className="mb-6 text-xs font-semibold uppercase tracking-wider text-white/90">Support</h3>
             <ul className="flex flex-col gap-4 text-sm text-white/70">
-              <li><Link to="/" className="hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link to="/" className="hover:text-white transition-colors">Shipping & Returns</Link></li>
-              <li><Link to="/" className="hover:text-white transition-colors">FAQ</Link></li>
-              <li><Link to="/" className="hover:text-white transition-colors">Track Order</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link to="/policies/shipping" className="hover:text-white transition-colors">Shipping Policy</Link></li>
+              <li><Link to="/policies/returns" className="hover:text-white transition-colors">Return Policy</Link></li>
+              <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link to="/track-order" className="hover:text-white transition-colors">Track Order</Link></li>
             </ul>
           </div>
         </div>
@@ -60,8 +61,8 @@ export function SiteFooter() {
             &copy; {year} STYVEX. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-white/70 order-1 sm:order-2">
-            <Link to="/" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/policies/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/policies/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
