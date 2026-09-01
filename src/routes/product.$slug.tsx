@@ -147,8 +147,8 @@ function ProductPage() {
       price: product.price,
       slug: product.slug,
       imageUrl: product.product_images?.[0]?.image_url || "",
-      size: selectedSize || undefined,
-      color: selectedColor || undefined,
+      size: selectedSize || "",
+      color: selectedColor || "",
       quantity: 1,
       inventory_quantity: currentVariant.inventory_quantity,
     });
@@ -346,11 +346,7 @@ function ProductPage() {
               <button
                 onClick={handleAddToCart}
                 className="w-full bg-foreground px-8 py-4 text-xs font-semibold uppercase tracking-widest text-background transition-transform active:scale-[0.98] hover:bg-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-                disabled={
-                  (colors.length > 0 && !selectedColor) || 
-                  (sizes.length > 0 && !selectedSize) || 
-                  (currentVariant && currentVariant.inventory_quantity <= 0)
-                }
+                disabled={!selectedSize || !selectedColor || product.is_active === false || (currentVariant && currentVariant.inventory_quantity <= 0)}
               >
                 {currentVariant && currentVariant.inventory_quantity <= 0 ? "Out of Stock" : "Add to Cart"}
               </button>

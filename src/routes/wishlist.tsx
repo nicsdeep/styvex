@@ -91,9 +91,7 @@ function WishlistPage() {
                     name={product.name}
                     price={product.price}
                     imageUrl={primaryImage}
-                    
                     slug={product.slug}
-                    isNew={false}
                   />
                 );
               })}
