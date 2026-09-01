@@ -1,6 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/auth-context";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export interface ProductCardProps {
   id: string;
@@ -29,12 +33,73 @@ export function ProductCard({
   isWishlisted = false,
   className,
 }: ProductCardProps) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
   // Format price as currency
   const formatPrice = (p: number) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(p);
+
+  const { data: wishlistedProductIds = new Set<string>() } = useQuery({
+    queryKey: ["wishlist-ids", user?.id],
+    queryFn: async () => {
+      if (!user) return new Set<string>();
+      const { data, error } = await supabase.from("wishlists").select("product_id").eq("user_id", user.id);
+      if (error) throw error;
+      return new Set(data.map(d => d.product_id));
+    },
+    enabled: !!user,
+  });
+
+  const actuallyWishlisted = isWishlisted || wishlistedProductIds.has(id);
+
+  const toggleWishlist = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      if (actuallyWishlisted) {
+        const { error } = await supabase.from("wishlists").delete().eq("user_id", user.id).eq("product_id", id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("wishlists").insert({ user_id: user.id, product_id: id });
+        if (error) throw error;
+      }
+    },
+    onMutate: async () => {
+      if (!user) {
+        toast("Please sign in to save items to your wishlist.");
+        throw new Error("Not authenticated");
+      }
+      // Optimistic update
+      await queryClient.cancelQueries({ queryKey: ["wishlist-ids", user.id] });
+      const previous = queryClient.getQueryData<Set<string>>(["wishlist-ids", user.id]);
+      
+      const next = new Set(previous || []);
+      if (actuallyWishlisted) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      queryClient.setQueryData(["wishlist-ids", user.id], next);
+      
+      return { previous };
+    },
+    onError: (err, newTodo, context) => {
+      if (err.message !== "Not authenticated") {
+        toast.error("Failed to update wishlist");
+        if (user && context?.previous) {
+          queryClient.setQueryData(["wishlist-ids", user.id], context.previous);
+        }
+      }
+    },
+    onSettled: () => {
+      if (user) {
+        queryClient.invalidateQueries({ queryKey: ["wishlist", user.id] });
+      }
+    }
+  });
 
   return (
     <div className={cn("group relative flex flex-col bg-background", className)}>
@@ -81,10 +146,15 @@ export function ProductCard({
 
         {/* Wishlist Button */}
         <button
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground opacity-0 backdrop-blur transition-all hover:bg-background hover:scale-110 group-hover:opacity-100"
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist.mutate();
+          }}
+          className="absolute right-3 top-3 flex h-8 w-8 z-10 items-center justify-center rounded-full bg-background/80 text-foreground opacity-0 backdrop-blur transition-all hover:bg-background hover:scale-110 group-hover:opacity-100"
+          aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-4 w-4", isWishlisted && "fill-current")} />
+          <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-current")} />
         </button>
 
         {/* Hover Action Overlay */}
