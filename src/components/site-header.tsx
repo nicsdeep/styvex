@@ -60,8 +60,9 @@ export function SiteHeader() {
 
         {/* Desktop Centered Logo / Mobile Centered Logo */}
         <div className="flex flex-1 justify-center md:hidden">
-          <Link to="/" aria-label="STYVEX home">
-             <img src="/favicon.svg" alt="STYVEX logo" width={28} height={28} className="h-7 w-7" />
+          <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
+            <img src="/favicon.svg" alt="STYVEX logo" width={28} height={28} className="h-7 w-7" />
+            <span className="text-sm font-semibold uppercase tracking-[0.35em] text-foreground">Styvex</span>
           </Link>
         </div>
 
