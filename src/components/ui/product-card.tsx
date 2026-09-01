@@ -143,8 +143,8 @@ export function ProductCard({
             )}
           </>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-secondary/30 text-xs text-muted-foreground">
-            No image
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-muted to-muted/30">
+            <span className="text-2xl font-bold uppercase tracking-widest text-muted-foreground/30 rotate-[-15deg]">Styvex</span>
           </div>
         )}
 

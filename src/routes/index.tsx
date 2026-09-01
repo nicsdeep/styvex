@@ -35,14 +35,14 @@ function TrustBar() {
   ];
 
   return (
-    <div className="w-full bg-background border-b border-border/50 py-6">
-      <div className="mx-auto max-w-7xl px-4 md:px-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="w-full bg-background border-b border-border/50 py-8">
+      <div className="mx-auto max-w-[1600px] px-6 md:px-12 lg:px-24 grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-6">
         {features.map((feat, i) => (
-          <div key={i} className="flex items-center gap-4">
+          <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
             <feat.icon className="h-6 w-6 text-foreground stroke-[1.5]" />
             <div className="flex flex-col">
-              <span className="text-sm font-bold text-foreground">{feat.title}</span>
-              <span className="text-xs text-muted-foreground">{feat.subtitle}</span>
+              <span className="text-sm font-bold text-foreground leading-tight">{feat.title}</span>
+              <span className="text-xs text-muted-foreground mt-0.5">{feat.subtitle}</span>
             </div>
           </div>
         ))}
@@ -150,7 +150,7 @@ function ShopByCategories() {
   const categories = [
     { name: "Clothing", link: "/category/womens-clothing", img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" },
     { name: "Handbags", link: "/category/handbags", img: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400&q=80" },
-    { name: "Jewelry", link: "/category/jewelry", img: "https://images.unsplash.com/photo-1599643477874-5c866f5c8cb7?w=400&q=80" },
+    { name: "Jewelry", link: "/category/jewelry", img: "https://images.unsplash.com/photo-1515562141207-7a8ef61950f6?w=400&q=80" },
     { name: "Accessories", link: "/category/fashion-accessories", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&q=80" },
     { name: "Lifestyle", link: "/category/lifestyle", img: "https://images.unsplash.com/photo-1499939667766-4afceb292d05?w=400&q=80" },
     { name: "New Arrivals", link: "/shop", img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&q=80" },
