@@ -9,9 +9,8 @@ export function SiteFooter() {
         <div className="grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-2 md:grid-cols-4 lg:gap-8">
           {/* Brand & Newsletter */}
           <div className="col-span-1 sm:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <img src="/favicon.svg" alt="" aria-hidden="true" width={32} height={32} className="h-8 w-8 invert brightness-0" />
-              <span className="text-lg md:text-xl font-bold uppercase tracking-[0.35em] text-white">Styvex</span>
+            <div className="mb-6 flex items-center gap-3">
+              <span className="font-serif text-2xl font-medium tracking-wider text-white">STYVEX</span>
             </div>
             <p className="mb-6 max-w-sm text-sm text-white/70">
               Sign up for our newsletter to receive updates on new arrivals, exclusive access to sales, and editorial content.
