@@ -120,8 +120,8 @@ export function ProductCard({
   };
 
   return (
-    <div className={cn("group relative flex flex-col", className)}>
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#f5f5f5]">
+    <div className={cn("group relative flex flex-col bg-background", className)}>
+      <div className="relative aspect-square overflow-hidden bg-muted rounded-xl">
         {imageUrl ? (
           <>
             <img
@@ -150,13 +150,13 @@ export function ProductCard({
 
         {/* Badges */}
         {badges.length > 0 && (
-          <div className="absolute left-3 top-3 z-10 flex flex-col gap-2">
+          <div className="absolute left-3 top-3 flex flex-col gap-2 z-10">
             {badges.map((badge) => (
               <span
                 key={badge}
                 className={cn(
-                  "px-3 py-1 text-[0.65rem] font-medium uppercase tracking-widest",
-                  badge.includes("-") ? "bg-foreground text-background" : "bg-background text-foreground"
+                  "px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider rounded-full shadow-sm",
+                  badge.includes("-") ? "bg-[#e55039] text-white" : "bg-foreground text-background"
                 )}
               >
                 {badge}
@@ -172,42 +172,42 @@ export function ProductCard({
             e.stopPropagation();
             toggleWishlist.mutate();
           }}
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-foreground opacity-0 backdrop-blur-md transition-all duration-300 hover:bg-background group-hover:opacity-100"
+          className="absolute right-3 top-3 flex h-8 w-8 z-10 items-center justify-center rounded-full bg-background shadow-sm text-foreground transition-transform hover:scale-110"
           aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-current text-foreground")} strokeWidth={1.5} />
+          <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-current text-[#e55039]")} />
         </button>
       </div>
 
-      <div className="flex flex-col gap-1.5 px-1 pt-4">
+      <div className="flex flex-col gap-1.5 pt-4 px-1 relative">
         {categoryName && (
           <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">
             {categoryName}
           </p>
         )}
         
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex justify-between items-start gap-4">
           <div className="flex flex-col gap-1">
-            <Link to={`/product/${slug}` as any} className="text-sm font-medium leading-snug hover:underline line-clamp-1">
+            <Link to={`/product/${slug}` as any} className="text-sm font-semibold leading-snug hover:underline line-clamp-1">
               {name}
             </Link>
             
             <div className="flex items-center gap-2 text-sm">
               {compareAtPrice && compareAtPrice > price ? (
                 <>
-                  <span className="font-medium text-foreground">{formatPrice(price)}</span>
-                  <span className="text-xs text-muted-foreground line-through">{formatPrice(compareAtPrice)}</span>
+                  <span className="font-bold text-[#e55039]">{formatPrice(price)}</span>
+                  <span className="text-muted-foreground line-through text-xs">{formatPrice(compareAtPrice)}</span>
                 </>
               ) : (
-                <span className="font-medium text-foreground">{formatPrice(price)}</span>
+                <span className="font-bold">{formatPrice(price)}</span>
               )}
             </div>
             
-            {/* Star Rating Placeholder - Minimalized */}
-            <div className="mt-0.5 flex items-center gap-1">
-              <div className="flex text-foreground/80">
+            {/* Star Rating Placeholder */}
+            <div className="flex items-center gap-1 mt-1">
+              <div className="flex text-[#ffb142]">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3 w-3 fill-current" strokeWidth={0} />
+                  <Star key={i} className="h-3 w-3 fill-current" />
                 ))}
               </div>
               <span className="text-[0.65rem] text-muted-foreground">(128)</span>
@@ -217,10 +217,10 @@ export function ProductCard({
           {/* Quick Add Button */}
           <button 
             onClick={handleQuickAdd}
-            className="group/btn relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-transparent text-foreground transition-colors hover:bg-foreground hover:text-background"
+            className="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background shadow-md transition-transform hover:scale-105 active:scale-95"
             aria-label="Add to cart"
           >
-            <ShoppingCart className="h-4 w-4" strokeWidth={1.5} />
+            <ShoppingCart className="h-4 w-4" />
           </button>
         </div>
       </div>
