@@ -37,10 +37,9 @@ export function SiteFooter() {
             <h3 className="mb-6 text-xs font-semibold uppercase tracking-wider text-foreground">Shop</h3>
             <ul className="flex flex-col gap-4 text-sm text-muted-foreground">
               <li><Link to="/shop" className="hover:text-foreground transition-colors">All Products</Link></li>
-              <li><Link to="/?category=womens-clothing" className="hover:text-foreground transition-colors">Women's Clothing</Link></li>
-              <li><Link to="/?category=handbags" className="hover:text-foreground transition-colors">Handbags & Bags</Link></li>
-              <li><Link to="/?category=jewelry" className="hover:text-foreground transition-colors">Jewelry</Link></li>
-              <li><Link to="/collection/trending" className="hover:text-foreground transition-colors">Trending</Link></li>
+              <li><Link to="/category/womens-clothing" className="hover:text-foreground transition-colors">Women's Clothing</Link></li>
+              <li><Link to="/category/handbags" className="hover:text-foreground transition-colors">Handbags & Bags</Link></li>
+              <li><Link to="/category/jewelry" className="hover:text-foreground transition-colors">Jewelry</Link></li>
             </ul>
           </div>
 

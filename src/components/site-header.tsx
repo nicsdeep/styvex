@@ -6,9 +6,9 @@ import { useCart } from "@/context/cart-context";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
-  { href: "/?category=womens-clothing", label: "Categories" },
-  { href: "/", label: "New Arrivals" },
-  { href: "/collection/trending", label: "Trending" },
+  { href: "/category/womens-clothing", label: "Clothing" },
+  { href: "/category/handbags", label: "Bags" },
+  { href: "/category/jewelry", label: "Jewelry" },
 ];
 
 export function SiteHeader() {
