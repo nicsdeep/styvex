@@ -1,7 +1,33 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    
+    setIsLoading(true);
+    // Simulate network request
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    setIsLoading(false);
+    
+    // Basic email validation
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      toast.error("Please provide a valid email format.");
+      return;
+    }
+    
+    toast.success("Successfully subscribed to STYVEX newsletter!");
+    setEmail("");
+  };
 
   return (
     <footer className="w-full bg-[#111] text-white pt-16 pb-8">
@@ -16,18 +42,22 @@ export function SiteFooter() {
             <p className="mb-6 max-w-sm text-sm text-white/70">
               Sign up for our newsletter to receive updates on new arrivals, exclusive access to sales, and editorial content.
             </p>
-            <form className="flex w-full max-w-sm items-center space-x-2" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex w-full max-w-sm items-center space-x-2" onSubmit={handleSubscribe}>
               <input
                 type="email"
                 placeholder="Email address"
-                className="flex h-10 w-full border-b border-white/20 bg-transparent px-0 py-2 text-sm placeholder:text-white/50 text-white focus:outline-none focus:border-white transition-colors"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+                className="flex h-10 w-full border-b border-white/20 bg-transparent px-0 py-2 text-sm placeholder:text-white/50 text-white focus:outline-none focus:border-white transition-colors disabled:opacity-50"
                 required
               />
               <button
                 type="submit"
-                className="h-10 px-4 text-sm font-medium uppercase tracking-wider text-white hover:text-white/70 transition-colors whitespace-nowrap"
+                disabled={isLoading}
+                className="h-10 px-4 text-sm font-medium uppercase tracking-wider text-white hover:text-white/70 transition-colors whitespace-nowrap disabled:opacity-50"
               >
-                Subscribe
+                {isLoading ? "Subscribing..." : "Subscribe"}
               </button>
             </form>
           </div>

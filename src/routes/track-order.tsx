@@ -29,13 +29,12 @@ function TrackOrderPage() {
           </div>
           
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</label>
+            <label htmlFor="email" className="text-sm font-medium text-foreground">Email Address <span className="text-foreground/50 font-normal">(Optional)</span></label>
             <input 
               id="email"
               type="email" 
               placeholder="Used during checkout"
               className="w-full h-12 px-4 bg-transparent border border-border focus:border-foreground focus:outline-none transition-colors"
-              required
             />
           </div>
           
