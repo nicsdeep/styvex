@@ -93,7 +93,7 @@ function CategoryComponent() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {products.map((product) => {
                 return (
                   <ProductCard
@@ -101,9 +101,12 @@ function CategoryComponent() {
                     id={product.id}
                     name={product.name}
                     price={product.price}
+                    compareAtPrice={Math.round(product.price * 1.2 * 100) / 100}
                     slug={product.slug}
                     imageUrl={product.product_images?.[0]?.image_url || null}
+                    secondaryImageUrl={product.product_images?.[1]?.image_url || null}
                     categoryName={product.categories?.name || ""}
+                    description={product.description}
                   />
                 );
               })}

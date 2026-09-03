@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,9 @@ export interface ProductCardProps {
   name: string;
   price: number;
   compareAtPrice?: number | null;
+  description?: string | null;
+  rating?: number | null;
+  reviewCount?: number | null;
   imageUrl?: string | null | undefined;
   secondaryImageUrl?: string | null;
   categoryName?: string;
@@ -26,6 +29,9 @@ export function ProductCard({
   name,
   price,
   compareAtPrice,
+  description,
+  rating,
+  reviewCount,
   imageUrl,
   secondaryImageUrl,
   categoryName,
@@ -120,8 +126,8 @@ export function ProductCard({
   };
   
   return (
-    <div className={cn("group relative flex flex-col overflow-hidden rounded-2xl bg-card transition-all duration-500 hover:-translate-y-1 luxury-shadow", className)}>
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+    <div className={cn("group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-background transition-all duration-500 hover:-translate-y-1 hover:border-brand/30 luxury-shadow", className)}>
+      <div className="relative aspect-square overflow-hidden bg-muted">
         <Link to={`/product/${slug}` as any} className="absolute inset-0 z-0">
           {imageUrl ? (
             <>
@@ -145,7 +151,7 @@ export function ProductCard({
             </>
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-muted to-muted/30">
-              <span className="text-xl font-bold uppercase tracking-widest text-muted-foreground/30 rotate-[-15deg]">Styvex</span>
+                <span className="rotate-[-15deg] text-xl font-bold uppercase tracking-widest text-muted-foreground/30">Styvex</span>
             </div>
           )}
         </Link>
@@ -157,7 +163,7 @@ export function ProductCard({
               <span
                 key={badge}
                 className={cn(
-                  "px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-sm shadow-sm",
+                  "rounded-full px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider shadow-sm",
                   badge.includes("-") ? "bg-brand text-accent-foreground" : "bg-ink text-primary-foreground"
                 )}
               >
@@ -181,20 +187,32 @@ export function ProductCard({
         </button>
       </div>
 
-      <div className="flex flex-col gap-1 p-4">
+      <div className="flex min-h-[164px] flex-1 flex-col p-4">
         {categoryName && <span className="eyebrow text-muted-foreground">{categoryName}</span>}
-        <Link to={`/product/${slug}` as any} className="mt-1 text-[0.92rem] leading-snug font-semibold hover:text-brand line-clamp-2 min-h-[2.7em]" title={name}>
+        <Link to={`/product/${slug}` as any} className="mt-1 min-h-[2.7em] text-[0.92rem] font-semibold leading-snug line-clamp-2 hover:text-brand" title={name}>
           {name}
         </Link>
-        <div className="mt-2 flex items-end justify-between">
-          <div className="flex flex-col">
+        <p className="mt-1 min-h-[2.5rem] text-xs leading-5 text-muted-foreground line-clamp-2">
+          {description || "A considered piece selected for the everyday edit."}
+        </p>
+        {rating && reviewCount ? (
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground" aria-label={`${rating} out of 5 from ${reviewCount} reviews`}>
+            <Star className="h-3.5 w-3.5 fill-brand text-brand" />
+            <span className="font-semibold text-foreground">{rating.toFixed(1)}</span>
+            <span>({reviewCount} reviews)</span>
+          </div>
+        ) : (
+          <div className="mt-2 text-xs text-muted-foreground">Details &amp; reviews on product page</div>
+        )}
+        <div className="mt-auto flex items-end justify-between pt-3">
+          <div>
             {compareAtPrice && compareAtPrice > price ? (
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-brand text-sm">{formatPrice(price)}</span>
-                <span className="text-muted-foreground line-through text-xs">{formatPrice(compareAtPrice)}</span>
+                <span className="text-sm font-bold text-brand">{formatPrice(price)}</span>
+                <span className="text-xs text-muted-foreground line-through">{formatPrice(compareAtPrice)}</span>
               </div>
             ) : (
-              <span className="font-bold text-sm text-foreground">{formatPrice(price)}</span>
+              <span className="text-sm font-bold text-foreground">{formatPrice(price)}</span>
             )}
           </div>
           

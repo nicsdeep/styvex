@@ -223,7 +223,9 @@ function ProductCarousel({ products, title, viewAllLink }: { products: any[], ti
                     compareAtPrice={product.price * 1.2} // Simulate compare at price for layout
                     slug={product.slug}
                     imageUrl={product.product_images?.[0]?.image_url}
+                    secondaryImageUrl={product.product_images?.[1]?.image_url}
                     categoryName={product.categories?.name}
+                    description={product.description}
                     badges={i === 0 ? ["New"] : i === 1 ? ["-20%"] : i === 2 ? ["Bestseller"] : []}
                   />
                 </div>

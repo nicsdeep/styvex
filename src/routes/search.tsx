@@ -28,6 +28,7 @@ function SearchPage() {
           name,
           slug,
           price,
+          description,
           is_featured,
           categories (name),
           product_images (image_url)
@@ -95,10 +96,12 @@ function SearchPage() {
                       id={product.id}
                       name={product.name}
                       price={product.price}
+                      compareAtPrice={Math.round(product.price * 1.2 * 100) / 100}
                       slug={product.slug}
                       imageUrl={primaryImage}
-                      
+                      secondaryImageUrl={secondaryImage}
                       categoryName={product.categories?.name}
+                      description={product.description}
                     />
                   );
                 })}

@@ -15,6 +15,7 @@ export const Route = createFileRoute("/shop")({
 function ShopComponent() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<"featured" | "newest" | "price-low" | "price-high">("featured");
   
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -26,7 +27,7 @@ function ShopComponent() {
   });
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ["shop-products", selectedCategory, priceRange],
+    queryKey: ["shop-products", selectedCategory, priceRange, sortBy],
     queryFn: async () => {
       let query = supabase
         .from("products")
@@ -61,6 +62,13 @@ function ShopComponent() {
       } else if (priceRange === "over100") {
          filteredData = filteredData.filter(p => p.price > 100);
       }
+
+      filteredData.sort((a, b) => {
+        if (sortBy === "price-low") return a.price - b.price;
+        if (sortBy === "price-high") return b.price - a.price;
+        if (sortBy === "featured") return Number(b.is_featured) - Number(a.is_featured);
+        return 0;
+      });
       
       return filteredData;
     },
@@ -69,8 +77,8 @@ function ShopComponent() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1">
-        <div className="mx-auto flex max-w-[1600px] flex-col md:flex-row px-4 py-8 md:px-8">
+      <main className="flex-1 pt-[4.5rem] sm:pt-[6.5rem]">
+        <div className="mx-auto flex max-w-[1600px] flex-col px-4 py-8 md:flex-row md:px-8 md:py-12">
           
           {/* Sidebar */}
           <aside className="w-full md:w-64 flex-shrink-0 pr-8 mb-8 md:mb-0 hidden md:block">
@@ -155,12 +163,13 @@ function ShopComponent() {
           <div className="flex-1">
             <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
               <div>
-                <h1 className="text-2xl font-bold text-foreground">
+                <span className="eyebrow text-brand">The Styvex edit</span>
+                <h1 className="mt-2 font-display text-4xl font-semibold tracking-[-0.035em] text-foreground md:text-5xl">
                   {selectedCategory 
                     ? categories.find(c => c.slug === selectedCategory)?.name || "Products" 
                     : "All Products"}
                 </h1>
-                <p className="mt-1 text-xs text-muted-foreground">Showing {products.length} results</p>
+                <p className="mt-2 text-sm text-muted-foreground">Featured first, with fresh pieces and everyday essentials.</p>
               </div>
               
               {/* Mobile filter button placeholder */}
@@ -169,6 +178,26 @@ function ShopComponent() {
               </button>
             </div>
             
+            <div className="mb-7 flex flex-col gap-3 border-y border-border/70 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
+                <button onClick={() => setSelectedCategory(null)} className={cn("whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold transition-colors", selectedCategory === null ? "border-ink bg-ink text-primary-foreground" : "border-border text-muted-foreground hover:border-brand hover:text-brand")}>All pieces</button>
+                {categories.map((category) => (
+                  <button key={category.id} onClick={() => setSelectedCategory(category.slug)} className={cn("whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold transition-colors", selectedCategory === category.slug ? "border-ink bg-ink text-primary-foreground" : "border-border text-muted-foreground hover:border-brand hover:text-brand")}>{category.name}</button>
+                ))}
+              </div>
+              <label className="flex shrink-0 items-center gap-2 text-xs font-semibold text-muted-foreground">
+                Sort
+                <select value={sortBy} onChange={(event) => setSortBy(event.target.value as typeof sortBy)} className="rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground outline-none focus:border-brand">
+                  <option value="featured">Featured</option>
+                  <option value="newest">Newest</option>
+                  <option value="price-low">Price: low to high</option>
+                  <option value="price-high">Price: high to low</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="mb-5 text-sm text-muted-foreground">Showing {products.length} curated results</div>
+
             {isLoading ? (
               <div className="flex min-h-[40vh] items-center justify-center">
                 <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-foreground"></div>
@@ -184,7 +213,7 @@ function ShopComponent() {
                  </button>
                </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
                 {products.map((product) => {
                   return (
                     <ProductCard
@@ -192,9 +221,13 @@ function ShopComponent() {
                       id={product.id}
                       name={product.name}
                       price={product.price}
+                      compareAtPrice={Math.round(product.price * 1.2 * 100) / 100}
                       slug={product.slug}
                       imageUrl={product.product_images?.[0]?.image_url || null}
+                      secondaryImageUrl={product.product_images?.[1]?.image_url || null}
                       categoryName={product.categories?.name || ""}
+                      description={product.description}
+                      badges={product.is_featured ? ["Bestseller"] : []}
                     />
                   );
                 })}
