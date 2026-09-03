@@ -35,7 +35,7 @@ function TrustBar() {
   ];
 
   return (
-    <div className="w-full border-y border-border/70 bg-sand/35 py-7">
+    <section className="mx-5 mt-8 rounded-2xl border border-border/70 bg-card py-7 md:mx-10 md:mt-12 lg:mx-14">
       <div className="mx-auto grid max-w-[1540px] grid-cols-2 gap-x-4 gap-y-7 px-5 md:grid-cols-4 md:gap-6 md:px-10 lg:px-14">
         {features.map((feat, i) => (
           <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
@@ -47,7 +47,7 @@ function TrustBar() {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -373,7 +373,7 @@ function Index() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 pb-10">
+      <main className="flex-1 pb-10 pt-[4.5rem] sm:pt-[6.5rem]">
         
         <Hero />
         <TrustBar />
