@@ -15,7 +15,7 @@ export function SiteHeader() {
   const { totalItems } = useCart();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:px-12">
         {/* Mobile Menu & Logo */}
         <div className="flex flex-1 items-center gap-4 md:hidden">

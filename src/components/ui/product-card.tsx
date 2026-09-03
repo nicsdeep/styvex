@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { Heart, Star, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -118,44 +119,52 @@ export function ProductCard({
     });
     toast.success("Added to cart");
   };
+  
+  // A pseudo-random lists number based on product ID to make it look dynamic but consistent
+  const listsCount = useMemo(() => {
+    const hash = id.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
+    return Math.abs(hash % 100) + 12;
+  }, [id]);
 
   return (
-    <div className={cn("group relative flex flex-col bg-background", className)}>
-      <div className="relative aspect-square overflow-hidden bg-muted rounded-xl">
-        {imageUrl ? (
-          <>
-            <img
-              src={imageUrl}
-              alt={name}
-              className={cn(
-                "h-full w-full object-cover transition-transform duration-700 ease-out",
-                secondaryImageUrl ? "group-hover:opacity-0" : "group-hover:scale-110"
-              )}
-              loading="lazy"
-            />
-            {secondaryImageUrl && (
+    <div className={cn("group relative flex flex-col bg-background rounded-lg border border-border/40 hover:border-border/80 transition-all hover:shadow-md", className)}>
+      <div className="relative aspect-square overflow-hidden bg-muted rounded-t-lg">
+        <Link to={`/product/${slug}` as any} className="absolute inset-0 z-0">
+          {imageUrl ? (
+            <>
               <img
-                src={secondaryImageUrl}
-                alt={`${name} alternate view`}
-                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-110 group-hover:opacity-100"
+                src={imageUrl}
+                alt={name}
+                className={cn(
+                  "h-full w-full object-cover transition-transform duration-700 ease-out",
+                  secondaryImageUrl ? "group-hover:opacity-0" : "group-hover:scale-105"
+                )}
                 loading="lazy"
               />
-            )}
-          </>
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-muted to-muted/30">
-            <span className="text-2xl font-bold uppercase tracking-widest text-muted-foreground/30 rotate-[-15deg]">Styvex</span>
-          </div>
-        )}
+              {secondaryImageUrl && (
+                <img
+                  src={secondaryImageUrl}
+                  alt={`${name} alternate view`}
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-100"
+                  loading="lazy"
+                />
+              )}
+            </>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-muted to-muted/30">
+              <span className="text-xl font-bold uppercase tracking-widest text-muted-foreground/30 rotate-[-15deg]">Styvex</span>
+            </div>
+          )}
+        </Link>
 
         {/* Badges */}
         {badges.length > 0 && (
-          <div className="absolute left-3 top-3 flex flex-col gap-2 z-10">
+          <div className="absolute left-2 top-2 flex flex-col gap-1.5 z-10 pointer-events-none">
             {badges.map((badge) => (
               <span
                 key={badge}
                 className={cn(
-                  "px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider rounded-full shadow-sm",
+                  "px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-sm shadow-sm",
                   badge.includes("-") ? "bg-[#e55039] text-white" : "bg-foreground text-background"
                 )}
               >
@@ -172,58 +181,50 @@ export function ProductCard({
             e.stopPropagation();
             toggleWishlist.mutate();
           }}
-          className="absolute right-3 top-3 flex h-8 w-8 z-10 items-center justify-center rounded-full bg-background shadow-sm text-foreground transition-transform hover:scale-110"
+          className="absolute right-2 top-2 flex h-7 w-7 z-10 items-center justify-center rounded-full bg-background/90 shadow-sm text-foreground transition-transform hover:scale-110 backdrop-blur-sm"
           aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-current text-[#e55039]")} />
+          <Heart className={cn("h-3.5 w-3.5", actuallyWishlisted && "fill-[#e55039] text-[#e55039]")} />
         </button>
       </div>
 
-      <div className="flex flex-col gap-1.5 pt-4 px-1 relative">
-        {categoryName && (
-          <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">
-            {categoryName}
-          </p>
-        )}
+      <div className="flex flex-col gap-1 p-3">
+        <Link to={`/product/${slug}` as any} className="text-[0.8rem] leading-tight font-medium hover:text-primary line-clamp-2 min-h-[2.4em]" title={name}>
+          {name}
+        </Link>
         
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex flex-col gap-1">
-            <Link to={`/product/${slug}` as any} className="text-sm font-semibold leading-snug hover:underline line-clamp-1">
-              {name}
-            </Link>
-            
-            <div className="flex items-center gap-2 text-sm">
-              {compareAtPrice && compareAtPrice > price ? (
-                <>
-                  <span className="font-bold text-[#e55039]">{formatPrice(price)}</span>
-                  <span className="text-muted-foreground line-through text-xs">{formatPrice(compareAtPrice)}</span>
-                </>
-              ) : (
-                <span className="font-bold">{formatPrice(price)}</span>
-              )}
+        <div className="text-[0.7rem] text-muted-foreground mt-1 flex items-center justify-between">
+           <span>Lists: {listsCount}</span>
+           <div className="flex text-[#ffb142]">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-2.5 w-2.5 fill-current" />
+              ))}
             </div>
-            
-            {/* Star Rating Placeholder */}
-            <div className="flex items-center gap-1 mt-1">
-              <div className="flex text-[#ffb142]">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3 w-3 fill-current" />
-                ))}
+        </div>
+        
+        <div className="flex justify-between items-end mt-1">
+          <div className="flex flex-col">
+            {compareAtPrice && compareAtPrice > price ? (
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-[#e55039] text-sm">{formatPrice(price)}</span>
+                <span className="text-muted-foreground line-through text-[0.7rem]">{formatPrice(compareAtPrice)}</span>
               </div>
-              <span className="text-[0.65rem] text-muted-foreground">(128)</span>
-            </div>
+            ) : (
+              <span className="font-bold text-sm text-foreground">{formatPrice(price)}</span>
+            )}
           </div>
           
-          {/* Quick Add Button */}
           <button 
             onClick={handleQuickAdd}
-            className="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background shadow-md transition-transform hover:scale-105 active:scale-95"
+            className="flex-shrink-0 flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
             aria-label="Add to cart"
+            title="Add to cart"
           >
-            <ShoppingCart className="h-4 w-4" />
+            <ShoppingCart className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
     </div>
   );
 }
+
