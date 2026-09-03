@@ -51,11 +51,8 @@ function TrustBar() {
   );
 }
 
-// 2. Hero Section with Floating Glassmorphism Cards
-function Hero({ products = [] }: { products: any[] }) {
-  const formatPrice = (p: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(p);
-
+// 2. Hero Section — one editorial image, deliberately framed
+function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-sand/35">
       <div className="mx-auto grid min-h-[78vh] max-w-[1540px] lg:grid-cols-2">
@@ -86,59 +83,22 @@ function Hero({ products = [] }: { products: any[] }) {
             </Link>
           </div>
 
-          <div className="mt-14 flex items-center gap-4 animate-in fade-in" style={{ animationDelay: '500ms' }}>
-            <div className="flex -space-x-2">
-              <img src="https://i.pravatar.cc/100?img=1" className="w-8 h-8 rounded-full border-2 border-white" alt="Avatar" />
-              <img src="https://i.pravatar.cc/100?img=2" className="w-8 h-8 rounded-full border-2 border-white" alt="Avatar" />
-              <img src="https://i.pravatar.cc/100?img=3" className="w-8 h-8 rounded-full border-2 border-white" alt="Avatar" />
-              <img src="https://i.pravatar.cc/100?img=4" className="w-8 h-8 rounded-full border-2 border-white" alt="Avatar" />
-            </div>
-            <span className="text-xs font-medium text-muted-foreground">Loved by 50,000+ customers worldwide</span>
+          <div className="mt-14 border-l border-brand pl-4 animate-in fade-in" style={{ animationDelay: '500ms' }}>
+            <span className="eyebrow text-muted-foreground">Considered pieces. Exceptional everyday.</span>
           </div>
         </div>
 
-        {/* Right Content - Visual Composition */}
-        <div className="relative hidden lg:flex items-center justify-center p-12">
-          {/* Abstract Red/Orange Background Shape */}
-          <div className="absolute left-1/2 top-1/2 h-[72%] w-[74%] -translate-x-1/2 -translate-y-1/2 rotate-[-12deg] rounded-[7rem] bg-gradient-to-tr from-brand via-brand-soft to-sand opacity-90 blur-2xl" />
-          
-          {/* Main Hero Image */}
-          <img 
-            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop" 
-            alt="Fashion Model" 
-            className="relative z-10 h-auto w-full max-w-md object-contain drop-shadow-2xl"
+        <div className="relative mx-5 mb-12 h-[390px] overflow-hidden rounded-[2rem] bg-ink md:mx-10 lg:my-14 lg:mr-14 lg:mb-14 lg:ml-0 lg:h-auto lg:rounded-[2rem]">
+          <img
+            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=85&w=1400&auto=format&fit=crop"
+            alt="Woman wearing a tailored neutral fashion look"
+            className="h-full w-full object-cover object-center"
           />
-
-          {/* Floating Product Cards (Glassmorphism) */}
-          {products[0] && (
-            <div className="glass absolute left-[5%] top-[15%] z-20 flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl animate-bounce-slow">
-              <img src={products[0].product_images?.[0]?.image_url} className="w-20 h-20 object-cover rounded-xl bg-white mix-blend-multiply" />
-              <div className="text-center">
-                <p className="text-[10px] font-bold leading-tight max-w-[80px] truncate">{products[0].name}</p>
-                <p className="text-[10px] text-muted-foreground">{formatPrice(products[0].price)}</p>
-              </div>
-            </div>
-          )}
-
-          {products[1] && (
-            <div className="glass absolute right-[5%] top-[40%] z-20 flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl animate-bounce-slow" style={{ animationDelay: '1s' }}>
-              <img src={products[1].product_images?.[0]?.image_url} className="w-20 h-20 object-cover rounded-xl bg-white mix-blend-multiply" />
-              <div className="text-center">
-                <p className="text-[10px] font-bold leading-tight max-w-[80px] truncate">{products[1].name}</p>
-                <p className="text-[10px] text-muted-foreground">{formatPrice(products[1].price)}</p>
-              </div>
-            </div>
-          )}
-
-          {products[2] && (
-            <div className="glass absolute bottom-[20%] left-[10%] z-20 flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl animate-bounce-slow" style={{ animationDelay: '2s' }}>
-              <img src={products[2].product_images?.[0]?.image_url} className="w-20 h-20 object-cover rounded-xl bg-white mix-blend-multiply" />
-              <div className="text-center">
-                <p className="text-[10px] font-bold leading-tight max-w-[80px] truncate">{products[2].name}</p>
-                <p className="text-[10px] text-muted-foreground">{formatPrice(products[2].price)}</p>
-              </div>
-            </div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" />
+          <div className="absolute bottom-6 left-6 text-primary-foreground md:bottom-8 md:left-8">
+            <p className="eyebrow text-primary-foreground/75">STYVEX EDIT</p>
+            <p className="font-display mt-2 text-2xl font-semibold italic md:text-3xl">Modern essentials, elevated.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -380,7 +340,7 @@ function Index() {
       <SiteHeader />
       <main className="flex-1 pb-10">
         
-        <Hero products={newArrivals.slice(0, 3)} />
+        <Hero />
         <TrustBar />
         <ShopByCategories />
 
@@ -400,16 +360,6 @@ function Index() {
 
       </main>
       <SiteFooter />
-      
-      <style>{`
-        @keyframes bounce-slow {
-          0%, 100% { transform: translateY(-5%); }
-          50% { transform: translateY(5%); }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 4s infinite ease-in-out;
-        }
-      `}</style>
     </div>
   );
 }
