@@ -8,7 +8,7 @@ import { useCart } from "@/context/cart-context";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Heart, Minus, Plus, Star, ShieldCheck, Truck, ChevronRight } from "lucide-react";
+import { ChevronLeft, Heart, Minus, Plus, Star, ShieldCheck, Truck, ChevronRight, ZoomIn, X } from "lucide-react";
 
 export const Route = createFileRoute("/product/$slug")({
   component: ProductPage,
@@ -120,6 +120,8 @@ function ProductPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"description" | "reviews">("description");
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
+  const [imageTilt, setImageTilt] = useState({ x: 0, y: 0 });
 
   // Derive unique colors and sizes from variants
   const colors = useMemo(() => {
@@ -227,11 +229,11 @@ function ProductPage() {
   const sortedImages = [...(product.product_images || [])].sort((a: any, b: any) => a.display_order - b.display_order);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f5f6f8]">
+    <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      
+      <div className="pt-[4.5rem] sm:pt-[6.5rem]">
       {/* Breadcrumb Navigation */}
-      <div className="bg-white border-b border-border/40">
+      <div className="border-b border-border/40 bg-background">
         <div className="mx-auto max-w-[1400px] px-4 py-3 flex items-center text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">Home</Link>
           <ChevronRight className="w-3 h-3 mx-2" />
@@ -249,7 +251,7 @@ function ProductPage() {
         </div>
       </div>
 
-      <main className="flex-1 py-6 px-4 md:px-8">
+      <main className="flex-1 px-4 py-6 md:px-8 md:py-10">
         <div className="mx-auto max-w-[1400px] flex flex-col lg:flex-row gap-6">
           
           {/* Dynamic Sidebar */}
@@ -332,12 +334,24 @@ function ProductPage() {
                   )}
 
                   {/* Main Image */}
-                  <div className="relative aspect-square w-full bg-muted rounded-lg overflow-hidden order-1 md:order-2 flex-1">
+                  <div
+                    className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted order-1 md:order-2 flex-1"
+                    onMouseMove={(event) => {
+                      const bounds = event.currentTarget.getBoundingClientRect();
+                      setImageTilt({
+                        x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 4,
+                        y: ((event.clientY - bounds.top) / bounds.height - 0.5) * -4,
+                      });
+                    }}
+                    onMouseLeave={() => setImageTilt({ x: 0, y: 0 })}
+                  >
                     {sortedImages.length > 0 ? (
                       <img
                         src={sortedImages[activeImageIndex]?.image_url}
                         alt={product.name}
-                        className="h-full w-full object-cover"
+                        onClick={() => setIsImageZoomed(true)}
+                        className="h-full w-full cursor-zoom-in object-cover transition-transform duration-500 ease-out"
+                        style={{ transform: `perspective(1000px) rotateX(${imageTilt.y}deg) rotateY(${imageTilt.x}deg) scale(1.025)` }}
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center text-muted-foreground bg-gray-100">No image</div>
@@ -353,6 +367,14 @@ function ProductPage() {
                         <Heart className={cn("h-4 w-4", isWishlisted && "fill-red-500 text-red-500")} />
                       </button>
                     </div>
+                    {sortedImages.length > 0 && (
+                      <button
+                        onClick={() => setIsImageZoomed(true)}
+                        className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-ink/85 px-3 py-2 text-xs font-semibold text-primary-foreground backdrop-blur transition-colors hover:bg-ink"
+                      >
+                        <ZoomIn className="h-3.5 w-3.5" /> Zoom image
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -360,14 +382,14 @@ function ProductPage() {
                 <div className="xl:col-span-7 p-4 md:p-8 flex flex-col">
                   
                   {/* Badges / Top Info */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="bg-orange-100 text-orange-700 text-[0.65rem] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                      Sourcing
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className="rounded bg-brand/10 px-2 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-brand">
+                      Styvex edit
                     </span>
                     {dummyData && (
-                      <span className="text-xs text-muted-foreground flex items-center">
-                        <Star className="w-3 h-3 text-[#ffb142] fill-[#ffb142] mr-1" />
-                        Lists: {dummyData.lists}
+                      <span className="flex items-center text-xs text-muted-foreground">
+                        <Star className="mr-1 h-3 w-3 fill-brand text-brand" />
+                        Carefully selected
                       </span>
                     )}
                   </div>
@@ -613,6 +635,31 @@ function ProductPage() {
           </div>
         </div>
       </main>
+      </div>
+      {isImageZoomed && sortedImages[activeImageIndex] && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-ink/85 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Expanded product image"
+          onClick={() => setIsImageZoomed(false)}
+        >
+          <div className="relative flex h-full w-full max-w-5xl items-center justify-center" onClick={(event) => event.stopPropagation()}>
+            <img
+              src={sortedImages[activeImageIndex].image_url}
+              alt={`${product.name} expanded`}
+              className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
+            />
+            <button
+              onClick={() => setIsImageZoomed(false)}
+              className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-full bg-background text-foreground shadow-lg transition-transform hover:scale-105"
+              aria-label="Close expanded image"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
       <SiteFooter />
     </div>
   );
