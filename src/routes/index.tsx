@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Truck, RefreshCcw, ShieldCheck, Headset, Instagram, Clock } from "lucide-react";
+import { ArrowRight, Truck, RefreshCcw, ShieldCheck, Headset } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
 
@@ -35,11 +35,11 @@ function TrustBar() {
   ];
 
   return (
-    <div className="w-full bg-background border-b border-border/50 py-8">
-      <div className="mx-auto max-w-[1600px] px-6 md:px-12 lg:px-24 grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-6">
+    <div className="w-full border-y border-border/70 bg-sand/35 py-7">
+      <div className="mx-auto grid max-w-[1540px] grid-cols-2 gap-x-4 gap-y-7 px-5 md:grid-cols-4 md:gap-6 md:px-10 lg:px-14">
         {features.map((feat, i) => (
           <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-            <feat.icon className="h-6 w-6 text-foreground stroke-[1.5]" />
+            <feat.icon className="h-5 w-5 text-brand stroke-[1.5]" />
             <div className="flex flex-col">
               <span className="text-sm font-bold text-foreground leading-tight">{feat.title}</span>
               <span className="text-xs text-muted-foreground mt-0.5">{feat.subtitle}</span>
@@ -57,36 +57,36 @@ function Hero({ products = [] }: { products: any[] }) {
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(p);
 
   return (
-    <section className="relative w-full bg-[#fcfcfc] overflow-hidden">
-      <div className="mx-auto max-w-[1600px] grid lg:grid-cols-2 min-h-[80vh] md:min-h-[600px]">
+    <section className="relative w-full overflow-hidden bg-sand/35">
+      <div className="mx-auto grid min-h-[78vh] max-w-[1540px] lg:grid-cols-2">
         {/* Left Content */}
-        <div className="relative z-10 flex flex-col justify-center px-6 py-16 md:px-12 lg:px-24">
-          <span className="text-[#e55039] font-bold text-xs uppercase tracking-widest mb-6 animate-in fade-in slide-in-from-bottom-4">
-            Trending Now
+        <div className="relative z-10 flex flex-col justify-center px-5 py-20 md:px-10 lg:px-14">
+          <span className="eyebrow mb-7 text-brand animate-in fade-in slide-in-from-bottom-4">
+            The new season
           </span>
-          <h1 className="mb-6 max-w-xl text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-6" style={{ animationDelay: '100ms' }}>
-            Discover Products You'll Love
+          <h1 className="font-display text-balance mb-7 max-w-2xl text-5xl font-semibold leading-[0.96] tracking-[-0.045em] text-ink md:text-7xl lg:text-[5.8rem] animate-in fade-in slide-in-from-bottom-6" style={{ animationDelay: '100ms' }}>
+            Made to be noticed. Worn your way.
           </h1>
-          <p className="mb-10 max-w-md text-base text-muted-foreground md:text-lg animate-in fade-in slide-in-from-bottom-8" style={{ animationDelay: '200ms' }}>
-            Shop the latest trending products curated for modern lifestyles. Premium quality meets everyday elegance.
+          <p className="mb-10 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg animate-in fade-in slide-in-from-bottom-8" style={{ animationDelay: '200ms' }}>
+            A considered edit of fashion, jewelry, and everyday pieces that make the ordinary feel exceptional.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-bottom-10" style={{ animationDelay: '300ms' }}>
             <Link
               to="/shop"
-              className="flex items-center justify-center bg-[#e55039] px-8 py-4 text-sm font-bold text-white transition-all hover:bg-[#d44530] hover:scale-105 rounded-md shadow-lg shadow-[#e55039]/20"
+              className="flex items-center justify-center rounded-full bg-brand px-8 py-4 text-sm font-bold text-accent-foreground transition-all hover:-translate-y-0.5 hover:bg-ink luxury-shadow"
             >
               Shop Now <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
             <Link
               to={"/category/womens-clothing" as any}
-              className="flex items-center justify-center bg-white border border-border px-8 py-4 text-sm font-bold text-foreground transition-all hover:bg-muted hover:scale-105 rounded-md shadow-sm"
+              className="flex items-center justify-center rounded-full border border-foreground/20 bg-background/40 px-8 py-4 text-sm font-bold text-foreground transition-all hover:-translate-y-0.5 hover:bg-background"
             >
               Explore Collection
             </Link>
           </div>
 
-          <div className="mt-12 flex items-center gap-4 animate-in fade-in" style={{ animationDelay: '500ms' }}>
+          <div className="mt-14 flex items-center gap-4 animate-in fade-in" style={{ animationDelay: '500ms' }}>
             <div className="flex -space-x-2">
               <img src="https://i.pravatar.cc/100?img=1" className="w-8 h-8 rounded-full border-2 border-white" alt="Avatar" />
               <img src="https://i.pravatar.cc/100?img=2" className="w-8 h-8 rounded-full border-2 border-white" alt="Avatar" />
@@ -100,18 +100,18 @@ function Hero({ products = [] }: { products: any[] }) {
         {/* Right Content - Visual Composition */}
         <div className="relative hidden lg:flex items-center justify-center p-12">
           {/* Abstract Red/Orange Background Shape */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-gradient-to-tr from-[#e55039] to-[#ff7b54] rounded-[100px] rotate-[-15deg] opacity-90 blur-3xl" />
+          <div className="absolute left-1/2 top-1/2 h-[72%] w-[74%] -translate-x-1/2 -translate-y-1/2 rotate-[-12deg] rounded-[7rem] bg-gradient-to-tr from-brand via-brand-soft to-sand opacity-90 blur-2xl" />
           
           {/* Main Hero Image */}
           <img 
             src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop" 
             alt="Fashion Model" 
-            className="relative z-10 w-full max-w-md h-auto object-contain drop-shadow-2xl" 
+            className="relative z-10 h-auto w-full max-w-md object-contain drop-shadow-2xl"
           />
 
           {/* Floating Product Cards (Glassmorphism) */}
           {products[0] && (
-            <div className="absolute top-[15%] left-[5%] z-20 bg-white/70 backdrop-blur-md p-3 rounded-2xl shadow-xl flex flex-col items-center gap-2 animate-bounce-slow">
+            <div className="glass absolute left-[5%] top-[15%] z-20 flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl animate-bounce-slow">
               <img src={products[0].product_images?.[0]?.image_url} className="w-20 h-20 object-cover rounded-xl bg-white mix-blend-multiply" />
               <div className="text-center">
                 <p className="text-[10px] font-bold leading-tight max-w-[80px] truncate">{products[0].name}</p>
@@ -121,7 +121,7 @@ function Hero({ products = [] }: { products: any[] }) {
           )}
 
           {products[1] && (
-            <div className="absolute top-[40%] right-[5%] z-20 bg-white/70 backdrop-blur-md p-3 rounded-2xl shadow-xl flex flex-col items-center gap-2 animate-bounce-slow" style={{ animationDelay: '1s' }}>
+            <div className="glass absolute right-[5%] top-[40%] z-20 flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl animate-bounce-slow" style={{ animationDelay: '1s' }}>
               <img src={products[1].product_images?.[0]?.image_url} className="w-20 h-20 object-cover rounded-xl bg-white mix-blend-multiply" />
               <div className="text-center">
                 <p className="text-[10px] font-bold leading-tight max-w-[80px] truncate">{products[1].name}</p>
@@ -131,7 +131,7 @@ function Hero({ products = [] }: { products: any[] }) {
           )}
 
           {products[2] && (
-            <div className="absolute bottom-[20%] left-[10%] z-20 bg-white/70 backdrop-blur-md p-3 rounded-2xl shadow-xl flex flex-col items-center gap-2 animate-bounce-slow" style={{ animationDelay: '2s' }}>
+            <div className="glass absolute bottom-[20%] left-[10%] z-20 flex flex-col items-center gap-2 rounded-2xl p-3 shadow-xl animate-bounce-slow" style={{ animationDelay: '2s' }}>
               <img src={products[2].product_images?.[0]?.image_url} className="w-20 h-20 object-cover rounded-xl bg-white mix-blend-multiply" />
               <div className="text-center">
                 <p className="text-[10px] font-bold leading-tight max-w-[80px] truncate">{products[2].name}</p>
@@ -157,27 +157,30 @@ function ShopByCategories() {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-background">
-      <div className="mx-auto max-w-[1600px] px-6 md:px-12 lg:px-24">
-        <div className="mb-8 flex items-end justify-between">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">Shop by Categories</h2>
-          <Link to="/shop" className="text-sm font-semibold text-muted-foreground hover:text-foreground flex items-center gap-1">
+    <section className="bg-background py-20 md:py-28">
+      <div className="mx-auto max-w-[1540px] px-5 md:px-10 lg:px-14">
+        <div className="mb-10 flex items-end justify-between">
+          <div>
+            <span className="eyebrow text-brand">Curated for you</span>
+            <h2 className="font-display mt-3 text-4xl font-semibold tracking-[-0.035em] text-ink md:text-5xl">Shop by mood</h2>
+          </div>
+          <Link to="/shop" className="hidden items-center gap-1 text-sm font-semibold text-muted-foreground transition-colors hover:text-brand sm:flex">
             View All Categories <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-6">
           {categories.map((cat, i) => (
-             <Link key={i} to={cat.link as any} className="group flex flex-col gap-3 bg-muted/30 p-4 rounded-2xl hover:bg-muted transition-colors">
-               <div className="aspect-[4/3] w-full overflow-hidden rounded-xl bg-muted">
-                 <img src={cat.img} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+             <Link key={i} to={cat.link as any} className="group flex flex-col gap-3">
+               <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted luxury-shadow">
+                 <img src={cat.img} alt={cat.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                </div>
                <div className="flex items-center justify-between">
                  <div className="flex flex-col">
-                   <span className="font-bold text-sm">{cat.name}</span>
-                   <span className="text-xs text-muted-foreground">Shop Now</span>
+                   <span className="font-display text-xl font-semibold tracking-[-0.025em]">{cat.name}</span>
+                   <span className="text-xs text-muted-foreground">Explore the edit</span>
                  </div>
-                 <div className="h-6 w-6 rounded-full bg-background flex items-center justify-center shadow-sm group-hover:bg-foreground group-hover:text-background transition-colors">
+                 <div className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-background transition-colors group-hover:bg-brand group-hover:text-accent-foreground">
                    <ArrowRight className="h-3 w-3" />
                  </div>
                </div>
@@ -199,12 +202,12 @@ function ProductCarousel({ products, title, viewAllLink }: { products: any[], ti
 
   return (
     <section className="py-8 md:py-16">
-      <div className="mx-auto max-w-[1600px] px-6 md:px-12 lg:px-24">
+      <div className="mx-auto max-w-[1540px] px-5 md:px-10 lg:px-14">
         <div className="mb-8 flex items-end justify-between">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          <h2 className="font-display text-4xl font-semibold tracking-[-0.035em] text-ink md:text-5xl">
             {title}
           </h2>
-          <Link to={viewAllLink} className="hidden items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground md:flex transition-colors">
+          <Link to={viewAllLink} className="hidden items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-brand md:flex">
             View All <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -266,11 +269,11 @@ function PromoBanners() {
   }, []);
 
   return (
-    <section className="py-16 mx-auto max-w-[1600px] px-6 md:px-12 lg:px-24">
+    <section className="mx-auto max-w-[1540px] px-5 py-16 md:px-10 lg:px-14">
       <div className="grid lg:grid-cols-2 gap-6">
         
         {/* Flash Sale Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ff7b54] to-[#e55039] p-8 md:p-12 text-white flex flex-col justify-center min-h-[350px]">
+        <div className="relative flex min-h-[350px] flex-col justify-center overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand to-ink p-8 text-primary-foreground md:p-12">
           <span className="bg-white/20 w-fit px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-sm shadow-sm">
             Flash Sale
           </span>
@@ -299,7 +302,7 @@ function PromoBanners() {
             </div>
           </div>
           
-          <Link to="/shop" className="w-fit bg-white text-[#e55039] px-8 py-3 rounded-md font-bold text-sm shadow-lg hover:scale-105 transition-transform">
+          <Link to="/shop" className="w-fit rounded-full bg-background px-8 py-3 text-sm font-bold text-brand shadow-lg transition-transform hover:-translate-y-0.5">
             Shop Sale Now
           </Link>
           
@@ -308,14 +311,14 @@ function PromoBanners() {
         </div>
 
         {/* New Collection Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-[#111] p-8 md:p-12 text-white flex flex-col justify-center min-h-[350px]">
+        <div className="relative flex min-h-[350px] flex-col justify-center overflow-hidden rounded-[2rem] bg-ink p-8 text-primary-foreground md:p-12">
           <span className="text-white/60 text-xs font-bold uppercase tracking-widest mb-2">
             New Collection
           </span>
-          <h3 className="text-4xl md:text-5xl font-bold leading-tight mb-4">Summer 2025</h3>
+          <h3 className="font-display mb-4 text-4xl font-semibold leading-tight md:text-5xl">The effortless edit</h3>
           <p className="text-white/70 mb-8 max-w-sm text-sm">Discover the latest trends and fresh styles designed to make you stand out this season.</p>
           
-          <Link to="/shop" className="w-fit bg-white text-black px-8 py-3 rounded-md font-bold text-sm shadow-lg hover:scale-105 transition-transform relative z-10">
+          <Link to="/shop" className="relative z-10 w-fit rounded-full bg-background px-8 py-3 text-sm font-bold text-ink shadow-lg transition-transform hover:-translate-y-0.5">
             Shop Collection
           </Link>
 

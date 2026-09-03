@@ -1,6 +1,5 @@
-import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { Heart, Star, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -120,15 +119,9 @@ export function ProductCard({
     toast.success("Added to cart");
   };
   
-  // A pseudo-random lists number based on product ID to make it look dynamic but consistent
-  const listsCount = useMemo(() => {
-    const hash = id.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
-    return Math.abs(hash % 100) + 12;
-  }, [id]);
-
   return (
-    <div className={cn("group relative flex flex-col bg-background rounded-lg border border-border/40 hover:border-border/80 transition-all hover:shadow-md", className)}>
-      <div className="relative aspect-square overflow-hidden bg-muted rounded-t-lg">
+    <div className={cn("group relative flex flex-col overflow-hidden rounded-2xl bg-card transition-all duration-500 hover:-translate-y-1 luxury-shadow", className)}>
+      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         <Link to={`/product/${slug}` as any} className="absolute inset-0 z-0">
           {imageUrl ? (
             <>
@@ -165,7 +158,7 @@ export function ProductCard({
                 key={badge}
                 className={cn(
                   "px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-sm shadow-sm",
-                  badge.includes("-") ? "bg-[#e55039] text-white" : "bg-foreground text-background"
+                  badge.includes("-") ? "bg-brand text-accent-foreground" : "bg-ink text-primary-foreground"
                 )}
               >
                 {badge}
@@ -181,33 +174,24 @@ export function ProductCard({
             e.stopPropagation();
             toggleWishlist.mutate();
           }}
-          className="absolute right-2 top-2 flex h-7 w-7 z-10 items-center justify-center rounded-full bg-background/90 shadow-sm text-foreground transition-transform hover:scale-110 backdrop-blur-sm"
+          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-transform hover:scale-110 hover:text-brand backdrop-blur-sm"
           aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-3.5 w-3.5", actuallyWishlisted && "fill-[#e55039] text-[#e55039]")} />
+          <Heart className={cn("h-3.5 w-3.5", actuallyWishlisted && "fill-brand text-brand")} />
         </button>
       </div>
 
-      <div className="flex flex-col gap-1 p-3">
-        <Link to={`/product/${slug}` as any} className="text-[0.8rem] leading-tight font-medium hover:text-primary line-clamp-2 min-h-[2.4em]" title={name}>
+      <div className="flex flex-col gap-1 p-4">
+        {categoryName && <span className="eyebrow text-muted-foreground">{categoryName}</span>}
+        <Link to={`/product/${slug}` as any} className="mt-1 text-[0.92rem] leading-snug font-semibold hover:text-brand line-clamp-2 min-h-[2.7em]" title={name}>
           {name}
         </Link>
-        
-        <div className="text-[0.7rem] text-muted-foreground mt-1 flex items-center justify-between">
-           <span>Lists: {listsCount}</span>
-           <div className="flex text-[#ffb142]">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-2.5 w-2.5 fill-current" />
-              ))}
-            </div>
-        </div>
-        
-        <div className="flex justify-between items-end mt-1">
+        <div className="mt-2 flex items-end justify-between">
           <div className="flex flex-col">
             {compareAtPrice && compareAtPrice > price ? (
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[#e55039] text-sm">{formatPrice(price)}</span>
-                <span className="text-muted-foreground line-through text-[0.7rem]">{formatPrice(compareAtPrice)}</span>
+                <span className="font-bold text-brand text-sm">{formatPrice(price)}</span>
+                <span className="text-muted-foreground line-through text-xs">{formatPrice(compareAtPrice)}</span>
               </div>
             ) : (
               <span className="font-bold text-sm text-foreground">{formatPrice(price)}</span>
@@ -216,11 +200,11 @@ export function ProductCard({
           
           <button 
             onClick={handleQuickAdd}
-            className="flex-shrink-0 flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-primary-foreground transition-colors hover:bg-brand"
             aria-label="Add to cart"
             title="Add to cart"
           >
-            <ShoppingCart className="h-3.5 w-3.5" />
+            <ShoppingBag className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
