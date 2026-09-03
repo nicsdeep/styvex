@@ -55,9 +55,22 @@ function TrustBar() {
 function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-sand/35">
-      <div className="mx-auto grid min-h-[78vh] max-w-[1540px] lg:grid-cols-2">
+      <div className="relative mx-auto min-h-[78vh] max-w-[1540px]">
+        <div className="absolute inset-y-0 right-0 hidden w-[62%] lg:block" aria-hidden="true">
+          <img
+            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=85&w=1600&auto=format&fit=crop"
+            alt=""
+            className="h-full w-full object-cover object-[58%_center]"
+            style={{
+              maskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/10 via-transparent to-background/15" />
+        </div>
+
         {/* Left Content */}
-        <div className="relative z-10 flex flex-col justify-center px-5 py-20 md:px-10 lg:px-14">
+        <div className="relative z-10 flex min-h-[68vh] max-w-2xl flex-col justify-center px-5 py-20 md:px-10 lg:min-h-[78vh] lg:px-14">
           <span className="eyebrow mb-7 text-brand animate-in fade-in slide-in-from-bottom-4">
             The new season
           </span>
@@ -88,17 +101,12 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-5 mb-12 h-[390px] overflow-hidden rounded-[2rem] bg-ink md:mx-10 lg:my-14 lg:mr-14 lg:mb-14 lg:ml-0 lg:h-auto lg:rounded-[2rem]">
+        <div className="relative mx-5 mb-12 h-[390px] overflow-hidden rounded-[2rem] bg-ink md:mx-10 lg:hidden">
           <img
             src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=85&w=1400&auto=format&fit=crop"
             alt="Woman wearing a tailored neutral fashion look"
             className="h-full w-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" />
-          <div className="absolute bottom-6 left-6 text-primary-foreground md:bottom-8 md:left-8">
-            <p className="eyebrow text-primary-foreground/75">STYVEX EDIT</p>
-            <p className="font-display mt-2 text-2xl font-semibold italic md:text-3xl">Modern essentials, elevated.</p>
-          </div>
         </div>
       </div>
     </section>
