@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,6 +64,20 @@ function ProductPage() {
     enabled: !!product?.category_id
   });
 
+  const { data: categoryProducts = [] } = useQuery({
+    queryKey: ["product-pagination", product?.category_id],
+    queryFn: async () => {
+      if (!product?.category_id) return [];
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, slug")
+        .eq("category_id", product.category_id)
+        .order("created_at", { ascending: true });
+      return data || [];
+    },
+    enabled: !!product?.category_id,
+  });
+
   // Check wishlist status
   const { data: isWishlisted } = useQuery({
     queryKey: ["wishlist", product?.id, user?.id],
@@ -119,16 +133,29 @@ function ProductPage() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"description" | "reviews">("description");
   const [isImageZoomed, setIsImageZoomed] = useState(false);
   const [imageTilt, setImageTilt] = useState({ x: 0, y: 0 });
+  const [shippingOrigin, setShippingOrigin] = useState<"china" | "us">("china");
+  const [sizeInput, setSizeInput] = useState("");
+  const [fitMessage, setFitMessage] = useState("");
+
+  useEffect(() => {
+    setActiveImageIndex(0);
+    setSelectedColor(null);
+    setSelectedSize(null);
+    setSizeInput("");
+    setFitMessage("");
+  }, [slug]);
 
   // Derive unique colors and sizes from variants
   const colors = useMemo(() => {
     if (!product?.product_variants) return [];
-    const uniqueColors = Array.from(new Set(product.product_variants.map((v: any) => v.color).filter(Boolean)));
+    const matchingVariants = selectedSize
+      ? product.product_variants.filter((v: any) => v.size === selectedSize && v.inventory_quantity > 0)
+      : product.product_variants.filter((v: any) => v.inventory_quantity > 0);
+    const uniqueColors = Array.from(new Set(matchingVariants.map((v: any) => v.color).filter(Boolean)));
     return uniqueColors as string[];
-  }, [product]);
+  }, [product, selectedSize]);
 
   const sizes = useMemo(() => {
     if (!product?.product_variants) return [];
@@ -227,6 +254,12 @@ function ProductPage() {
   }
 
   const sortedImages = [...(product.product_images || [])].sort((a: any, b: any) => a.display_order - b.display_order);
+  const currentProductIndex = categoryProducts.findIndex((item) => item.id === product.id);
+  const previousProduct = currentProductIndex > 0 ? categoryProducts[currentProductIndex - 1] : null;
+  const nextProduct = currentProductIndex >= 0 && currentProductIndex < categoryProducts.length - 1 ? categoryProducts[currentProductIndex + 1] : null;
+  const deliveryDetails = shippingOrigin === "us"
+    ? { label: "US Warehouse", delivery: "4–7 days", cost: 6.95 }
+    : { label: "China Warehouse", delivery: "7–15 days", cost: dummyData?.shippingCostNum || 0 };
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -250,6 +283,25 @@ function ProductPage() {
           <span className="text-foreground line-clamp-1">{product.name}</span>
         </div>
       </div>
+
+      {(previousProduct || nextProduct) && (
+        <div className="border-b border-border/40 bg-background">
+          <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-3 px-4 py-3 text-sm">
+            {previousProduct ? (
+              <Link to="/product/$slug" params={{ slug: previousProduct.slug }} className="group flex min-w-0 items-center gap-2 text-muted-foreground transition-colors hover:text-brand">
+                <ChevronLeft className="h-4 w-4 shrink-0" />
+                <span className="truncate">Previous: {previousProduct.name}</span>
+              </Link>
+            ) : <span />}
+            {nextProduct ? (
+              <Link to="/product/$slug" params={{ slug: nextProduct.slug }} className="group flex min-w-0 items-center gap-2 text-right text-muted-foreground transition-colors hover:text-brand">
+                <span className="truncate">Next: {nextProduct.name}</span>
+                <ChevronRight className="h-4 w-4 shrink-0" />
+              </Link>
+            ) : <span />}
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 px-4 py-6 md:px-8 md:py-10">
         <div className="mx-auto max-w-[1400px] flex flex-col lg:flex-row gap-6">
@@ -419,44 +471,45 @@ function ProductPage() {
                   <div className="mb-6 flex items-start gap-4">
                     <div className="w-24 text-sm text-muted-foreground pt-1.5">Shipping From</div>
                     <div className="flex gap-2">
-                      <button className="border-2 border-primary bg-primary/5 text-primary px-4 py-1.5 rounded text-sm font-medium relative">
+                      <button onClick={() => setShippingOrigin("china")} className={cn("relative rounded border px-4 py-1.5 text-sm font-medium transition-colors", shippingOrigin === "china" ? "border-2 border-primary bg-primary/5 text-primary" : "border-border text-foreground hover:border-foreground/30")}>
                         China Warehouse
-                        <div className="absolute -bottom-1 -right-1 w-0 h-0 border-l-[8px] border-l-transparent border-b-[8px] border-b-primary"></div>
+                        {shippingOrigin === "china" && <div className="absolute -bottom-1 -right-1 h-0 w-0 border-b-[8px] border-l-[8px] border-b-primary border-l-transparent" />}
                       </button>
-                      <button className="border border-border text-foreground hover:border-foreground/30 px-4 py-1.5 rounded text-sm transition-colors">
+                      <button onClick={() => setShippingOrigin("us")} className={cn("relative rounded border px-4 py-1.5 text-sm font-medium transition-colors", shippingOrigin === "us" ? "border-2 border-primary bg-primary/5 text-primary" : "border-border text-foreground hover:border-foreground/30")}>
                         US Warehouse
+                        {shippingOrigin === "us" && <div className="absolute -bottom-1 -right-1 h-0 w-0 border-b-[8px] border-l-[8px] border-b-primary border-l-transparent" />}
                       </button>
                     </div>
                   </div>
 
-                  {/* Options (Color/Size) */}
-                  {colors.length > 0 && (
-                    <div className="mb-6 flex items-start gap-4">
-                      <div className="w-24 text-sm text-muted-foreground pt-1.5">Color</div>
-                      <div className="flex flex-wrap gap-2 flex-1">
-                        {colors.map((c) => (
-                          <button
-                            key={c}
-                            onClick={() => {
-                              setSelectedColor(c);
-                              setSelectedSize(null);
-                            }}
-                            className={cn(
-                              "border px-3 py-1.5 text-sm rounded transition-all",
-                              selectedColor === c ? "border-primary text-primary bg-primary/5" : "border-border text-foreground hover:border-foreground/40"
-                            )}
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   {sizes.length > 0 && (
                     <div className="mb-6 flex items-start gap-4">
                       <div className="w-24 text-sm text-muted-foreground pt-1.5">Size</div>
-                      <div className="flex flex-wrap gap-2 flex-1">
+                      <div className="flex flex-1 flex-col gap-3">
+                        <div className="flex max-w-sm gap-2">
+                          <input
+                            value={sizeInput}
+                            onChange={(event) => setSizeInput(event.target.value)}
+                            placeholder="Enter your usual size"
+                            className="min-w-0 flex-1 rounded border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-brand"
+                          />
+                          <button
+                            onClick={() => {
+                              const matchingSize = sizes.find((size) => size.toLowerCase() === sizeInput.trim().toLowerCase());
+                              if (matchingSize) {
+                                setSelectedSize(matchingSize);
+                                setSelectedColor(null);
+                                setFitMessage(`Showing colors available in ${matchingSize}.`);
+                              } else {
+                                setFitMessage(`Available sizes: ${sizes.join(", ")}.`);
+                              }
+                            }}
+                            className="rounded bg-ink px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-brand"
+                          >
+                            Find fit
+                          </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
                         {sizes.map((s) => {
                           let isAvailable = true;
                           if (selectedColor) {
@@ -467,7 +520,12 @@ function ProductPage() {
                             <button
                               key={s}
                               disabled={!isAvailable}
-                              onClick={() => setSelectedSize(s)}
+                              onClick={() => {
+                                setSelectedSize(s);
+                                setSelectedColor(null);
+                                setSizeInput(s);
+                                setFitMessage(`Showing colors available in ${s}.`);
+                              }}
                               className={cn(
                                 "border min-w-[3rem] px-3 py-1.5 text-sm rounded transition-all",
                                 !isAvailable ? "opacity-40 cursor-not-allowed bg-muted/50 line-through" :
@@ -478,6 +536,31 @@ function ProductPage() {
                             </button>
                           );
                         })}
+                        </div>
+                        {fitMessage && <p className="text-xs text-muted-foreground">{fitMessage}</p>}
+                      </div>
+                    </div>
+                  )}
+
+                  {colors.length > 0 && (
+                    <div className="mb-6 flex items-start gap-4">
+                      <div className="w-24 text-sm text-muted-foreground pt-1.5">Color</div>
+                      <div className="flex flex-1 flex-col gap-2">
+                        <div className="flex flex-wrap gap-2">
+                          {colors.map((c) => (
+                            <button
+                              key={c}
+                              onClick={() => setSelectedColor(c)}
+                              className={cn(
+                                "rounded border px-3 py-1.5 text-sm transition-all",
+                                selectedColor === c ? "border-primary bg-primary/5 text-primary" : "border-border text-foreground hover:border-foreground/40"
+                              )}
+                            >
+                              {c}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">{selectedSize ? `Colors in ${selectedSize}` : "Choose a size to see matching colors."}</p>
                       </div>
                     </div>
                   )}
@@ -521,11 +604,11 @@ function ProductPage() {
                       </div>
                       <div>
                         <div className="text-muted-foreground mb-1">Estimated Delivery</div>
-                        <div className="font-medium">7-15 days</div>
+                        <div className="font-medium">{deliveryDetails.delivery}</div>
                       </div>
                       <div>
                         <div className="text-muted-foreground mb-1">Shipping Cost</div>
-                        <div className="font-medium text-orange-600">{dummyData?.shippingEstimate}</div>
+                        <div className="font-medium text-orange-600">${deliveryDetails.cost.toFixed(2)}</div>
                       </div>
                       <div>
                         <div className="text-muted-foreground mb-1">Tracking</div>
@@ -541,14 +624,14 @@ function ProductPage() {
                     <div>
                       <div className="text-sm text-muted-foreground mb-1">Total Price</div>
                       <div className="text-3xl font-bold text-foreground">
-                        ${( (product.price * quantity) + (dummyData?.shippingCostNum || 0) ).toFixed(2)}
+                        ${( (product.price * quantity) + deliveryDetails.cost ).toFixed(2)}
                       </div>
                     </div>
                     
                     <button
                       onClick={handleAddToCart}
                       className="w-full sm:w-auto bg-primary px-10 py-4 rounded-lg text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-[0.98] hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={!selectedSize || !selectedColor || (currentVariant && currentVariant.inventory_quantity < quantity) || false}
+                      disabled={(sizes.length > 0 && !selectedSize) || (colors.length > 0 && !selectedColor) || !!(currentVariant && currentVariant.inventory_quantity < quantity)}
                     >
                       Add to Cart
                     </button>
@@ -558,32 +641,14 @@ function ProductPage() {
               </div>
             </div>
 
-            {/* Description / Review Tabs */}
+            {/* Product details stay visible instead of being hidden behind tabs. */}
             <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden mb-12">
-              <div className="flex border-b border-border/40">
-                <button 
-                  onClick={() => setActiveTab("description")}
-                  className={cn(
-                    "px-8 py-4 text-sm font-medium transition-colors border-b-2",
-                    activeTab === "description" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  Product Description
-                </button>
-                <button 
-                  onClick={() => setActiveTab("reviews")}
-                  className={cn(
-                    "px-8 py-4 text-sm font-medium transition-colors border-b-2",
-                    activeTab === "reviews" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  Buyer Review (0)
-                </button>
-              </div>
-              
               <div className="p-6 md:p-10">
-                {activeTab === "description" && (
-                  <div className="space-y-8 text-sm">
+                <div className="space-y-8 text-sm">
+                  <div className="flex items-center justify-between border-b border-border/40 pb-4">
+                    <h2 className="font-display text-2xl font-semibold text-foreground">Product details</h2>
+                    <span className="text-xs text-muted-foreground">Everything you need before checkout</span>
+                  </div>
                     {/* Attributes Table */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl">
                       <div className="flex border-b border-border/40 pb-2">
@@ -621,15 +686,11 @@ function ProductPage() {
                         <img key={img.id} src={img.image_url} alt="Description graphic" className="max-w-full md:max-w-3xl rounded-lg" />
                       ))}
                     </div>
+                  <div className="flex items-center gap-3 border-t border-border/40 pt-8 text-muted-foreground">
+                    <Star className="h-5 w-5 text-brand" />
+                    <p>Reviews will appear here once customers share their verified purchase feedback.</p>
                   </div>
-                )}
-                
-                {activeTab === "reviews" && (
-                  <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                    <Star className="w-12 h-12 mb-4 text-muted/30" />
-                    <p>No reviews yet for this product.</p>
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
