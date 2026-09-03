@@ -63,6 +63,7 @@ export function ProductCard({
   });
 
   const actuallyWishlisted = isWishlisted || wishlistedProductIds.has(id);
+  const compactDescription = description?.replace(/product\s+sku\s*:/gi, "SKU:");
 
   const toggleWishlist = useMutation({
     mutationFn: async () => {
@@ -127,7 +128,7 @@ export function ProductCard({
   
   return (
     <div className={cn("group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-background transition-all duration-500 hover:-translate-y-1 hover:border-brand/30 luxury-shadow", className)}>
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <Link to={`/product/${slug}` as any} className="absolute inset-0 z-0">
           {imageUrl ? (
             <>
@@ -187,24 +188,22 @@ export function ProductCard({
         </button>
       </div>
 
-      <div className="flex min-h-[164px] flex-1 flex-col p-4">
+      <div className="flex min-h-[112px] flex-1 flex-col p-3.5">
         {categoryName && <span className="eyebrow text-muted-foreground">{categoryName}</span>}
-        <Link to={`/product/${slug}` as any} className="mt-1 min-h-[2.7em] text-[0.92rem] font-semibold leading-snug line-clamp-2 hover:text-brand" title={name}>
+        <Link to={`/product/${slug}` as any} className="mt-1 min-h-[2.45em] text-[0.88rem] font-semibold leading-snug line-clamp-2 hover:text-brand" title={name}>
           {name}
         </Link>
-        <p className="mt-1 min-h-[2.5rem] text-xs leading-5 text-muted-foreground line-clamp-2">
-          {description || "A considered piece selected for the everyday edit."}
+        <p className="mt-1 min-h-[1.25rem] text-xs leading-5 text-muted-foreground line-clamp-1">
+          {compactDescription || "A considered piece for the everyday edit."}
         </p>
         {rating && reviewCount ? (
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground" aria-label={`${rating} out of 5 from ${reviewCount} reviews`}>
+          <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground" aria-label={`${rating} out of 5 from ${reviewCount} reviews`}>
             <Star className="h-3.5 w-3.5 fill-brand text-brand" />
             <span className="font-semibold text-foreground">{rating.toFixed(1)}</span>
             <span>({reviewCount} reviews)</span>
           </div>
-        ) : (
-          <div className="mt-2 text-xs text-muted-foreground">Details &amp; reviews on product page</div>
-        )}
-        <div className="mt-auto flex items-end justify-between pt-3">
+        ) : null}
+        <div className="mt-auto flex items-end justify-between pt-2">
           <div>
             {compareAtPrice && compareAtPrice > price ? (
               <div className="flex items-center gap-1.5">
