@@ -72,19 +72,19 @@ function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-sand/35">
       <div className="relative mx-auto min-h-[78vh] max-w-[1540px]">
-        <div className="absolute inset-y-0 right-0 hidden w-[62%] lg:block" aria-hidden="true">
+        <div className="absolute inset-0 hidden lg:block" aria-hidden="true">
           {HERO_IMAGES.map((image, index) => (
             <img
               key={image}
               src={image}
               alt=""
               aria-hidden="true"
-              className={`absolute inset-0 h-full w-full object-cover object-[58%_center] transition-opacity duration-[1800ms] ease-out ${
+              className={`absolute inset-0 h-full w-full object-cover object-[82%_center] transition-opacity duration-[1800ms] ease-out ${
                 index === activeHeroImage ? "opacity-100" : "opacity-0"
               }`}
               style={{
-                maskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
-                WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
+                maskImage: "linear-gradient(to right, transparent 0%, transparent 34%, black 68%, black 100%)",
+                WebkitMaskImage: "linear-gradient(to right, transparent 0%, transparent 34%, black 68%, black 100%)",
               }}
             />
           ))}
