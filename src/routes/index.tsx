@@ -51,21 +51,43 @@ function TrustBar() {
   );
 }
 
-// 2. Hero Section — one editorial image, deliberately framed
+const HERO_IMAGES = [
+  "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=85&w=1600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=85&w=1600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=85&w=1600&auto=format&fit=crop",
+];
+
+// 2. Hero Section — restrained editorial image rotation
 function Hero() {
+  const [activeHeroImage, setActiveHeroImage] = useState(0);
+
+  useEffect(() => {
+    const rotation = window.setInterval(() => {
+      setActiveHeroImage((current) => (current + 1) % HERO_IMAGES.length);
+    }, 7000);
+
+    return () => window.clearInterval(rotation);
+  }, []);
+
   return (
     <section className="relative w-full overflow-hidden bg-sand/35">
       <div className="relative mx-auto min-h-[78vh] max-w-[1540px]">
         <div className="absolute inset-y-0 right-0 hidden w-[62%] lg:block" aria-hidden="true">
-          <img
-            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=85&w=1600&auto=format&fit=crop"
-            alt=""
-            className="h-full w-full object-cover object-[58%_center]"
-            style={{
-              maskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
-              WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
-            }}
-          />
+          {HERO_IMAGES.map((image, index) => (
+            <img
+              key={image}
+              src={image}
+              alt=""
+              aria-hidden="true"
+              className={`absolute inset-0 h-full w-full object-cover object-[58%_center] transition-opacity duration-[1800ms] ease-out ${
+                index === activeHeroImage ? "opacity-100" : "opacity-0"
+              }`}
+              style={{
+                maskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
+                WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 32%, black 100%)",
+              }}
+            />
+          ))}
           <div className="absolute inset-0 bg-gradient-to-t from-ink/10 via-transparent to-background/15" />
         </div>
 
@@ -102,11 +124,16 @@ function Hero() {
         </div>
 
         <div className="relative mx-5 mb-12 h-[390px] overflow-hidden rounded-[2rem] bg-ink md:mx-10 lg:hidden">
-          <img
-            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=85&w=1400&auto=format&fit=crop"
-            alt="Woman wearing a tailored neutral fashion look"
-            className="h-full w-full object-cover object-center"
-          />
+          {HERO_IMAGES.map((image, index) => (
+            <img
+              key={image}
+              src={image}
+              alt={index === activeHeroImage ? "Editorial STYVEX fashion collection" : ""}
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1800ms] ease-out ${
+                index === activeHeroImage ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
         </div>
       </div>
     </section>
