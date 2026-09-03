@@ -15,7 +15,7 @@ export function SiteHeader() {
   const { totalItems } = useCart();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-sand/45">
       <div className="hidden border-b border-border/60 bg-ink px-4 py-2 text-center text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary-foreground sm:block">
         Complimentary U.S. shipping on orders over $50
       </div>
