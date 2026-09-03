@@ -118,7 +118,7 @@ function ShopByCategories() {
   const categories = [
     { name: "Clothing", link: "/category/womens-clothing", img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" },
     { name: "Handbags", link: "/category/handbags", img: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400&q=80" },
-    { name: "Jewelry", link: "/category/jewelry", img: "https://images.unsplash.com/photo-1515562141207-7a8ef61950f6?w=400&q=80" },
+    { name: "Jewelry", link: "/category/jewelry", img: "https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=800&q=85" },
     { name: "Accessories", link: "/category/fashion-accessories", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&q=80" },
     { name: "Lifestyle", link: "/category/lifestyle", img: "https://images.unsplash.com/photo-1499939667766-4afceb292d05?w=400&q=80" },
     { name: "New Arrivals", link: "/shop", img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&q=80" },
