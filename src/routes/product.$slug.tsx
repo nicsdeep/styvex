@@ -435,9 +435,6 @@ function ProductPage() {
                   
                   {/* Badges / Top Info */}
                   <div className="mb-3 flex items-center gap-3">
-                    <span className="rounded bg-brand/10 px-2 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-brand">
-                      Styvex edit
-                    </span>
                     {dummyData && (
                       <span className="flex items-center text-xs text-muted-foreground">
                         <Star className="mr-1 h-3 w-3 fill-brand text-brand" />
