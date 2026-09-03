@@ -70,7 +70,7 @@ function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden bg-sand/35">
+    <section className="relative w-full overflow-hidden bg-background">
       <div className="relative mx-auto min-h-[78vh] max-w-[1540px]">
         <div className="absolute inset-0 hidden lg:block" aria-hidden="true">
           {HERO_IMAGES.map((image, index) => (
