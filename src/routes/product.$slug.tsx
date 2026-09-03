@@ -39,31 +39,6 @@ function ProductPage() {
     },
   });
 
-  // Fetch categories for sidebar
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data } = await supabase.from("categories").select("*").order("name");
-      return data || [];
-    }
-  });
-
-  // Fetch recommended products
-  const { data: recommended } = useQuery({
-    queryKey: ["recommended", product?.category_id],
-    queryFn: async () => {
-      if (!product?.category_id) return [];
-      const { data } = await supabase
-        .from("products")
-        .select("*, product_images(image_url)")
-        .eq("category_id", product.category_id)
-        .neq("id", product.id)
-        .limit(4);
-      return data || [];
-    },
-    enabled: !!product?.category_id
-  });
-
   const { data: categoryProducts = [] } = useQuery({
     queryKey: ["product-pagination", product?.category_id],
     queryFn: async () => {
@@ -303,80 +278,27 @@ function ProductPage() {
         </div>
       )}
 
-      <main className="flex-1 px-4 py-6 md:px-8 md:py-10">
-        <div className="mx-auto max-w-[1400px] flex flex-col lg:flex-row gap-6">
+      <main className="flex-1 px-4 py-8 md:px-8 md:py-12">
+        <div className="mx-auto max-w-[1240px]">
           
-          {/* Dynamic Sidebar */}
-          <aside className="w-full lg:w-64 flex-shrink-0 space-y-6 hidden lg:block">
-            {/* Categories Widget */}
-            <div className="bg-white rounded-xl shadow-sm border border-border/40 p-5">
-              <h3 className="font-semibold text-foreground mb-4 uppercase tracking-wider text-sm border-b border-border/40 pb-2">Categories</h3>
-              <ul className="space-y-2.5 text-sm">
-                <li>
-                  <Link to="/shop" className="text-muted-foreground hover:text-primary transition-colors flex items-center justify-between">
-                    <span>All Products</span>
-                  </Link>
-                </li>
-                {categories?.map((category: any) => (
-                  <li key={category.id}>
-                    <Link 
-                      to="/shop" 
-                      search={{ category: category.slug } as any}
-                      className={cn(
-                        "transition-colors flex items-center justify-between",
-                        product?.category_id === category.id ? "text-primary font-medium" : "text-muted-foreground hover:text-primary"
-                      )}
-                    >
-                      <span>{category.name}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Recommended Products Widget */}
-            {recommended && recommended.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-border/40 p-5">
-                <h3 className="font-semibold text-foreground mb-4 uppercase tracking-wider text-sm border-b border-border/40 pb-2">You May Also Like</h3>
-                <div className="space-y-4">
-                  {recommended.map((rec: any) => (
-                    <Link key={rec.id} to="/product/$slug" params={{ slug: rec.slug }} className="flex gap-3 group">
-                      <div className="w-16 h-16 rounded overflow-hidden bg-muted flex-shrink-0 border border-border/40">
-                        {rec.product_images?.[0]?.image_url ? (
-                          <img src={rec.product_images[0].image_url} alt={rec.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                        ) : (
-                          <div className="w-full h-full bg-gray-100" />
-                        )}
-                      </div>
-                      <div className="flex flex-col justify-center min-w-0">
-                        <span className="text-xs font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors">{rec.name}</span>
-                        <span className="text-sm font-bold mt-1">${rec.price.toFixed(2)}</span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </aside>
-
           {/* Main Product Content */}
-          <div className="flex-1 min-w-0">
-            <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden mb-6">
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-0">
+          <div className="min-w-0">
+            <div className="mb-12 overflow-hidden bg-white">
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
                 
                 {/* Left Column: Image Gallery (Takes 5 columns) */}
-                <div className="xl:col-span-5 p-4 md:p-6 flex flex-col md:flex-row gap-4 border-b xl:border-b-0 xl:border-r border-border/40">
+                <div className="lg:col-span-7 flex flex-col gap-3 sm:flex-row sm:gap-4">
                   
                   {/* Thumbnails (Vertical on desktop) */}
                   {sortedImages.length > 1 && (
-                    <div className="flex flex-row md:flex-col gap-3 overflow-x-auto md:overflow-y-auto no-scrollbar order-2 md:order-1 md:w-20 flex-shrink-0">
+                    <div className="order-2 flex flex-row gap-2 overflow-x-auto sm:order-1 sm:w-20 sm:flex-col sm:overflow-y-auto">
                       {sortedImages.map((img: any, idx: number) => (
                         <button
                           key={img.id}
                           onClick={() => setActiveImageIndex(idx)}
                           className={cn(
-                            "relative aspect-square w-16 md:w-full overflow-hidden rounded-md border-2 transition-colors",
-                            activeImageIndex === idx ? "border-primary" : "border-transparent hover:border-primary/50"
+                            "relative aspect-square w-16 shrink-0 overflow-hidden rounded-md border transition-colors sm:w-full",
+                            activeImageIndex === idx ? "border-brand" : "border-transparent hover:border-brand/50"
                           )}
                         >
                           <img src={img.image_url} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover" />
@@ -387,7 +309,7 @@ function ProductPage() {
 
                   {/* Main Image */}
                   <div
-                    className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted order-1 md:order-2 flex-1"
+                    className="relative order-1 aspect-[4/5] w-full overflow-hidden rounded-xl bg-muted sm:order-2 sm:flex-1"
                     onMouseMove={(event) => {
                       const bounds = event.currentTarget.getBoundingClientRect();
                       setImageTilt({
@@ -431,37 +353,32 @@ function ProductPage() {
                 </div>
 
                 {/* Right Column: Product Info & Purchase (Takes 7 columns) */}
-                <div className="xl:col-span-7 p-4 md:p-8 flex flex-col">
+                <div className="lg:col-span-5 flex flex-col lg:pt-2">
                   
-                  {/* Badges / Top Info */}
-                  <div className="mb-3 flex items-center gap-3">
-                    {dummyData && (
-                      <span className="flex items-center text-xs text-muted-foreground">
-                        <Star className="mr-1 h-3 w-3 fill-brand text-brand" />
-                        Carefully selected
-                      </span>
-                    )}
-                  </div>
+                  {product.categories?.name && (
+                    <p className="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brand">
+                      {product.categories.name}
+                    </p>
+                  )}
                   
                   {/* Title */}
-                  <h1 className="text-xl md:text-2xl font-semibold text-foreground mb-2 leading-tight">
+                  <h1 className="mb-4 font-display text-3xl font-semibold leading-[1.08] text-foreground md:text-4xl">
                     {product.name}
                   </h1>
                   
                   {/* Meta info */}
                   {dummyData && (
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-6 pb-4 border-b border-border/40">
+                    <div className="mb-6 border-b border-border/60 pb-5 text-xs text-muted-foreground">
                       <span>SKU: {dummyData.sku}</span>
-                      <span>Weight: {dummyData.weight}</span>
                     </div>
                   )}
 
                   {/* Price */}
                   <div className="mb-6">
-                    <div className="text-3xl font-bold text-foreground">
+                    <div className="font-display text-3xl font-semibold text-foreground">
                       ${product.price.toFixed(2)}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">Product Price</div>
+                    <div className="mt-1 text-xs text-muted-foreground">Price before shipping</div>
                   </div>
 
                   {/* Shipping From Selector (Static visual for CJ vibe) */}
@@ -639,53 +556,26 @@ function ProductPage() {
             </div>
 
             {/* Product details stay visible instead of being hidden behind tabs. */}
-            <div className="bg-white rounded-xl shadow-sm border border-border/40 overflow-hidden mb-12">
-              <div className="p-6 md:p-10">
-                <div className="space-y-8 text-sm">
+            <div className="mb-12 border-t border-border/60 bg-white">
+              <div className="py-8 md:py-10">
+                <div className="space-y-6 text-sm">
                   <div className="flex items-center justify-between border-b border-border/40 pb-4">
                     <h2 className="font-display text-2xl font-semibold text-foreground">Product details</h2>
                     <span className="text-xs text-muted-foreground">Everything you need before checkout</span>
                   </div>
-                    {/* Attributes Table */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl">
-                      <div className="flex border-b border-border/40 pb-2">
-                        <span className="w-1/3 text-muted-foreground">Material</span>
-                        <span className="w-2/3 font-medium">Cotton Blend, Polyester</span>
-                      </div>
-                      <div className="flex border-b border-border/40 pb-2">
-                        <span className="w-1/3 text-muted-foreground">Package Size</span>
-                        <span className="w-2/3 font-medium">300 x 200 x 50 mm</span>
-                      </div>
-                      <div className="flex border-b border-border/40 pb-2">
-                        <span className="w-1/3 text-muted-foreground">Style</span>
-                        <span className="w-2/3 font-medium">Casual, Modern</span>
-                      </div>
-                      <div className="flex border-b border-border/40 pb-2">
-                        <span className="w-1/3 text-muted-foreground">Season</span>
-                        <span className="w-2/3 font-medium">All Seasons</span>
-                      </div>
-                    </div>
-                    
                     {/* Free text description */}
                     {product.description ? (
-                      <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed mt-8">
+                      <div className="prose prose-sm mt-2 max-w-3xl text-muted-foreground leading-relaxed">
                         {product.description.split('\n').map((paragraph: string, i: number) => (
                           <p key={i}>{paragraph}</p>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground mt-8">No detailed description provided for this product.</p>
+                      <p className="mt-2 text-muted-foreground">Product details will be added soon.</p>
                     )}
-                    
-                    {/* Show images in description */}
-                    <div className="mt-12 space-y-4 flex flex-col items-center">
-                      {sortedImages.map((img: any) => (
-                        <img key={img.id} src={img.image_url} alt="Description graphic" className="max-w-full md:max-w-3xl rounded-lg" />
-                      ))}
-                    </div>
-                  <div className="flex items-center gap-3 border-t border-border/40 pt-8 text-muted-foreground">
-                    <Star className="h-5 w-5 text-brand" />
-                    <p>Reviews will appear here once customers share their verified purchase feedback.</p>
+                  <div className="flex items-center gap-3 border-t border-border/40 pt-6 text-muted-foreground">
+                    <Star className="h-4 w-4 text-brand" />
+                    <p>Reviews will appear here after verified customers share feedback.</p>
                   </div>
                 </div>
               </div>
