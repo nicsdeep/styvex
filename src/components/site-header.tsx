@@ -1,18 +1,21 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Search, User, Heart, ShoppingBag, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
-
-const NAV_LINKS = [
-  { href: "/shop", label: "Shop" },
-  { href: "/category/womens-clothing", label: "Clothing" },
-  { href: "/category/handbags", label: "Bags" },
-  { href: "/category/jewelry", label: "Jewelry" },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 export function SiteHeader() {
   const { totalItems } = useCart();
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("id, name, slug").order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border/80 bg-[#eee4d8] shadow-[0_1px_0_rgba(59,37,28,0.06)]">
@@ -38,13 +41,17 @@ export function SiteHeader() {
                   <span className="font-display text-xl font-bold uppercase tracking-[0.18em] text-foreground">Styvex</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
-                  {NAV_LINKS.map((link) => (
+                  <Link to="/shop" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    Shop all
+                  </Link>
+                  {categories.map((category) => (
                     <Link
-                      key={link.label}
-                      to={link.href}
+                      key={category.id}
+                      to="/category/$slug"
+                      params={{ slug: category.slug }}
                       className="font-display text-2xl font-semibold transition-colors hover:text-brand"
                     >
-                      {link.label}
+                      {category.name}
                     </Link>
                   ))}
                 </nav>
@@ -71,13 +78,20 @@ export function SiteHeader() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex md:flex-auto md:justify-center md:gap-9">
-          {NAV_LINKS.map((link) => (
+          <Link
+            to="/shop"
+            className="text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors hover:text-brand"
+          >
+            Shop
+          </Link>
+          {categories.map((category) => (
             <Link
-              key={link.label}
-              to={link.href}
+              key={category.id}
+              to="/category/$slug"
+              params={{ slug: category.slug }}
               className="text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors hover:text-brand"
             >
-              {link.label}
+              {category.name}
             </Link>
           ))}
         </nav>

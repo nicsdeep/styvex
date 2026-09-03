@@ -1,11 +1,21 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("id, name, slug").order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,9 +88,13 @@ export function SiteFooter() {
             <h3 className="mb-6 text-xs font-semibold uppercase tracking-wider text-white/90">Shop</h3>
             <ul className="flex flex-col gap-4 text-sm text-white/70">
               <li><Link to="/shop" className="hover:text-white transition-colors">All Products</Link></li>
-              <li><Link to={"/category/womens-clothing" as any} className="hover:text-white transition-colors">Women's Clothing</Link></li>
-              <li><Link to={"/category/handbags" as any} className="hover:text-white transition-colors">Handbags & Bags</Link></li>
-              <li><Link to={"/category/jewelry" as any} className="hover:text-white transition-colors">Jewelry</Link></li>
+              {categories.map((category) => (
+                <li key={category.id}>
+                  <Link to="/category/$slug" params={{ slug: category.slug }} className="hover:text-white transition-colors">
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

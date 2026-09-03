@@ -57,6 +57,15 @@ const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=85&w=1600&auto=format&fit=crop",
 ];
 
+const CATEGORY_IMAGES: Record<string, string> = {
+  "womens-clothing": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80",
+  handbags: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400&q=80",
+  jewelry: "https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=800&q=85",
+  "fashion-accessories": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&q=80",
+  lifestyle: "https://images.unsplash.com/photo-1499939667766-4afceb292d05?w=400&q=80",
+};
+const DEFAULT_CATEGORY_IMAGE = "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&q=80";
+
 // 2. Hero Section — restrained editorial image rotation
 function Hero() {
   const [activeHeroImage, setActiveHeroImage] = useState(0);
@@ -142,14 +151,14 @@ function Hero() {
 
 // 3. Shop by Categories (Image Cards)
 function ShopByCategories() {
-  const categories = [
-    { name: "Clothing", link: "/category/womens-clothing", img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" },
-    { name: "Handbags", link: "/category/handbags", img: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400&q=80" },
-    { name: "Jewelry", link: "/category/jewelry", img: "https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=800&q=85" },
-    { name: "Accessories", link: "/category/fashion-accessories", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&q=80" },
-    { name: "Lifestyle", link: "/category/lifestyle", img: "https://images.unsplash.com/photo-1499939667766-4afceb292d05?w=400&q=80" },
-    { name: "New Arrivals", link: "/shop", img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&q=80" },
-  ];
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("id, name, slug").order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   return (
     <section className="bg-background py-20 md:py-28">
@@ -165,10 +174,10 @@ function ShopByCategories() {
         </div>
         
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-6">
-          {categories.map((cat, i) => (
-             <Link key={i} to={cat.link as any} className="group flex flex-col gap-3">
+          {categories.map((cat) => (
+             <Link key={cat.id} to="/category/$slug" params={{ slug: cat.slug }} className="group flex flex-col gap-3">
                <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted luxury-shadow">
-                 <img src={cat.img} alt={cat.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                 <img src={CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE} alt={cat.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                </div>
                <div className="flex items-center justify-between">
                  <div className="flex flex-col">

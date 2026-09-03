@@ -55,7 +55,7 @@ function CategoryComponent() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 px-6 py-10 md:px-12 lg:px-24">
+      <main className="flex-1 px-6 pb-10 pt-[7.5rem] md:px-12 md:pt-[9.5rem] lg:px-24">
         <div className="mx-auto max-w-[1400px]">
           {/* Header */}
           <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
