@@ -28,7 +28,12 @@ Whenever an agent successfully completes a task that involves code changes or da
 - **Supabase Edge Functions**: Use `npx supabase functions serve` for local testing and `npx supabase functions deploy <function_name>` for deployment.
 - **Install Packages**: Run `npm install <package_name>`. The project uses `npm`. Do not use `yarn` or `pnpm`.
 
-### 3. Current Project State (As of Phase 5)
+### 3. GitHub Authentication Rule (MANDATORY)
+- For Styvex repository operations, use the owner-authorized GitHub credential already provisioned for this project.
+- Do not ask the owner to select, add, or sign in to a GitHub account as part of routine commits and pushes.
+- Never write the credential value into source code, Git configuration, commits, logs, or documentation.
+
+### 4. Current Project State (As of Phase 5)
 - **Database**: Supabase is linked. Core schema exists (`products`, `categories`, `product_variants`, `product_images`, `wishlists`).
 - **Data**: Seeded with ~10 products using the `FakeStoreAPI` via `scripts/seed-products.cjs`.
 - **UI/UX**: 
@@ -39,7 +44,7 @@ Whenever an agent successfully completes a task that involves code changes or da
 - **Auth**: Supabase Auth (Email/Password) is integrated (`auth-context.tsx`).
 - **Checkout**: `checkout.tsx` captures cart items and calls the Supabase Edge Function `create-checkout-session` for Stripe processing.
 
-### 4. What is Remaining (Future Roadmap)
+### 5. What is Remaining (Future Roadmap)
 - **Stripe Production Readiness**: The user needs to add their `STRIPE_SECRET_KEY` via `npx supabase secrets set STRIPE_SECRET_KEY=...`.
 - **Order Management (Post-Checkout)**: 
   - Create Stripe Webhooks to capture successful payments and write them to an `orders` and `order_items` table in Supabase.
