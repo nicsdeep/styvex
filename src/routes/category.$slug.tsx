@@ -9,17 +9,23 @@ export const Route = createFileRoute("/category/$slug")({
   component: CategoryComponent,
 });
 
+// Keep older storefront links working while the catalog uses its canonical slugs.
+const CATEGORY_SLUG_ALIASES: Record<string, string> = {
+  "womens-clothing": "women-s-clothing",
+};
+
 function CategoryComponent() {
   const { slug } = Route.useParams();
+  const categorySlug = CATEGORY_SLUG_ALIASES[slug] || slug;
 
   // First fetch the category to get its ID and Name
   const { data: category, isLoading: isCategoryLoading } = useQuery({
-    queryKey: ["category", slug],
+    queryKey: ["category", categorySlug],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
         .select("*")
-        .eq("slug", slug)
+        .eq("slug", categorySlug)
         .single();
 
       if (error) throw error;
