@@ -57,7 +57,7 @@ export function SiteFooter() {
           {/* Brand & Newsletter */}
           <div className="col-span-2 flex flex-col items-center text-center md:items-start md:text-left">
             <div className="mb-6">
-              <img src="/styvex-logo.svg" alt="STYVEX" width={200} height={38} className="h-9 w-auto brightness-0 invert" />
+              <img src="/styvex-logo-light.svg" alt="STYVEX" width={170} height={48} className="h-9 w-auto" />
             </div>
             <p className="mb-6 max-w-sm text-sm text-white/70">
               Sign up for our newsletter to receive updates on new arrivals, exclusive access to sales, and editorial content.
