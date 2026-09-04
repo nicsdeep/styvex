@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Search, User, Heart, ShoppingBag, Menu } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, Menu, Truck, Tag, Zap } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
@@ -19,8 +19,18 @@ export function SiteHeader() {
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border/80 bg-[#eee4d8] shadow-[0_1px_0_rgba(59,37,28,0.06)]">
-      <div className="hidden border-b border-border/60 bg-ink px-4 py-2 text-center text-[0.62rem] font-bold uppercase tracking-[0.2em] text-primary-foreground sm:block">
-        Complimentary U.S. shipping on orders over $50
+      <div className="hidden border-b border-white/10 bg-ink text-primary-foreground sm:block">
+        <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] md:px-10 lg:px-14">
+          <p className="flex items-center justify-center gap-2 opacity-90">
+            <Truck className="h-3 w-3" aria-hidden="true" /> Complimentary U.S. shipping over $50
+          </p>
+          <p className="flex items-center justify-center gap-2 border-x border-white/15 px-4 text-white">
+            <Tag className="h-3 w-3 text-brand" aria-hidden="true" /> New arrivals, selected weekly
+          </p>
+          <p className="flex items-center justify-center gap-2 opacity-90">
+            <Zap className="h-3 w-3" aria-hidden="true" /> A considered edit of everyday pieces
+          </p>
+        </div>
       </div>
       <div className="mx-auto flex h-[4.5rem] max-w-[1540px] items-center justify-between px-5 md:px-10 lg:px-14">
         {/* Mobile Menu & Logo */}
@@ -77,10 +87,16 @@ export function SiteHeader() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex md:flex-auto md:justify-center md:gap-9">
+        <nav className="hidden md:flex md:flex-auto md:justify-center md:gap-7 lg:gap-9">
+          <Link
+            to="/"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+          >
+            Home
+          </Link>
           <Link
             to="/shop"
-            className="text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors hover:text-brand"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Shop
           </Link>
@@ -89,7 +105,7 @@ export function SiteHeader() {
               key={category.id}
               to="/category/$slug"
               params={{ slug: category.slug }}
-              className="text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors hover:text-brand"
+              className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
             >
               {category.name}
             </Link>
