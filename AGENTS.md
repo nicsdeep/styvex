@@ -36,6 +36,7 @@ Whenever an agent successfully completes a task that involves code changes or da
 ### 4. Current Project State (As of Phase 5)
 - **Database**: Supabase is linked. Core schema exists (`products`, `categories`, `product_variants`, `product_images`, `wishlists`).
 - **Data**: Seeded with ~10 products using the `FakeStoreAPI` via `scripts/seed-products.cjs`.
+- **Product sourcing**: Supplier catalog sync uses the CJ Dropshipping API via `scripts/sync-cj-products.cjs`. Use the approved supplier API for new catalog inventory; its credentials and the Supabase service-role key remain server-only and are never committed.
 - **UI/UX**: 
   - Homepage (`index.tsx`) has an animated Embla Carousel hero and dynamic "New Arrivals"/"Trending" grids.
   - Shop (`shop.tsx`) and Category pages (`category.$slug.tsx`) dynamically filter and load products.
