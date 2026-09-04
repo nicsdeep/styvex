@@ -10,7 +10,7 @@ function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background selection:bg-foreground selection:text-background">
       <SiteHeader />
-      <main className="flex-1 py-16 px-6 md:px-12 max-w-2xl mx-auto w-full">
+      <main className="mx-auto w-full max-w-2xl flex-1 px-6 pb-16 pt-[8.5rem] md:px-12 md:pb-16 md:pt-[10.5rem]">
         <h1 className="text-4xl font-serif mb-4 text-foreground text-center">Contact Us</h1>
         <p className="text-center text-foreground/70 mb-12">
           Have a question or need assistance? We're here to help. Fill out the form below or reach out to us directly.

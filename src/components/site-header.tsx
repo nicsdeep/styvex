@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Search, User, Heart, ShoppingBag, Menu, Truck, Tag, Zap } from "lucide-react";
+import { Search, User, Heart, ShoppingBag, Menu, Truck, Tag, Zap, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/cart-context";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -63,6 +64,15 @@ export function SiteHeader() {
                   <a href="/#best-sellers" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
                     Best sellers
                   </a>
+                  <Link to="/about" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    About
+                  </Link>
+                  <Link to="/blog" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    Blog
+                  </Link>
+                  <Link to="/contact" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    Contact
+                  </Link>
                   {categories.map((category) => (
                     <Link
                       key={category.id}
@@ -96,7 +106,7 @@ export function SiteHeader() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex md:flex-auto md:justify-center md:gap-7 lg:gap-9">
+        <nav className="hidden md:flex md:flex-auto md:items-center md:justify-center md:gap-4 lg:gap-6">
           <Link
             to="/"
             className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
@@ -121,16 +131,39 @@ export function SiteHeader() {
           >
             Best sellers
           </a>
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              to="/category/$slug"
-              params={{ slug: category.slug }}
-              className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
-            >
-              {category.name}
-            </Link>
-          ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="relative flex items-center gap-1 py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground outline-none transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100 data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
+              Categories <ChevronDown className="h-3 w-3" aria-hidden="true" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="min-w-48 rounded-xl border-border/70 bg-white p-2 shadow-xl">
+              <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium">
+                <Link to="/shop">All products</Link>
+              </DropdownMenuItem>
+              {categories.map((category) => (
+                <DropdownMenuItem key={category.id} asChild className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium">
+                  <Link to="/category/$slug" params={{ slug: category.slug }}>{category.name}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Link
+            to="/about"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+          >
+            About
+          </Link>
+          <Link
+            to="/blog"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+          >
+            Blog
+          </Link>
+          <Link
+            to="/contact"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+          >
+            Contact
+          </Link>
         </nav>
 
         {/* Right Actions */}
