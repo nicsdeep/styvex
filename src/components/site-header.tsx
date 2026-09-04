@@ -18,7 +18,7 @@ export function SiteHeader() {
   });
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-border/80 bg-[#eee4d8] shadow-[0_1px_0_rgba(59,37,28,0.06)]">
+    <header className="fixed top-0 z-50 w-full border-y border-border/70 bg-white shadow-[0_1px_0_rgba(59,37,28,0.05)]">
       <div className="hidden border-b border-white/10 bg-ink text-primary-foreground sm:block">
         <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] md:px-10 lg:px-14">
           <p className="flex items-center justify-center gap-2 opacity-90">
@@ -51,9 +51,18 @@ export function SiteHeader() {
                   <span className="font-display text-xl font-bold uppercase tracking-[0.18em] text-foreground">Styvex</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
+                  <Link to="/" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    Home
+                  </Link>
                   <Link to="/shop" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
                     Shop all
                   </Link>
+                  <a href="/#new-arrivals" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    New arrivals
+                  </a>
+                  <a href="/#best-sellers" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
+                    Best sellers
+                  </a>
                   {categories.map((category) => (
                     <Link
                       key={category.id}
@@ -100,6 +109,18 @@ export function SiteHeader() {
           >
             Shop
           </Link>
+          <a
+            href="/#new-arrivals"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+          >
+            New arrivals
+          </a>
+          <a
+            href="/#best-sellers"
+            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+          >
+            Best sellers
+          </a>
           {categories.map((category) => (
             <Link
               key={category.id}

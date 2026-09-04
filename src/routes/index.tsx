@@ -197,7 +197,7 @@ function ShopByCategories() {
 }
 
 // 4. Draggable Product Carousel
-function ProductCarousel({ products, title, viewAllLink }: { products: any[], title: string, viewAllLink: string }) {
+function ProductCarousel({ products, title, viewAllLink, id }: { products: any[], title: string, viewAllLink: string, id?: string }) {
   const [emblaRef] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
@@ -205,7 +205,7 @@ function ProductCarousel({ products, title, viewAllLink }: { products: any[], ti
   });
 
   return (
-    <section className="py-8 md:py-16">
+    <section id={id} className="scroll-mt-28 py-8 md:py-16">
       <div className="mx-auto max-w-[1540px] px-5 md:px-10 lg:px-14">
         <div className="mb-8 flex items-end justify-between">
           <h2 className="font-display text-4xl font-semibold tracking-[-0.035em] text-ink md:text-5xl">
@@ -391,12 +391,14 @@ function Index() {
         <ShopByCategories />
 
         <ProductCarousel 
+          id="new-arrivals"
           title="New Arrivals" 
           products={newArrivals} 
           viewAllLink="/shop" 
         />
 
         <ProductCarousel 
+          id="best-sellers"
           title="Best Sellers" 
           products={trendingProducts} 
           viewAllLink="/shop" 
