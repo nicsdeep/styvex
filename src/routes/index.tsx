@@ -224,7 +224,7 @@ function ProductCarousel({ products, title, viewAllLink, id }: { products: any[]
           <div className="overflow-hidden -mx-4 px-4" ref={emblaRef}>
             <div className="flex -ml-4 touch-pan-y py-4">
               {products.map((product, i) => (
-                <div key={product.id} className="min-w-0 flex-[0_0_85%] pl-4 sm:flex-[0_0_45%] lg:flex-[0_0_20%] xl:flex-[0_0_16.666%]">
+                <div key={product.id} className="min-w-0 flex-[0_0_50%] pl-4 sm:flex-[0_0_45%] lg:flex-[0_0_20%] xl:flex-[0_0_16.666%]">
                   <ProductCard
                     id={product.id}
                     name={product.name}

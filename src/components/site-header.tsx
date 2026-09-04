@@ -35,7 +35,7 @@ export function SiteHeader() {
       </div>
       <div className="mx-auto flex h-[4.5rem] max-w-[1540px] items-center justify-between px-5 md:px-10 lg:px-14">
         {/* Mobile Menu & Logo */}
-        <div className="flex flex-1 items-center gap-4 md:hidden">
+        <div className="flex items-center gap-4 md:hidden">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="-ml-2">
@@ -91,14 +91,14 @@ export function SiteHeader() {
         {/* Desktop Logo */}
         <div className="hidden md:flex md:flex-1">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex-logo.svg" alt="STYVEX" width={146} height={28} className="h-7 w-auto" />
+            <img src="/styvex-logo.svg" alt="STYVEX" width={500} height={96} className="h-14 w-auto" />
           </Link>
         </div>
 
         {/* Desktop Centered Logo / Mobile Centered Logo */}
-        <div className="flex flex-1 justify-center md:hidden">
+        <div className="flex min-w-0 flex-1 justify-center md:hidden">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex-logo.svg" alt="STYVEX" width={146} height={28} className="h-7 w-auto" />
+            <img src="/styvex-logo.svg" alt="STYVEX" width={250} height={48} className="h-10 w-auto max-w-full" />
           </Link>
         </div>
 
@@ -164,7 +164,7 @@ export function SiteHeader() {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4">
+        <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-4">
           <Link to="/search" className="text-muted-foreground transition-colors hover:text-brand">
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>

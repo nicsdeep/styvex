@@ -53,12 +53,11 @@ export function SiteFooter() {
   return (
     <footer className="w-full bg-[#111] text-white pt-16 pb-8">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <div className="grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-2 md:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4 lg:gap-8">
           {/* Brand & Newsletter */}
-          <div className="col-span-1 sm:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <img src="/favicon.svg" alt="" aria-hidden="true" width={32} height={32} className="h-8 w-8 invert brightness-0" />
-              <span className="text-lg md:text-xl font-bold uppercase tracking-[0.35em] text-white">Styvex</span>
+          <div className="col-span-2 flex flex-col items-center text-center md:items-start md:text-left">
+            <div className="mb-6">
+              <img src="/styvex-logo.svg" alt="STYVEX" width={200} height={38} className="h-9 w-auto brightness-0 invert" />
             </div>
             <p className="mb-6 max-w-sm text-sm text-white/70">
               Sign up for our newsletter to receive updates on new arrivals, exclusive access to sales, and editorial content.
@@ -84,7 +83,7 @@ export function SiteFooter() {
           </div>
 
           {/* Shop Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="mb-6 text-xs font-semibold uppercase tracking-wider text-white/90">Shop</h3>
             <ul className="flex flex-col gap-4 text-sm text-white/70">
               <li><Link to="/shop" className="hover:text-white transition-colors">All Products</Link></li>
@@ -99,7 +98,7 @@ export function SiteFooter() {
           </div>
 
           {/* Support Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="mb-6 text-xs font-semibold uppercase tracking-wider text-white/90">Support</h3>
             <ul className="flex flex-col gap-4 text-sm text-white/70">
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
