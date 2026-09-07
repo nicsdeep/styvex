@@ -1,0 +1,12 @@
+<svg width="520" height="140" viewBox="0 0 520 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="STYVEX logo">
+  <title>STYVEX</title>
+  <defs>
+    <clipPath id="styvex-logo2-overlap">
+      <circle cx="108" cy="70" r="46"/>
+    </clipPath>
+  </defs>
+  <circle cx="70" cy="70" r="46" fill="none" stroke="#534AB7" stroke-width="14"/>
+  <circle cx="108" cy="70" r="46" fill="none" stroke="#534AB7" stroke-width="14"/>
+  <circle cx="108" cy="70" r="46" fill="#AFA9EC" opacity="0.55" clip-path="url(#styvex-logo2-overlap)"/>
+  <text x="182" y="72" dominant-baseline="middle" fill="#1A1A1A" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="800" letter-spacing="5">STYVEX</text>
+</svg>
