@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/context/auth-context";
@@ -58,18 +58,24 @@ const titles: Record<Table, string> = {
 };
 
 function AdminPage() {
+  const navigate = useNavigate();
   const { user, isLoading, signOut } = useAuth();
   const role = useAdmin();
   const [tab, setTab] = useState<"brand" | Table>("brand");
+  useEffect(() => {
+    if (!isLoading && (!user || (role.isSuccess && !role.data))) {
+      void navigate({ to: "/account", replace: true });
+    }
+  }, [user, isLoading, role.isSuccess, role.data, navigate]);
   let message = "";
   if (isLoading || (user && role.isPending)) message = "Checking access…";
-  else if (!user) message = "Sign in with your administrator account to continue.";
+  else if (!user) message = "Opening your account…";
   else if (role.isError) message = "Unable to verify access. Please try again.";
-  else if (!role.data) message = "This account does not have administrator access.";
+  else if (!role.data) message = "Opening your account…";
   if (message)
     return (
       <main className="mx-auto max-w-xl p-8 pt-24">
-        <h1 className="mb-4 text-2xl font-bold">Store administration</h1>
+        <h1 className="mb-4 text-2xl font-bold">STYVEX</h1>
         <p role="status">{message}</p>
         <a href="/account" className="mt-6 inline-block underline">
           Go to account

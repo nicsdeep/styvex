@@ -1,152 +1,257 @@
-import { useState } from "react";
-import { useAdmin } from '@/hooks/use-admin';
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useAuth } from "@/context/auth-context";
+import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
-export const Route = createFileRoute("/account")({
-  component: AccountPage,
-});
-
-const authSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-type AuthFormValues = z.infer<typeof authSchema>;
-
+export const Route = createFileRoute("/account")({ component: AccountPage });
 function AccountPage() {
-  const admin = useAdmin();
   const { user, isLoading, signOut } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { register, handleSubmit, formState: { errors } } = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
-  });
-
-  const onSubmit = async (data: AuthFormValues) => {
-    setIsSubmitting(true);
+  const role = useAdmin();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [sentTo, setSentTo] = useState("");
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordMode, setPasswordMode] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [resendAt, setResendAt] = useState(0);
+  const [now, setNow] = useState(0);
+  useEffect(() => {
+    if (!resendAt) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [resendAt]);
+  useEffect(() => {
+    if (user && role.data) void navigate({ to: "/admin", replace: true });
+  }, [user, role.data, navigate]);
+  async function sendCode() {
+    setBusy(true);
+    setError("");
+    const normalized = email.trim().toLowerCase();
     try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: data.email,
-          password: data.password,
-        });
-        if (error) throw error;
-        toast.success("Logged in successfully!");
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email: data.email,
-          password: data.password,
-        });
-        if (error) throw error;
-        toast.success("Registration successful! Check your email to verify.");
-      }
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred during authentication.");
+      const { error } = await supabase.auth.signInWithOtp({
+        email: normalized,
+        options: { shouldCreateUser: true, emailRedirectTo: window.location.origin + "/account" },
+      });
+      if (error) throw error;
+      setSentTo(normalized);
+      setCode("");
+      setResendAt(Date.now() + 60000);
+      setNow(Date.now());
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Could not send the email. Please try again.",
+      );
     } finally {
-      setIsSubmitting(false);
+      setBusy(false);
     }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen flex-col bg-background">
-        <SiteHeader />
-        <main className="flex flex-1 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-foreground"></div>
-        </main>
-      </div>
-    );
   }
-
+  const input =
+    "h-12 w-full rounded-lg border border-border bg-white px-4 text-base focus:outline-none focus:ring-2 focus:ring-purple-500";
+  const button =
+    "h-12 w-full rounded-lg bg-neutral-900 px-4 font-semibold text-white disabled:opacity-50";
+  const resolving = isLoading || (!!user && role.isPending) || !!role.data;
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-white">
       <SiteHeader />
-      
-      <main className="flex-1 px-6 pb-12 pt-32 md:px-12 lg:px-24">
-        <div className="mx-auto max-w-[1400px]">
-          
-          {user ? (
-            // Authenticated Dashboard
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
-              <div className="lg:col-span-1 border-r border-border/50 pr-8">
-                <h1 className="mb-6 text-2xl font-light uppercase tracking-widest text-foreground">My Account</h1>
-                <nav className="flex flex-col gap-4 text-sm font-medium text-muted-foreground">
-                  {admin.data && <a href="/admin" className="text-purple-700 font-semibold">Admin Dashboard</a>}
-                  <button className="text-left text-foreground hover:text-foreground transition-colors">Dashboard</button>
-                  <button className="text-left hover:text-foreground transition-colors">Order History</button>
-                  <button className="text-left hover:text-foreground transition-colors">Addresses</button>
-                  <button onClick={signOut} className="text-left mt-8 hover:text-destructive transition-colors">Sign Out</button>
-                </nav>
-              </div>
-              <div className="lg:col-span-3">
-                <h2 className="mb-6 text-xl font-light uppercase tracking-widest text-foreground">Welcome back</h2>
-                <p className="text-sm text-muted-foreground">Logged in as {user.email}</p>
-
-                <div className="mt-12 bg-muted p-8 text-center">
-                  <h3 className="mb-2 text-lg font-medium text-foreground">No recent orders</h3>
-                  <p className="text-sm text-muted-foreground">You haven't placed any orders yet.</p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            // Unauthenticated Flow
-            <div className="mx-auto max-w-md mt-12">
-              <h1 className="mb-8 text-center text-2xl font-light uppercase tracking-widest text-foreground">
-                {isLogin ? "Sign In" : "Create Account"}
-              </h1>
-              
-              <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-foreground">Email</label>
-                  <input
-                    {...register("email")}
-                    type="email"
-                    className="h-12 border border-border bg-transparent px-4 text-sm focus:border-foreground focus:outline-none transition-colors"
-                  />
-                  {errors.email && <span className="text-xs text-destructive">{errors.email.message}</span>}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-foreground">Password</label>
-                  <input
-                    {...register("password")}
-                    type="password"
-                    className="h-12 border border-border bg-transparent px-4 text-sm focus:border-foreground focus:outline-none transition-colors"
-                  />
-                  {errors.password && <span className="text-xs text-destructive">{errors.password.message}</span>}
-                </div>
-
+      <main className="mx-auto w-full max-w-lg flex-1 px-6 pb-16 pt-36">
+        {resolving ? (
+          <p role="status">Opening your account…</p>
+        ) : user ? (
+          <section>
+            <h1 className="text-3xl font-semibold">My account</h1>
+            <p className="mt-4 text-muted-foreground">{user.email}</p>
+            {role.isError && (
+              <p role="alert" className="mt-4">
+                We could not load your account access.{" "}
+                <button className="underline" onClick={() => role.refetch()}>
+                  Retry
+                </button>
+              </p>
+            )}
+            <a className="mt-8 block underline" href="/shop">
+              Continue shopping
+            </a>
+            <a className="mt-4 block underline" href="/wishlist">
+              My wishlist
+            </a>
+            <button
+              className={button + " mt-8"}
+              onClick={async () => {
+                setError("");
+                try {
+                  await signOut();
+                  setSentTo("");
+                  setCode("");
+                  setPassword("");
+                } catch {
+                  setError("Sign out failed. Please try again.");
+                }
+              }}
+            >
+              Sign out
+            </button>
+          </section>
+        ) : (
+          <section>
+            <h1 className="text-3xl font-semibold">
+              {sentTo ? "Check your email" : "Login / Sign up"}
+            </h1>
+            <p className="mb-8 mt-3 text-sm leading-relaxed text-muted-foreground">
+              {sentTo
+                ? "We sent a sign-in email to " +
+                  sentTo +
+                  ". Enter the code below, or use the sign-in link if one is provided."
+                : "Welcome to STYVEX. Continue with your email to securely access your account or create one."}
+            </p>
+            {!sentTo ? (
+              <form
+                className="space-y-5"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!passwordMode) {
+                    await sendCode();
+                    return;
+                  }
+                  setBusy(true);
+                  setError("");
+                  try {
+                    const { error } = await supabase.auth.signInWithPassword({
+                      email: email.trim().toLowerCase(),
+                      password,
+                    });
+                    if (error) throw error;
+                  } catch (error) {
+                    setError(error instanceof Error ? error.message : "Sign in failed.");
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                <label className="block text-sm font-medium" htmlFor="account-email">
+                  Email address
+                </label>
+                <input
+                  id="account-email"
+                  className={input}
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={busy}
+                />
+                {passwordMode && (
+                  <>
+                    <label className="block text-sm font-medium" htmlFor="account-password">
+                      Password
+                    </label>
+                    <input
+                      id="account-password"
+                      className={input}
+                      type="password"
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={busy}
+                    />
+                  </>
+                )}
+                <button disabled={busy} className={button}>
+                  {busy ? "Please wait…" : passwordMode ? "Sign in" : "Continue with email"}
+                </button>
                 <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="mt-4 bg-foreground h-12 text-xs font-semibold uppercase tracking-widest text-background transition-colors hover:bg-foreground/90 disabled:opacity-50"
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setPasswordMode(!passwordMode);
+                    setError("");
+                  }}
+                  className="text-sm underline"
                 >
-                  {isSubmitting ? "Processing..." : isLogin ? "Sign In" : "Register"}
+                  {passwordMode ? "Use an email code instead" : "Already have a password? Sign in"}
                 </button>
               </form>
-
-              <div className="mt-8 text-center">
-                <button
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {isLogin ? "Don't have an account? Create one." : "Already have an account? Sign in."}
+            ) : (
+              <form
+                className="space-y-5"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setBusy(true);
+                  setError("");
+                  try {
+                    const { error } = await supabase.auth.verifyOtp({
+                      email: sentTo,
+                      token: code.trim(),
+                      type: "email",
+                    });
+                    if (error) throw error;
+                  } catch {
+                    setError(
+                      "That code is invalid or has expired. Check the latest email or request a new code.",
+                    );
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                <label htmlFor="account-code" className="block text-sm font-medium">
+                  One-time code
+                </label>
+                <input
+                  id="account-code"
+                  className={input + " tracking-widest"}
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  pattern="[0-9]{6,10}"
+                  maxLength={10}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                  required
+                  disabled={busy}
+                />
+                <button className={button} disabled={busy}>
+                  {busy ? "Verifying…" : "Verify and continue"}
                 </button>
-              </div>
-            </div>
-          )}
-        </div>
+                <div className="flex justify-between gap-4 text-sm">
+                  <button
+                    type="button"
+                    disabled={busy || now < resendAt}
+                    onClick={sendCode}
+                    className="underline disabled:opacity-50"
+                  >
+                    {now < resendAt
+                      ? "Resend in " + Math.ceil((resendAt - now) / 1000) + "s"
+                      : "Resend email"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={busy}
+                    className="underline"
+                    onClick={() => {
+                      setSentTo("");
+                      setCode("");
+                      setError("");
+                    }}
+                  >
+                    Change email
+                  </button>
+                </div>
+              </form>
+            )}
+          </section>
+        )}
+        {error && (
+          <p role="alert" className="mt-5 text-sm text-red-700">
+            {error}
+          </p>
+        )}
       </main>
-
       <SiteFooter />
     </div>
   );
