@@ -48,7 +48,7 @@ export function SiteHeader() {
               <SheetDescription className="sr-only">Main navigation links for STYVEX</SheetDescription>
               <div className="flex flex-col gap-6 py-6">
                 <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-                  <img src="/styvex-logo.svg" alt="STYVEX" width={125} height={24} className="h-6 w-auto" />
+                  <img src="/styvex_logo.svg" alt="STYVEX" width={132} height={36} className="h-6 w-auto" />
                 </Link>
                 <nav className="flex flex-col gap-4">
                   <Link to="/" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
@@ -91,14 +91,14 @@ export function SiteHeader() {
         {/* Desktop Logo */}
         <div className="hidden md:flex md:flex-1">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex-logo.svg" alt="STYVEX" width={170} height={48} className="h-9 w-auto" />
+            <img src="/styvex_logo.svg" alt="STYVEX" width={132} height={36} className="h-9 w-auto" />
           </Link>
         </div>
 
         {/* Desktop Centered Logo / Mobile Centered Logo */}
         <div className="flex min-w-0 flex-1 justify-center md:hidden">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex-logo.svg" alt="STYVEX" width={170} height={48} className="h-8 w-auto max-w-full" />
+            <img src="/styvex_logo.svg" alt="STYVEX" width={132} height={36} className="h-8 w-auto max-w-full" />
           </Link>
         </div>
 
