@@ -91,14 +91,14 @@ export function SiteHeader() {
         {/* Desktop Logo */}
         <div className="hidden md:flex md:flex-1">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex-logo.svg" alt="STYVEX" width={500} height={96} className="h-14 w-auto" />
+            <img src="/styvex-logo.svg" alt="STYVEX" width={170} height={48} className="h-9 w-auto" />
           </Link>
         </div>
 
         {/* Desktop Centered Logo / Mobile Centered Logo */}
         <div className="flex min-w-0 flex-1 justify-center md:hidden">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex-logo.svg" alt="STYVEX" width={250} height={48} className="h-10 w-auto max-w-full" />
+            <img src="/styvex-logo.svg" alt="STYVEX" width={170} height={48} className="h-8 w-auto max-w-full" />
           </Link>
         </div>
 
