@@ -33,6 +33,13 @@ Whenever an agent successfully completes a task that involves code changes or da
 - Do not ask the owner to select, add, or sign in to a GitHub account as part of routine commits and pushes.
 - Never write the credential value into source code, Git configuration, commits, logs, or documentation.
 
+### 3.1 GitHub–Vercel–Supabase Parity Rule (MANDATORY)
+- Treat a change as complete only when the same intended state is verified across GitHub, Vercel production, and Supabase where the change affects the database.
+- After every code change, confirm that the pushed `origin/main` SHA matches a successful Vercel production deployment. If it does not, trigger or investigate a redeploy and report the mismatch; never claim the change is live.
+- After every migration or database data change, apply it to the linked Supabase project, then verify its remote state. A migration committed only to GitHub is pending work, not completion.
+- Before reporting completion, check the working tree is clean, GitHub has the expected `main` SHA, Vercel reports a successful matching deployment, and Supabase has all applicable migrations/data changes.
+- If an environment is inaccessible or a required runtime is unavailable, state the exact parity gap and leave the rule in force for the next authorized attempt. Do not store credentials in repository files, public buckets, migrations, or client code.
+
 ### 4. Current Project State (As of Phase 5)
 - **Database**: Supabase is linked. Core schema exists (`products`, `categories`, `product_variants`, `product_images`, `wishlists`).
 - **Data**: Seeded with ~10 products using the `FakeStoreAPI` via `scripts/seed-products.cjs`.
