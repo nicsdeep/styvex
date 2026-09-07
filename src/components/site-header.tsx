@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { BrandLogo } from './brand-logo';
 import { useQuery } from "@tanstack/react-query";
 import { Search, User, Heart, ShoppingBag, Menu, Truck, Tag, Zap, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -48,7 +49,7 @@ export function SiteHeader() {
               <SheetDescription className="sr-only">Main navigation links for STYVEX</SheetDescription>
               <div className="flex flex-col gap-6 py-6">
                 <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-                  <img src="/styvex_logo2.svg" alt="STYVEX" width={149} height={40} className="h-8 w-auto" />
+                  <BrandLogo mobile />
                 </Link>
                 <nav className="flex flex-col gap-4">
                   <Link to="/" className="font-display text-2xl font-semibold transition-colors hover:text-brand">
@@ -91,14 +92,14 @@ export function SiteHeader() {
         {/* Desktop Logo */}
         <div className="hidden md:flex md:flex-1">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex_logo2.svg" alt="STYVEX" width={149} height={40} className="h-10 w-auto" />
+            <BrandLogo />
           </Link>
         </div>
 
         {/* Desktop Centered Logo / Mobile Centered Logo */}
         <div className="flex min-w-0 flex-1 justify-center md:hidden">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
-            <img src="/styvex_logo2.svg" alt="STYVEX" width={149} height={40} className="h-9 w-auto max-w-full" />
+            <BrandLogo mobile />
           </Link>
         </div>
 

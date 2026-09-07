@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAdmin } from '@/hooks/use-admin';
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -21,6 +22,7 @@ const authSchema = z.object({
 type AuthFormValues = z.infer<typeof authSchema>;
 
 function AccountPage() {
+  const admin = useAdmin();
   const { user, isLoading, signOut } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,7 +71,7 @@ function AccountPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
       
-      <main className="flex-1 px-6 py-12 md:px-12 lg:px-24">
+      <main className="flex-1 px-6 pb-12 pt-32 md:px-12 lg:px-24">
         <div className="mx-auto max-w-[1400px]">
           
           {user ? (
@@ -78,6 +80,7 @@ function AccountPage() {
               <div className="lg:col-span-1 border-r border-border/50 pr-8">
                 <h1 className="mb-6 text-2xl font-light uppercase tracking-widest text-foreground">My Account</h1>
                 <nav className="flex flex-col gap-4 text-sm font-medium text-muted-foreground">
+                  {admin.data && <a href="/admin" className="text-purple-700 font-semibold">Admin Dashboard</a>}
                   <button className="text-left text-foreground hover:text-foreground transition-colors">Dashboard</button>
                   <button className="text-left hover:text-foreground transition-colors">Order History</button>
                   <button className="text-left hover:text-foreground transition-colors">Addresses</button>

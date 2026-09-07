@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { BrandLogo } from './brand-logo';
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -57,7 +58,7 @@ export function SiteFooter() {
           {/* Brand & Newsletter */}
           <div className="col-span-2 flex flex-col items-center text-center md:items-start md:text-left">
             <div className="mb-6">
-              <img src="/styvex-footer-white.svg" alt="STYVEX" width={149} height={40} className="h-10 w-auto" />
+              <BrandLogo footer />
             </div>
             <p className="mb-6 max-w-sm text-sm text-white/70">
               Sign up for our newsletter to receive updates on new arrivals, exclusive access to sales, and editorial content.

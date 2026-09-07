@@ -39,6 +39,18 @@ export type Database = {
   }
   public: {
     Tables: {
+      user_roles: {
+        Row: { id: string; user_id: string; role: 'admin'; created_at: string }
+        Insert: { user_id: string; role: 'admin'; id?: string; created_at?: string }
+        Update: { role?: 'admin' }
+        Relationships: []
+      }
+      store_settings: {
+        Row: { id: number; header_logo: string; footer_logo: string; header_height: number; footer_height: number }
+        Insert: { id?: number; header_logo?: string; footer_logo?: string; header_height?: number; footer_height?: number }
+        Update: { header_logo?: string; footer_logo?: string; header_height?: number; footer_height?: number }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
