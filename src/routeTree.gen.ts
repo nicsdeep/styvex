@@ -19,12 +19,14 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as CollectionSlugRouteImport } from './routes/collection.$slug'
@@ -85,6 +87,11 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -117,6 +124,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AccountOrdersRoute = AccountOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AccountRoute,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -167,7 +179,7 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
+  '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRoute
   '/blog': typeof BlogRoute
   '/cart': typeof CartRoute
@@ -175,12 +187,14 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/mcp': typeof McpRoute
+  '/onboarding': typeof OnboardingRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/account/orders': typeof AccountOrdersRoute
   '/category/$slug': typeof CategorySlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/collection/$slug': typeof CollectionSlugRoute
@@ -194,7 +208,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
+  '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRoute
   '/blog': typeof BlogRoute
   '/cart': typeof CartRoute
@@ -202,12 +216,14 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/mcp': typeof McpRoute
+  '/onboarding': typeof OnboardingRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/account/orders': typeof AccountOrdersRoute
   '/category/$slug': typeof CategorySlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/collection/$slug': typeof CollectionSlugRoute
@@ -222,7 +238,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/account': typeof AccountRoute
+  '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRoute
   '/blog': typeof BlogRoute
   '/cart': typeof CartRoute
@@ -230,12 +246,14 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/mcp': typeof McpRoute
+  '/onboarding': typeof OnboardingRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/account/orders': typeof AccountOrdersRoute
   '/category/$slug': typeof CategorySlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/collection/$slug': typeof CollectionSlugRoute
@@ -259,12 +277,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/mcp'
+    | '/onboarding'
     | '/search'
     | '/shop'
     | '/track-order'
     | '/wishlist'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/account/orders'
     | '/category/$slug'
     | '/checkout/success'
     | '/collection/$slug'
@@ -286,12 +306,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/mcp'
+    | '/onboarding'
     | '/search'
     | '/shop'
     | '/track-order'
     | '/wishlist'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/account/orders'
     | '/category/$slug'
     | '/checkout/success'
     | '/collection/$slug'
@@ -313,12 +335,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/mcp'
+    | '/onboarding'
     | '/search'
     | '/shop'
     | '/track-order'
     | '/wishlist'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/account/orders'
     | '/category/$slug'
     | '/checkout/success'
     | '/collection/$slug'
@@ -333,7 +357,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AccountRoute: typeof AccountRoute
+  AccountRoute: typeof AccountRouteWithChildren
   AdminRoute: typeof AdminRoute
   BlogRoute: typeof BlogRoute
   CartRoute: typeof CartRoute
@@ -341,6 +365,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   McpRoute: typeof McpRoute
+  OnboardingRoute: typeof OnboardingRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
   TrackOrderRoute: typeof TrackOrderRoute
@@ -429,6 +454,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -470,6 +502,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/.well-known/oauth-protected-resource'
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/account/orders': {
+      id: '/account/orders'
+      path: '/orders'
+      fullPath: '/account/orders'
+      preLoaderRoute: typeof AccountOrdersRouteImport
+      parentRoute: typeof AccountRoute
     }
     '/category/$slug': {
       id: '/category/$slug'
@@ -537,6 +576,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AccountRouteChildren {
+  AccountOrdersRoute: typeof AccountOrdersRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountOrdersRoute: AccountOrdersRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
+
 interface CheckoutRouteChildren {
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
 }
@@ -552,7 +602,7 @@ const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AccountRoute: AccountRoute,
+  AccountRoute: AccountRouteWithChildren,
   AdminRoute: AdminRoute,
   BlogRoute: BlogRoute,
   CartRoute: CartRoute,
@@ -560,6 +610,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   McpRoute: McpRoute,
+  OnboardingRoute: OnboardingRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
   TrackOrderRoute: TrackOrderRoute,

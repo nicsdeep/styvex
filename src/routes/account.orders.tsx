@@ -5,7 +5,7 @@ import { useAuth } from "@/context/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
-// @ts-expect-error routeTree.gen.ts not yet updated by Vite
+
 export const Route = createFileRoute("/account/orders")({
   component: OrdersPage,
 });
