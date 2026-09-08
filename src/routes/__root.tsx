@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  ScrollRestoration,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -112,6 +113,8 @@ function RootShell({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Scripts />
+        <ScrollRestoration />
+        <Toaster position="top-center" expand={false} richColors />
       </body>
     </html>
   );
@@ -126,7 +129,6 @@ function RootComponent() {
         <CartProvider>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
-          <Toaster position="bottom-right" />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/cart-context";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function SiteHeader() {
   const { user } = useAuth();
@@ -224,14 +225,41 @@ export function SiteHeader() {
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Link>
-          <Link
-            to="/account"
-            aria-label={user ? "My account" : "Login / Sign up"}
-            className="flex items-center gap-1 whitespace-nowrap text-muted-foreground transition-colors hover:text-brand"
-          >
-            <User className="h-5 w-5" />
-            <span className="hidden text-xs xl:inline">{user ? "Account" : "Login / Sign up"}</span>
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 whitespace-nowrap text-muted-foreground transition-colors hover:text-brand outline-none">
+                <User className="h-5 w-5" />
+                <span className="hidden text-xs xl:inline">Account</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 rounded-xl p-2 shadow-xl border-border/70">
+                <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2">
+                  <Link to="/account">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2">
+                  <Link to="/account/orders">Orders</Link>
+                </DropdownMenuItem>
+                <div className="h-px bg-border my-1" />
+                <DropdownMenuItem 
+                  className="cursor-pointer rounded-lg px-3 py-2 text-red-600 focus:bg-red-50 focus:text-red-700"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    toast.success("Successfully logged out");
+                  }}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link
+              to="/account"
+              aria-label="Login / Sign up"
+              className="flex items-center gap-1 whitespace-nowrap text-muted-foreground transition-colors hover:text-brand"
+            >
+              <User className="h-5 w-5" />
+              <span className="hidden text-xs xl:inline">Login / Sign up</span>
+            </Link>
+          )}
           <Link
             to="/wishlist"
             className="hidden text-muted-foreground transition-colors hover:text-brand sm:block"
