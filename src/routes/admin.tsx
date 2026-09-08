@@ -61,7 +61,7 @@ function AdminPage() {
   const navigate = useNavigate();
   const { user, isLoading, signOut } = useAuth();
   const role = useAdmin();
-  const [tab, setTab] = useState<"brand" | Table>("brand");
+  const [tab, setTab] = useState<"brand" | "orders" | Table>("brand");
   useEffect(() => {
     if (!isLoading && (!user || (role.isSuccess && !role.data))) {
       void navigate({ to: "/account", replace: true });
@@ -105,18 +105,18 @@ function AdminPage() {
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <nav className="mb-8 flex flex-wrap gap-2" aria-label="Administration sections">
-          {(["brand", ...Object.keys(titles)] as Array<"brand" | Table>).map((t) => (
+          {(["brand", "orders", ...Object.keys(titles)] as Array<"brand" | "orders" | Table>).map((t) => (
             <button
               key={t}
               aria-current={tab === t ? "page" : undefined}
               className={tab === t ? button : "rounded-lg border bg-white px-4 py-2.5 text-sm"}
               onClick={() => setTab(t)}
             >
-              {t === "brand" ? "Brand settings" : titles[t]}
+              {t === "brand" ? "Brand settings" : t === "orders" ? "Orders" : titles[t as Table]}
             </button>
           ))}
         </nav>
-        {tab === "brand" ? <BrandSettings /> : <CatalogEditor key={tab} table={tab} />}
+        {tab === "brand" ? <BrandSettings /> : tab === "orders" ? <OrdersAdmin /> : <CatalogEditor key={tab} table={tab as Table} />}
       </main>
     </div>
   );
@@ -434,6 +434,122 @@ function CatalogEditor({ table }: { table: Table }) {
           </form>
         </div>
       )}
+    </section>
+  );
+}
+
+function OrdersAdmin() {
+  const client = useQueryClient();
+  const [page, setPage] = useState(0);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const query = useQuery({
+    queryKey: ["admin-orders", page],
+    queryFn: async () => {
+      const { data, error, count } = await supabase
+        .from("orders")
+        .select(`
+          *,
+          order_items (*)
+        `, { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range(page * 20, page * 20 + 19);
+
+      if (error) throw error;
+      return { rows: data, count: count ?? 0 };
+    },
+  });
+
+  const updateStatus = async (orderId: string, status: string) => {
+    setBusyId(orderId);
+    try {
+      const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
+      if (error) throw error;
+      await client.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast.success("Order status updated");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Update failed");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  if (query.isPending) return <p>Loading orders…</p>;
+  if (query.isError) return <button onClick={() => query.refetch()}>Retry loading orders</button>;
+
+  return (
+    <section>
+      <div className="mb-5">
+        <h2 className="text-xl font-semibold">Orders</h2>
+        <p className="text-sm text-gray-500">Manage and fulfill customer orders.</p>
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border bg-white">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-4">Order Info</th>
+              <th className="p-4">Items</th>
+              <th className="p-4">Amount</th>
+              <th className="p-4">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {query.data.rows?.map((order: any) => (
+              <tr key={order.id} className="align-top">
+                <td className="p-4">
+                  <p className="font-medium text-xs text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
+                  <code className="mt-1 block text-xs text-gray-500">{order.id}</code>
+                  <p className="mt-2 text-xs">User: {order.user_id}</p>
+                </td>
+                <td className="p-4">
+                  <ul className="list-inside list-disc space-y-1 text-xs text-gray-600">
+                    {order.order_items?.map((item: any) => (
+                      <li key={item.id}>
+                        {item.quantity}x {item.product_name} (${item.price})
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+                <td className="p-4 font-medium">
+                  ${Number(order.total_amount).toFixed(2)}
+                </td>
+                <td className="p-4">
+                  <select
+                    className={input}
+                    value={order.status}
+                    disabled={busyId === order.id}
+                    onChange={(e) => updateStatus(order.id, e.target.value)}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {!query.data.rows?.length && <p className="p-6">No orders found.</p>}
+      </div>
+      
+      <div className="mt-4 flex items-center justify-between">
+        <button className={button} disabled={page === 0} onClick={() => setPage(page - 1)}>
+          Previous
+        </button>
+        <p className="text-sm">
+          Page {page + 1} · {query.data.count} records
+        </p>
+        <button
+          className={button}
+          disabled={(page + 1) * 20 >= query.data.count}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
+      </div>
     </section>
   );
 }

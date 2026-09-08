@@ -33,6 +33,27 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/product/$slug")({
+  loader: async ({ params: { slug } }) => {
+    const { data } = await supabase
+      .from("products")
+      .select("name, description, product_images(image_url)")
+      .eq("slug", slug)
+      .maybeSingle();
+    return { productMeta: data };
+  },
+  head: ({ loaderData }) => {
+    const product = loaderData?.productMeta;
+    if (!product) return {};
+    return {
+      meta: [
+        { title: `${product.name} | STYVEX` },
+        { name: "description", content: product.description || "STYVEX Product" },
+        { property: "og:title", content: product.name },
+        { property: "og:description", content: product.description || "" },
+        { property: "og:image", content: product.product_images?.[0]?.image_url || "" }
+      ]
+    };
+  },
   component: ProductPage,
 });
 

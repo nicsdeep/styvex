@@ -36,7 +36,7 @@ function SearchPage() {
           product_variants (id, color, size, inventory_quantity)
         `,
         )
-        .ilike("name", `%${debouncedSearchTerm}%`)
+        .textSearch("fts", debouncedSearchTerm, { config: "english", type: "websearch" })
         .limit(20);
 
       if (error) throw error;

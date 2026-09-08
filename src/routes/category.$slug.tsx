@@ -6,6 +6,31 @@ import { ProductCard } from "@/components/ui/product-card";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/category/$slug")({
+  loader: async ({ params: { slug } }) => {
+    // Keep older storefront links working while the catalog uses its canonical slugs.
+    const CATEGORY_SLUG_ALIASES: Record<string, string> = {
+      "womens-clothing": "women-s-clothing",
+    };
+    const categorySlug = CATEGORY_SLUG_ALIASES[slug] || slug;
+    const { data } = await supabase
+      .from("categories")
+      .select("name, description")
+      .eq("slug", categorySlug)
+      .maybeSingle();
+    return { categoryMeta: data };
+  },
+  head: ({ loaderData }) => {
+    const category = loaderData?.categoryMeta;
+    if (!category) return {};
+    return {
+      meta: [
+        { title: `${category.name} | STYVEX` },
+        { name: "description", content: category.description || `Browse our ${category.name} collection` },
+        { property: "og:title", content: `${category.name} | STYVEX` },
+        { property: "og:description", content: category.description || `Browse our ${category.name} collection` },
+      ]
+    };
+  },
   component: CategoryComponent,
 });
 
