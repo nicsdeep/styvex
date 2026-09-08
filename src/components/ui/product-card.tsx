@@ -148,11 +148,11 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_12px_32px_-24px_rgba(31,20,18,.55)] transition duration-300 hover:-translate-y-1 hover:border-brand/35 hover:shadow-[0_22px_45px_-25px_rgba(31,20,18,.5)]",
+        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm transition duration-300 hover:shadow-md",
         className,
       )}
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+      <div className="relative aspect-[4/5] sm:aspect-square overflow-hidden bg-muted/30">
         <Link
           to="/product/$slug"
           params={{ slug }}
@@ -174,28 +174,28 @@ export function ProductCard({
                 <img
                   src={secondaryImageUrl}
                   alt=""
-                  className="absolute inset-0 h-full w-full scale-105 object-cover opacity-0 transition duration-700 group-hover:scale-100 group-hover:opacity-100"
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
                   loading="lazy"
                 />
               )}
             </>
           ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-muted to-sand/55 text-sm font-bold uppercase tracking-[.28em] text-muted-foreground/45">
-              Styvex
+            <div className="flex h-full items-center justify-center bg-gradient-to-br from-muted to-muted-foreground/10 text-sm font-semibold tracking-[0.2em] text-muted-foreground/40">
+              STYVEX
             </div>
           )}
         </Link>
 
-        <div className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex flex-wrap gap-1.5">
+        <div className="pointer-events-none absolute left-2 top-2 z-10 flex flex-wrap gap-1.5">
           {discount > 0 && (
-            <span className="rounded-md bg-brand px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+            <span className="rounded-sm bg-brand px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
               Save {discount}%
             </span>
           )}
           {badges.map((badge) => (
             <span
               key={badge}
-              className="rounded-md bg-ink px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+              className="rounded-sm bg-ink px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white"
             >
               {badge}
             </span>
@@ -208,54 +208,55 @@ export function ProductCard({
             event.stopPropagation();
             toggleWishlist.mutate();
           }}
-          className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/92 text-ink shadow-sm backdrop-blur transition hover:scale-105 hover:text-brand"
+          className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition hover:scale-110 hover:text-brand"
           aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-brand text-brand")} />
+          <Heart className={cn("h-3.5 w-3.5", actuallyWishlisted && "fill-brand text-brand")} />
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="mb-1 flex items-center justify-between gap-2">
-          <span className="truncate text-[10px] font-bold uppercase tracking-[.15em] text-brand">
+          <span className="truncate text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">
             {categoryName || "Styvex edit"}
           </span>
           {soldOut && (
-            <span className="text-[10px] font-bold uppercase text-muted-foreground">Sold out</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Sold out</span>
           )}
         </div>
+        
         <Link
           to="/product/$slug"
           params={{ slug }}
-          className="line-clamp-2 min-h-[2.7rem] text-sm font-bold leading-[1.35] text-ink transition hover:text-brand"
+          className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-tight text-foreground transition hover:text-brand"
           title={name}
         >
           {name}
         </Link>
 
-        <div className="mt-2 flex items-center gap-1.5 text-xs">
+        <div className="mt-1 flex items-center gap-1.5 text-xs">
           <div className="flex text-amber-500" aria-hidden="true">
             {[0, 1, 2, 3, 4].map((star) => (
-              <Star key={star} className="h-3 w-3 fill-current" />
+              <Star key={star} className="h-2.5 w-2.5 fill-current" />
             ))}
           </div>
-          <span className="font-semibold text-ink">{rating?.toFixed(1) || "5.0"}</span>
-          <span className="text-muted-foreground">{reviewCount ? `(${reviewCount})` : "New"}</span>
+          <span className="font-medium text-foreground">{rating?.toFixed(1) || "5.0"}</span>
+          <span className="text-[10px] text-muted-foreground">{reviewCount ? `(${reviewCount})` : "New"}</span>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-end gap-x-2 gap-y-1">
-          <span className="text-lg font-extrabold tracking-tight text-ink">
+        <div className="mt-auto pt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span className="text-base font-bold tracking-tight text-foreground">
             {formatPrice(price)}
           </span>
           {compareAtPrice && compareAtPrice > price && (
-            <span className="pb-0.5 text-xs text-muted-foreground line-through">
+            <span className="text-xs text-muted-foreground line-through">
               {formatPrice(compareAtPrice)}
             </span>
           )}
         </div>
 
         {(colors.length > 0 || sizes.length > 0) && (
-          <p className="mt-1.5 truncate text-[11px] text-muted-foreground">
+          <p className="mt-1 truncate text-[10px] font-medium text-muted-foreground">
             {[
               colors.length > 0 && `${colors.length} color${colors.length > 1 ? "s" : ""}`,
               sizes.length > 0 && `${sizes.length} size${sizes.length > 1 ? "s" : ""}`,
@@ -270,18 +271,18 @@ export function ProductCard({
             to="/product/$slug"
             params={{ slug }}
             className={cn(
-              "mt-4 flex h-10 w-full items-center justify-center rounded-lg text-xs font-bold uppercase tracking-[.12em] transition",
-              soldOut ? "bg-muted text-muted-foreground" : "bg-ink text-white hover:bg-brand",
+              "mt-3 flex h-8 w-full items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-wider transition",
+              soldOut ? "bg-muted text-muted-foreground" : "bg-ink text-primary-foreground hover:bg-brand",
             )}
           >
-            {soldOut ? "View item" : "Choose options"}
+            {soldOut ? "View item" : "Options"}
           </Link>
         ) : (
           <button
             onClick={handleQuickAdd}
-            className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-ink text-xs font-bold uppercase tracking-[.12em] text-white transition hover:bg-brand active:scale-[.98]"
+            className="mt-3 flex h-8 w-full items-center justify-center gap-1.5 rounded-md bg-ink text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition hover:bg-brand active:scale-[.98]"
           >
-            <ShoppingBag className="h-3.5 w-3.5" /> Add to cart
+            <ShoppingBag className="h-3 w-3" /> Add
           </button>
         )}
       </div>

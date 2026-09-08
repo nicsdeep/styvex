@@ -38,7 +38,7 @@ export function SiteHeader() {
   return (
     <header className="fixed top-0 z-50 w-full border-y border-border/70 bg-white shadow-[0_1px_0_rgba(59,37,28,0.05)]">
       <div className="hidden border-b border-white/10 bg-ink text-primary-foreground sm:block">
-        <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] md:px-10 lg:px-14">
+        <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.65rem] font-semibold uppercase tracking-widest md:px-10 lg:px-14">
           <p className="flex items-center justify-center gap-2 opacity-90">
             <Truck className="h-3 w-3" aria-hidden="true" /> Complimentary U.S. shipping over $50
           </p>
@@ -146,34 +146,34 @@ export function SiteHeader() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex md:flex-auto md:items-center md:justify-center md:gap-4 lg:gap-6">
+        <nav className="hidden md:flex md:flex-auto md:items-center md:justify-center md:gap-6 lg:gap-8">
           <Link
             to="/"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Home
           </Link>
           <Link
             to="/shop"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Shop
           </Link>
           <a
             href="/#new-arrivals"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             New arrivals
           </a>
           <a
             href="/#best-sellers"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Best sellers
           </a>
           <DropdownMenu>
-            <DropdownMenuTrigger className="relative flex items-center gap-1 py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground outline-none transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100 data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
-              Categories <ChevronDown className="h-3 w-3" aria-hidden="true" />
+            <DropdownMenuTrigger className="relative flex items-center gap-1 py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground outline-none transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100 data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
+              Categories <ChevronDown className="h-4 w-4" aria-hidden="true" />
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="center"
@@ -200,19 +200,19 @@ export function SiteHeader() {
           </DropdownMenu>
           <Link
             to="/about"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             About
           </Link>
           <Link
             to="/blog"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Blog
           </Link>
           <Link
             to="/contact"
-            className="relative py-7 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Contact
           </Link>

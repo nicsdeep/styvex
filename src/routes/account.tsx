@@ -79,6 +79,9 @@ function AccountPage() {
             <a className="mt-4 block underline" href="/wishlist">
               My wishlist
             </a>
+            <a className="mt-4 block underline" href="/account/orders">
+              Order history
+            </a>
             <button
               className={button + " mt-8"}
               onClick={async () => {

@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.14.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { corsHeaders } from "../_shared/cors.ts";
 
 console.log("Create Checkout Session function up and running!");
@@ -11,6 +12,18 @@ serve(async (req) => {
 
   try {
     const { items, email } = await req.json();
+
+    const authHeader = req.headers.get("Authorization") || "";
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
@@ -41,6 +54,14 @@ serve(async (req) => {
       quantity: item.quantity,
     }));
 
+    // Create a simplified items payload for metadata to avoid 500-char limits
+    const simplifiedItems = items.map((i: any) => ({ 
+      id: i.id || i.product_id, // ensure we capture the actual product ID
+      q: i.quantity, 
+      p: i.price,
+      n: i.name 
+    }));
+    
     // 3. Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -49,6 +70,11 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/cart`,
       customer_email: email,
+      client_reference_id: user.id,
+      metadata: {
+        user_id: user.id,
+        items: JSON.stringify(simplifiedItems).substring(0, 500), // Note: might truncate if very large cart
+      }
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
