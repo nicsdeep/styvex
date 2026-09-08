@@ -123,6 +123,7 @@ export type Database = {
           id: string
           name: string
           slug: string
+          retail_markup_percentage: number | null
           updated_at: string
         }
         Insert: {
@@ -131,6 +132,7 @@ export type Database = {
           id?: string
           name: string
           slug: string
+          retail_markup_percentage?: number | null
           updated_at?: string
         }
         Update: {
@@ -139,6 +141,7 @@ export type Database = {
           id?: string
           name?: string
           slug?: string
+          retail_markup_percentage?: number | null
           updated_at?: string
         }
         Relationships: []
@@ -226,6 +229,7 @@ export type Database = {
           name: string
           price: number
           slug: string
+          base_review_count: number | null
           updated_at: string
         }
         Insert: {
@@ -237,6 +241,7 @@ export type Database = {
           name: string
           price?: number
           slug: string
+          base_review_count?: number | null
           updated_at?: string
         }
         Update: {
@@ -248,6 +253,7 @@ export type Database = {
           name?: string
           price?: number
           slug?: string
+          base_review_count?: number | null
           updated_at?: string
         }
         Relationships: [
@@ -288,6 +294,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          id: string
+          full_name: string | null
+          whatsapp_number: string | null
+          interested_products: Json | null
+          is_onboarded: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          full_name?: string | null
+          whatsapp_number?: string | null
+          interested_products?: Json | null
+          is_onboarded?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          full_name?: string | null
+          whatsapp_number?: string | null
+          interested_products?: Json | null
+          is_onboarded?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {

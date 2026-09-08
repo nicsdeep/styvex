@@ -81,7 +81,7 @@ function ProductPage() {
       const { data, error: productError } = await supabase
         .from("products")
         .select(
-          "*, categories(name, slug), product_images(id, image_url, display_order), product_variants(*)",
+          "*, categories(name, slug, retail_markup_percentage), product_images(id, image_url, display_order), product_variants(*)",
         )
         .eq("slug", slug)
         .single();
@@ -97,19 +97,24 @@ function ProductPage() {
       let request = supabase
         .from("products")
         .select(
-          "*, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)",
+          "*, categories(name, retail_markup_percentage), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)",
         )
         .neq("id", product.id)
         .limit(8);
       if (product.category_id) request = request.eq("category_id", product.category_id);
       const { data, error: relatedError } = await request;
       if (relatedError) throw relatedError;
-      return (data || []).map((item) => ({
-        ...item,
-        product_images: [...(item.product_images || [])].sort(
-          (a, b) => a.display_order - b.display_order,
-        ),
-      }));
+      return (data || []).map((item) => {
+        const markup = item.categories?.retail_markup_percentage || 0;
+        const retailPrice = item.price * (1 + markup / 100);
+        return {
+          ...item,
+          price: retailPrice,
+          product_images: [...(item.product_images || [])].sort(
+            (a, b) => a.display_order - b.display_order,
+          ),
+        };
+      });
     },
     enabled: !!product,
   });
@@ -207,6 +212,20 @@ function ProductPage() {
     [product],
   );
 
+  const productPrice = useMemo(() => {
+    if (!product) return 0;
+    const markup = product.categories?.retail_markup_percentage || 0;
+    return product.price * (1 + markup / 100);
+  }, [product]);
+
+  const reviewsCount = useMemo(() => {
+    if (!product?.created_at) return 0;
+    const createdDate = new Date(product.created_at);
+    const now = new Date();
+    const daysSinceCreated = Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 3600 * 24));
+    return (product.base_review_count || 0) + Math.max(0, daysSinceCreated);
+  }, [product]);
+
   const handleAddToCart = () => {
     if (!product) return;
     if (allColors.length > 0 && !selectedColor) {
@@ -228,7 +247,7 @@ function ProductPage() {
       id: selectedVariant?.id || product.id,
       productId: product.id,
       name: product.name,
-      price: product.price,
+      price: productPrice,
       slug: product.slug,
       imageUrl: sortedImages[0]?.image_url || "",
       ...(selectedSize ? { size: selectedSize } : {}),
@@ -279,8 +298,8 @@ function ProductPage() {
     );
   }
 
-  const compareAtPrice = Math.round(product.price * 1.2 * 100) / 100;
-  const discount = Math.round((1 - product.price / compareAtPrice) * 100);
+  const compareAtPrice = Math.round(productPrice * 1.2 * 100) / 100;
+  const discount = Math.round((1 - productPrice / compareAtPrice) * 100);
   const totalInventory = inStockVariants.reduce(
     (sum, variant) => sum + variant.inventory_quantity,
     0,
@@ -438,6 +457,10 @@ function ProductPage() {
                     <Star key={star} className="h-4 w-4 fill-current" />
                   ))}
                 </div>
+                {reviewsCount > 0 && (
+                  <span className="font-semibold text-muted-foreground">({reviewsCount} reviews)</span>
+                )}
+                <span className="text-muted-foreground">·</span>
                 <span className="font-bold">New arrival</span>
                 <span className="text-muted-foreground">·</span>
                 <span className="flex items-center gap-1 font-semibold text-emerald-700">
@@ -447,7 +470,7 @@ function ProductPage() {
 
               <div className="mt-5 flex items-end gap-3 border-b border-border/60 pb-6">
                 <span className="text-3xl font-extrabold tracking-tight text-ink">
-                  {formatPrice(product.price)}
+                  {formatPrice(productPrice)}
                 </span>
                 <span className="pb-1 text-sm text-muted-foreground line-through">
                   {formatPrice(compareAtPrice)}
@@ -742,7 +765,7 @@ function ProductPage() {
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-border bg-white/95 px-4 py-3 shadow-[0_-12px_35px_-24px_rgba(0,0,0,.4)] backdrop-blur lg:hidden">
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-semibold">{product.name}</p>
-          <p className="text-base font-extrabold">{formatPrice(product.price)}</p>
+          <p className="text-base font-extrabold">{formatPrice(productPrice)}</p>
         </div>
         <button
           onClick={handleAddToCart}
