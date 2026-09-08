@@ -7,6 +7,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/comp
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BrandLogo } from "@/components/brand-logo";
+import { Eye, EyeOff } from "lucide-react";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
@@ -24,6 +25,7 @@ function AccountPage() {
   const [useOtp, setUseOtp] = useState(true);
   const [otpSent, setOtpSent] = useState(false);
   const [isResetPassword, setIsResetPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const [busy, setBusy] = useState(false);
 
@@ -238,15 +240,26 @@ function AccountPage() {
                       </button>
                     )}
                   </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    className={inputClass}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={busy}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className={`${inputClass} pr-12`}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={busy}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 focus:outline-none transition-colors"
+                      tabIndex={-1}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
               )}
 
