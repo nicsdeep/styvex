@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useLocation } from "@tanstack/react-router";
 import { useAuth } from "@/context/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const Route = createFileRoute("/account")({ component: AccountPage });
 
 function AccountPage() {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,25 +26,16 @@ function AccountPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    async function checkProfile() {
-      if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("is_onboarded")
-          .eq("id", user.id)
-          .single();
-          
-        if (data && !data.is_onboarded) {
-          void navigate({ to: "/onboarding", replace: true });
-        } else if (data && data.is_onboarded) {
-          void navigate({ to: "/", replace: true });
-        }
+    if (user && !isLoading) {
+      if (location.pathname === "/account") {
+        void navigate({ to: "/account/orders", replace: true });
       }
     }
-    if (user && !isLoading) {
-      checkProfile();
-    }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, navigate, location.pathname]);
+
+  if (user) {
+    return <Outlet />;
+  }
 
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault();
@@ -109,7 +103,9 @@ function AccountPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F8F9FA] items-center justify-center p-4 sm:p-8 pt-24">
+    <div className="flex min-h-screen flex-col bg-[#F8F9FA]">
+      <SiteHeader />
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-8 py-12">
       <div className="w-full max-w-[1100px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row min-h-[650px] border border-neutral-100">
         
         {/* Left Side: Modern Branding */}
@@ -276,6 +272,8 @@ function AccountPage() {
 
         </div>
       </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }

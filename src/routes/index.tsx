@@ -464,7 +464,7 @@ function Index() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 pb-10 pt-[4.5rem] sm:pt-[6.5rem]">
+      <main className="flex-1 pb-10 sm:">
         <Hero />
         <TrustBar />
         <ShopByCategories />

@@ -81,7 +81,7 @@ function ShopComponent() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 pt-[4.5rem] sm:pt-[6.5rem]">
+      <main className="flex-1 sm:">
         <div className="mx-auto flex max-w-[1600px] flex-col px-4 py-8 md:flex-row md:px-8 md:py-12">
           {/* Sidebar */}
           <aside className="w-full md:w-64 flex-shrink-0 pr-8 mb-8 md:mb-0 hidden md:block">

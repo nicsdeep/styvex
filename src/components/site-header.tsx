@@ -37,7 +37,7 @@ export function SiteHeader() {
   });
 
   return (
-    <header className="fixed top-0 z-50 w-full border-y border-border/70 bg-white shadow-[0_1px_0_rgba(59,37,28,0.05)]">
+    <header className="sticky top-0 z-50 w-full border-y border-border/70 bg-white shadow-[0_1px_0_rgba(59,37,28,0.05)]">
       <div className="hidden border-b border-white/10 bg-ink text-primary-foreground sm:block">
         <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.65rem] font-semibold uppercase tracking-widest md:px-10 lg:px-14">
           <p className="flex items-center justify-center gap-2 opacity-90">

@@ -309,7 +309,7 @@ function ProductPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#fffdfb]">
       <SiteHeader />
-      <main className="flex-1 pb-24 pt-[4.5rem] sm:pt-[6.5rem] lg:pb-0">
+      <main className="flex-1 pb-24 sm: lg:pb-0">
         <div className="border-b border-border/60 bg-ink text-white">
           <div className="mx-auto flex max-w-[1540px] items-center justify-center gap-7 px-5 py-2.5 text-[10px] font-bold uppercase tracking-[.14em] sm:text-xs">
             <span className="flex items-center gap-2">

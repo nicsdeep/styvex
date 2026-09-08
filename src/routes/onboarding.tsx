@@ -68,7 +68,7 @@ function OnboardingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-neutral-50">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-xl flex-1 px-6 pb-16 pt-32">
+      <main className="mx-auto w-full max-w-xl flex-1 px-6 pb-16">
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-neutral-100">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-emerald-600 mb-2">Welcome to STYVEX!</h1>
