@@ -49,7 +49,8 @@ Whenever an agent successfully completes a task that involves code changes or da
   - Shop (`shop.tsx`) and Category pages (`category.$slug.tsx`) dynamically filter and load products.
   - Product Details (`product.$slug.tsx`) supports multiple images, variant selection (size/color), and wishlist toggling.
   - Header & Footer are mobile-responsive and correctly route to live pages.
-- **Auth**: Supabase Auth (Email/Password) is integrated (`auth-context.tsx`).
+- **Auth**: Supabase Auth supports shared email/password and email-code login (`auth-context.tsx`, `account.tsx`). Production custom SMTP, OTP templates, and the Vercel redirect allow-list are configured in Supabase Auth.
+- **Admin**: `/admin` is protected by the verified `user_roles` model and supports live catalog and shared brand-setting management.
 - **Checkout**: `checkout.tsx` captures cart items and calls the Supabase Edge Function `create-checkout-session` for Stripe processing.
 
 ### 5. What is Remaining (Future Roadmap)
@@ -58,5 +59,5 @@ Whenever an agent successfully completes a task that involves code changes or da
   - Create Stripe Webhooks to capture successful payments and write them to an `orders` and `order_items` table in Supabase.
   - Build a user "Order History" page (`/account/orders`).
 - **Search Robustness**: `/search` currently performs basic debounced queries; can be expanded with full-text Postgres search.
-- **Admin Dashboard**: Build a `/admin` route or separate portal for the user to manage inventory, update product images, and fulfill orders.
+- **Admin Expansion**: Extend the existing `/admin` dashboard with order fulfillment after the order tables and Stripe webhook flow are implemented.
 - **SEO & Performance**: Add standard SEO tags dynamically per product and configure proper OpenGraph tags for social sharing.
