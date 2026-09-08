@@ -40,13 +40,15 @@ function CategoryComponent() {
       if (!category?.id) return [];
       const { data, error } = await supabase
         .from("products")
-        .select(`*, categories(name), product_images(image_url, display_order)`)
+        .select(
+          `*, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
+        )
         .eq("category_id", category.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
-      return (data || []).map(product => {
+
+      return (data || []).map((product) => {
         if (product.product_images) {
           product.product_images.sort((a: any, b: any) => a.display_order - b.display_order);
         }
@@ -79,7 +81,7 @@ function CategoryComponent() {
               </div>
             )}
           </div>
-          
+
           {isLoading ? (
             <div className="flex min-h-[40vh] items-center justify-center">
               <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-foreground"></div>
@@ -87,14 +89,20 @@ function CategoryComponent() {
           ) : !category ? (
             <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
               <h2 className="text-xl font-light uppercase tracking-widest">Category Not Found</h2>
-              <Link to="/shop" className="mt-4 border-b border-foreground pb-1 text-sm uppercase tracking-widest hover:text-muted-foreground">
+              <Link
+                to="/shop"
+                className="mt-4 border-b border-foreground pb-1 text-sm uppercase tracking-widest hover:text-muted-foreground"
+              >
                 Return to Shop
               </Link>
             </div>
           ) : products.length === 0 ? (
             <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
               <p className="text-muted-foreground">No products found in this category.</p>
-              <Link to="/shop" className="mt-4 border-b border-foreground pb-1 text-sm uppercase tracking-widest hover:text-muted-foreground">
+              <Link
+                to="/shop"
+                className="mt-4 border-b border-foreground pb-1 text-sm uppercase tracking-widest hover:text-muted-foreground"
+              >
                 Shop All
               </Link>
             </div>
@@ -113,6 +121,7 @@ function CategoryComponent() {
                     secondaryImageUrl={product.product_images?.[1]?.image_url || null}
                     categoryName={product.categories?.name || ""}
                     description={product.description}
+                    variants={product.product_variants}
                   />
                 );
               })}

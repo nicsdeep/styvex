@@ -23,7 +23,8 @@ function SearchPage() {
 
       const { data, error } = await supabase
         .from("products")
-        .select(`
+        .select(
+          `
           id,
           name,
           slug,
@@ -31,8 +32,10 @@ function SearchPage() {
           description,
           is_featured,
           categories (name),
-          product_images (image_url)
-        `)
+          product_images (image_url),
+          product_variants (id, color, size, inventory_quantity)
+        `,
+        )
         .ilike("name", `%${debouncedSearchTerm}%`)
         .limit(20);
 
@@ -45,13 +48,14 @@ function SearchPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      
+
       <main className="flex-1 px-6 py-12 md:px-12 lg:px-24">
         <div className="mx-auto max-w-[1400px]">
-          
           <div className="mb-16 max-w-2xl mx-auto">
-            <h1 className="mb-8 text-3xl font-light uppercase tracking-widest text-foreground text-center">Search</h1>
-            
+            <h1 className="mb-8 text-3xl font-light uppercase tracking-widest text-foreground text-center">
+              Search
+            </h1>
+
             <div className="relative flex items-center border-b border-foreground pb-2">
               <SearchIcon className="h-6 w-6 text-muted-foreground absolute left-0" />
               <input
@@ -63,7 +67,7 @@ function SearchPage() {
                 autoFocus
               />
               {searchTerm && (
-                <button 
+                <button
                   onClick={() => setSearchTerm("")}
                   className="absolute right-0 text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -83,7 +87,9 @@ function SearchPage() {
             </div>
           ) : searchResults && searchResults.length > 0 ? (
             <div>
-              <p className="mb-6 text-sm text-muted-foreground">Found {searchResults.length} results for "{debouncedSearchTerm}"</p>
+              <p className="mb-6 text-sm text-muted-foreground">
+                Found {searchResults.length} results for "{debouncedSearchTerm}"
+              </p>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {searchResults.map((product: any) => {
                   const images = product.product_images || [];
@@ -102,6 +108,7 @@ function SearchPage() {
                       secondaryImageUrl={secondaryImage}
                       categoryName={product.categories?.name}
                       description={product.description}
+                      variants={product.product_variants}
                     />
                   );
                 })}
@@ -109,11 +116,14 @@ function SearchPage() {
             </div>
           ) : (
             <div className="flex h-[40vh] items-center justify-center flex-col gap-4 text-center">
-              <p className="text-xl font-light text-foreground">No results found for "{debouncedSearchTerm}"</p>
-              <p className="text-sm text-muted-foreground">Try checking your spelling or using more general terms.</p>
+              <p className="text-xl font-light text-foreground">
+                No results found for "{debouncedSearchTerm}"
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Try checking your spelling or using more general terms.
+              </p>
             </div>
           )}
-
         </div>
       </main>
 
