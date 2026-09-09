@@ -178,8 +178,17 @@ function ShopByCategories() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("id, name, slug")
-        .order("name");
+        .select(`
+          id, 
+          name, 
+          slug,
+          products(
+            product_images(image_url)
+          )
+        `)
+        .order("name")
+        .limit(1, { foreignTable: "products" })
+        .limit(1, { foreignTable: "products.product_images" });
       if (error) throw error;
       return data || [];
     },
@@ -203,34 +212,41 @@ function ShopByCategories() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-6">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to="/category/$slug"
-              params={{ slug: cat.slug }}
-              className="group flex flex-col gap-3"
-            >
-              <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted luxury-shadow">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+          {categories.map((cat: any) => {
+            // Find the first product that has an image
+            const productWithImage = cat.products?.find((p: any) => p.product_images?.length > 0);
+            const imageUrl = productWithImage?.product_images?.[0]?.image_url || DEFAULT_CATEGORY_IMAGE;
+
+            return (
+              <Link
+                key={cat.id}
+                to="/category/$slug"
+                params={{ slug: cat.slug }}
+                className="group relative flex h-[450px] w-full flex-col overflow-hidden rounded-[2rem] bg-muted luxury-shadow md:h-[550px]"
+              >
                 <img
-                  src={CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE}
+                  src={imageUrl}
                   alt={cat.name}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
                 />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="font-display text-xl font-semibold tracking-[-0.025em]">
-                    {cat.name}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
+                
+                <div className="relative mt-auto flex flex-col p-8 text-white md:p-10">
+                  <span className="mb-2 text-xs font-bold uppercase tracking-widest text-white/80">
+                    Explore Collection
                   </span>
-                  <span className="text-xs text-muted-foreground">Explore the edit</span>
+                  <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+                    {cat.name}
+                  </h3>
+                  
+                  <div className="mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-ink opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-translate-y-2">
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
                 </div>
-                <div className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-background transition-colors group-hover:bg-brand group-hover:text-accent-foreground">
-                  <ArrowRight className="h-3 w-3" />
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
