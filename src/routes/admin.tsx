@@ -5,15 +5,30 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/auth-context";
 import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Box, Image as ImageIcon, LayoutDashboard, Settings, ShoppingCart, Tag, Search, Plus, ArrowLeft } from "lucide-react";
+import {
+  BarChart3,
+  Box,
+  Image as ImageIcon,
+  LayoutDashboard,
+  Settings,
+  ShoppingCart,
+  Tag,
+  Search,
+  Plus,
+  ArrowLeft,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
 
-const input = "w-full rounded-2xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500";
-const button = "inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 shadow-sm shadow-emerald-900/20";
-const buttonSecondary = "inline-flex items-center justify-center rounded-2xl bg-emerald-50 px-6 py-3.5 text-sm font-bold text-emerald-700 transition hover:bg-emerald-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40";
-const buttonOutline = "inline-flex items-center justify-center rounded-2xl border-2 border-border/80 bg-white px-6 py-3.5 text-sm font-bold text-foreground transition hover:border-emerald-600 hover:text-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40";
+const input =
+  "w-full rounded-lg border border-border/60 bg-white px-4 py-2.5 text-sm transition focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500";
+const button =
+  "inline-flex items-center justify-center rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-violet-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 shadow-sm shadow-violet-900/20";
+const buttonSecondary =
+  "inline-flex items-center justify-center rounded-lg bg-violet-50 px-4 py-2.5 text-sm font-bold text-violet-700 transition hover:bg-violet-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40";
+const buttonOutline =
+  "inline-flex items-center justify-center rounded-lg border-2 border-border/80 bg-white px-4 py-2.5 text-sm font-bold text-foreground transition hover:border-violet-600 hover:text-violet-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40";
 
 const logos = [
   "styvex_logo2",
@@ -43,7 +58,12 @@ const fields: Record<Table, Field[]> = {
     { key: "name", label: "Name", required: true },
     { key: "slug", label: "URL slug", required: true },
     { key: "description", label: "Description", type: "textarea" },
-    { key: "retail_markup_percentage", label: "Retail Markup (%)", type: "number", required: false },
+    {
+      key: "retail_markup_percentage",
+      label: "Retail Markup (%)",
+      type: "number",
+      required: false,
+    },
   ],
   product_variants: [
     { key: "product_id", label: "Product ID", required: true },
@@ -81,7 +101,7 @@ function AdminPage() {
   if (isLoading || (user && role.isPending)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-muted border-t-emerald-600" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-muted border-t-violet-600" />
       </div>
     );
   }
@@ -90,7 +110,7 @@ function AdminPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
         <div className="text-center">
-          <h1 className="font-display text-2xl font-bold">STYVEX</h1>
+          <h1 className="text-2xl font-bold">STYVEX</h1>
           <p className="mt-2 text-muted-foreground">Unable to verify access.</p>
         </div>
       </div>
@@ -108,12 +128,14 @@ function AdminPage() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-[#f4f7f6] text-foreground flex flex-col md:flex-row">
-      <aside className="md:w-[280px] shrink-0 border-r border-border/50 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col z-10 sticky top-0 md:h-screen">
+    <div className="min-h-screen bg-[#f6f7fb] text-foreground flex flex-col md:flex-row">
+      <aside className="md:w-[232px] shrink-0 border-r border-border/50 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col z-10 sticky top-0 md:h-screen">
         <div className="p-6 md:p-8 flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight text-emerald-950">STYVEX</h1>
-            <p className="text-xs font-semibold text-emerald-600/70 uppercase tracking-widest mt-1">Admin Portal</p>
+            <h1 className="text-2xl font-bold tracking-tight text-violet-950">STYVEX</h1>
+            <p className="text-xs font-semibold text-violet-600/70 uppercase tracking-widest mt-1">
+              Admin Portal
+            </p>
           </div>
         </div>
 
@@ -123,10 +145,10 @@ function AdminPage() {
               key={item.id}
               onClick={() => setTab(item.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all",
+                "w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all",
                 tab === item.id
-                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
-                  : "text-muted-foreground hover:bg-emerald-50 hover:text-emerald-700"
+                  ? "bg-violet-600 text-white shadow-md shadow-violet-600/20"
+                  : "text-muted-foreground hover:bg-violet-50 hover:text-violet-700",
               )}
             >
               <item.icon className="w-5 h-5" />
@@ -134,7 +156,7 @@ function AdminPage() {
             </button>
           ))}
         </nav>
-        
+
         {/* Mobile Nav */}
         <nav className="flex px-4 py-2 space-x-2 overflow-x-auto md:hidden border-b border-border/50">
           {navItems.map((item) => (
@@ -143,9 +165,7 @@ function AdminPage() {
               onClick={() => setTab(item.id)}
               className={cn(
                 "whitespace-nowrap flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shrink-0",
-                tab === item.id
-                  ? "bg-emerald-600 text-white"
-                  : "bg-muted/50 text-muted-foreground"
+                tab === item.id ? "bg-violet-600 text-white" : "bg-muted/50 text-muted-foreground",
               )}
             >
               <item.icon className="w-4 h-4" />
@@ -157,17 +177,23 @@ function AdminPage() {
         <div className="p-6 mt-auto border-t border-border/50 hidden md:block">
           <p className="text-xs font-semibold text-muted-foreground truncate mb-4">{user?.email}</p>
           <div className="grid grid-cols-2 gap-2">
-            <a href="/" className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold rounded-xl border border-border/60 hover:bg-muted transition">
+            <a
+              href="/"
+              className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold rounded-xl border border-border/60 hover:bg-muted transition"
+            >
               Store
             </a>
-            <button onClick={signOut} className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition">
+            <button
+              onClick={signOut}
+              className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition"
+            >
               Sign out
             </button>
           </div>
         </div>
       </aside>
 
-      <main className="flex-1 p-6 md:p-10 lg:p-12 overflow-y-auto">
+      <main className="min-w-0 flex-1 p-4 md:p-8 lg:p-10">
         <div className="max-w-[1200px] mx-auto">
           {tab === "dashboard" ? (
             <DashboardOverview setTab={setTab} />
@@ -184,50 +210,87 @@ function AdminPage() {
   );
 }
 
-function DashboardOverview({ setTab }: { setTab: (t: any) => void }) {
-  // We can fetch counts here if we wanted to
+function DashboardOverview({
+  setTab,
+}: {
+  setTab: (t: "orders" | "products" | "categories") => void;
+}) {
+  const summary = useQuery({
+    queryKey: ["admin-overview"],
+    queryFn: async () => {
+      const results = await Promise.all([
+        supabase.from("orders").select("id", { count: "exact", head: true }),
+        supabase.from("products").select("id", { count: "exact", head: true }),
+        supabase.from("categories").select("id", { count: "exact", head: true }),
+      ]);
+      const error = results.find((result) => result.error)?.error;
+      if (error) throw error;
+      return results.map((result) => result.count ?? 0);
+    },
+  });
+  const items = [
+    {
+      title: "Orders",
+      description: "Review payments and fulfillment",
+      tab: "orders",
+      icon: ShoppingCart,
+    },
+    { title: "Products", description: "Manage your published catalog", tab: "products", icon: Box },
+    {
+      title: "Categories",
+      description: "Organize collections and pricing",
+      tab: "categories",
+      icon: Tag,
+    },
+  ] as const;
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <header className="mb-10">
-        <h2 className="font-display text-4xl font-bold tracking-tight text-emerald-950">Welcome back</h2>
-        <p className="text-muted-foreground mt-2 text-lg">Here's what's happening with your store today.</p>
+    <section>
+      <header className="mb-8">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-violet-600">
+          Store workspace
+        </p>
+        <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Overview</h2>
+        <p className="mt-2 text-sm text-slate-500">
+          Your catalog, orders, and store settings in one place.
+        </p>
       </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="rounded-[2rem] bg-emerald-600 p-8 text-white shadow-xl shadow-emerald-900/10 relative overflow-hidden group cursor-pointer" onClick={() => setTab("orders")}>
-          <div className="absolute top-0 right-0 p-8 opacity-20 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition duration-500">
-            <ShoppingCart className="w-32 h-32" />
-          </div>
-          <div className="relative z-10">
-            <p className="text-emerald-100 font-semibold uppercase tracking-wider text-sm mb-2">Total Orders</p>
-            <p className="font-display text-5xl font-bold">---</p>
-            <p className="mt-4 text-emerald-100 text-sm font-medium">Manage pending fulfillments &rarr;</p>
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-8 border border-border/50 shadow-sm relative overflow-hidden group cursor-pointer hover:border-emerald-500/30 transition" onClick={() => setTab("products")}>
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-emerald-600 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition duration-500">
-            <Box className="w-32 h-32" />
-          </div>
-          <div className="relative z-10">
-            <p className="text-muted-foreground font-semibold uppercase tracking-wider text-sm mb-2">Products</p>
-            <p className="font-display text-5xl font-bold text-emerald-950">---</p>
-            <p className="mt-4 text-emerald-600 text-sm font-bold">View catalog &rarr;</p>
-          </div>
-        </div>
-
-        <div className="rounded-[2rem] bg-white p-8 border border-border/50 shadow-sm relative overflow-hidden group cursor-pointer hover:border-emerald-500/30 transition" onClick={() => setTab("categories")}>
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-emerald-600 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition duration-500">
-            <Tag className="w-32 h-32" />
-          </div>
-          <div className="relative z-10">
-            <p className="text-muted-foreground font-semibold uppercase tracking-wider text-sm mb-2">Categories</p>
-            <p className="font-display text-5xl font-bold text-emerald-950">---</p>
-            <p className="mt-4 text-emerald-600 text-sm font-bold">Edit pricing markup &rarr;</p>
-          </div>
-        </div>
+      {summary.isError && (
+        <p role="alert" className="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+          Could not load store totals.{" "}
+          <button className="underline" onClick={() => summary.refetch()}>
+            Retry
+          </button>
+        </p>
+      )}
+      <div className="grid gap-4 sm:grid-cols-3">
+        {items.map((item, index) => (
+          <button
+            key={item.tab}
+            onClick={() => setTab(item.tab)}
+            className="rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:border-violet-300 hover:shadow-md"
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <span className="text-sm font-medium text-slate-500">{item.title}</span>
+              <item.icon className="h-5 w-5 text-violet-600" />
+            </div>
+            <p className="text-4xl font-semibold tracking-tight text-slate-900">
+              {summary.isPending ? "…" : summary.isError ? "—" : summary.data?.[index]}
+            </p>
+            <p className="mt-3 text-xs text-slate-500">{item.description} →</p>
+          </button>
+        ))}
       </div>
-    </div>
+      <div className="mt-8 rounded-xl border border-violet-100 bg-violet-50/50 p-6">
+        <h3 className="text-base font-semibold text-slate-900">Catalog & pricing</h3>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+          Manage product records in Products and collection markup in Categories. Supplier cost and
+          retail price must stay distinct; markup is not net profit.
+        </p>
+        <button className={button + " mt-5"} onClick={() => setTab("products")}>
+          Open product catalog
+        </button>
+      </div>
+    </section>
   );
 }
 
@@ -236,7 +299,11 @@ function BrandSettings() {
   const query = useQuery({
     queryKey: ["brand-settings"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("store_settings").select("*").eq("id", 1).single();
+      const { data, error } = await supabase
+        .from("store_settings")
+        .select("*")
+        .eq("id", 1)
+        .single();
       if (error) throw error;
       return data;
     },
@@ -244,17 +311,24 @@ function BrandSettings() {
   const [busy, setBusy] = useState(false);
 
   if (query.isPending) return <p className="text-muted-foreground">Loading brand settings…</p>;
-  if (query.isError) return <button className={buttonOutline} onClick={() => query.refetch()}>Retry loading</button>;
+  if (query.isError)
+    return (
+      <button className={buttonOutline} onClick={() => query.refetch()}>
+        Retry loading
+      </button>
+    );
 
   return (
     <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-10">
-        <h2 className="font-display text-4xl font-bold tracking-tight text-emerald-950">Brand Settings</h2>
-        <p className="text-muted-foreground mt-2 text-lg">Customize the look and feel of the storefront.</p>
+        <h2 className="text-3xl font-bold tracking-tight text-violet-950">Brand Settings</h2>
+        <p className="text-muted-foreground mt-2 text-sm">
+          Customize the look and feel of the storefront.
+        </p>
       </header>
 
       <form
-        className="rounded-[2rem] border border-border/50 bg-white p-8 md:p-12 shadow-sm"
+        className="rounded-xl border border-border/50 bg-white p-8 md:p-12 shadow-sm"
         key={JSON.stringify(query.data)}
         onSubmit={async (e) => {
           e.preventDefault();
@@ -286,13 +360,17 @@ function BrandSettings() {
           {(["header", "footer"] as const).map((place) => (
             <fieldset key={place} className="space-y-6">
               <div>
-                <legend className="text-xl font-bold capitalize text-emerald-950">{place} configuration</legend>
-                <p className="text-sm text-muted-foreground mt-1">Select the logo variant and size.</p>
+                <legend className="text-xl font-bold capitalize text-violet-950">
+                  {place} configuration
+                </legend>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Select the logo variant and size.
+                </p>
               </div>
               <div
                 className={cn(
                   "flex h-40 items-center justify-center rounded-3xl border border-border/50 p-5 shadow-inner",
-                  place === "footer" ? "bg-emerald-950" : "bg-[#f4f7f6]"
+                  place === "footer" ? "bg-violet-950" : "bg-[#f6f7fb]",
                 )}
               >
                 <img
@@ -348,7 +426,7 @@ function CatalogEditor({ table }: { table: Table }) {
   const [search, setSearch] = useState("");
   const [draft, setDraft] = useState<Record<string, unknown> | null>(null);
   const [busy, setBusy] = useState(false);
-  
+
   const query = useQuery({
     queryKey: ["admin-catalog", table, page, search],
     queryFn: async () => {
@@ -374,17 +452,21 @@ function CatalogEditor({ table }: { table: Table }) {
         <>
           <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <h2 className="font-display text-4xl font-bold tracking-tight text-emerald-950">{titles[table]}</h2>
-              <p className="text-muted-foreground mt-2 text-lg">Manage your store's data.</p>
+              <h2 className="text-3xl font-bold tracking-tight text-violet-950">{titles[table]}</h2>
+              <p className="text-muted-foreground mt-2 text-sm">
+                {table === "categories"
+                  ? "Organize collections and manage retail markup."
+                  : "Keep your store catalog accurate and up to date."}
+              </p>
             </div>
             <button className={button} onClick={() => setDraft({})}>
               <Plus className="w-5 h-5 mr-2" />
               Add new {table === "categories" ? "category" : "record"}
             </button>
           </header>
-          
-          <div className="rounded-[2rem] border border-border/50 bg-white shadow-sm overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-border/50 bg-emerald-50/50">
+
+          <div className="rounded-xl border border-border/50 bg-white shadow-sm overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-border/50 bg-violet-50/50">
               <form
                 className="flex gap-3 max-w-lg"
                 onSubmit={(e) => {
@@ -399,50 +481,65 @@ function CatalogEditor({ table }: { table: Table }) {
                     className={cn(input, "pl-11 py-3")}
                     name="search"
                     aria-label="Search records"
-                    placeholder={table === "products" || table === "categories" ? "Search by name..." : "Search product ID..."}
+                    placeholder={
+                      table === "products" || table === "categories"
+                        ? "Search by name..."
+                        : "Search product ID..."
+                    }
                   />
                 </div>
                 <button className={buttonSecondary}>Search</button>
               </form>
             </div>
-            
+
             {query.isPending ? (
               <div className="p-12 text-center text-muted-foreground">Loading…</div>
             ) : query.isError ? (
-              <div className="p-12 text-center text-red-500 font-semibold">Unable to load records.</div>
+              <div className="p-12 text-center text-red-500 font-semibold">
+                Unable to load records.
+              </div>
             ) : (
               <>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-[#f4f7f6]">
+                    <thead className="bg-[#f6f7fb]">
                       <tr>
-                        <th className="p-6 font-bold text-emerald-950">Record</th>
-                        <th className="p-6 font-bold text-emerald-950">Details</th>
-                        <th className="p-6 font-bold text-emerald-950 text-right">Actions</th>
+                        <th className="p-4 font-semibold text-violet-950">Record</th>
+                        <th className="p-4 font-semibold text-violet-950">Details</th>
+                        <th className="p-4 font-semibold text-violet-950 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
                       {query.data.rows.map((row) => (
-                        <tr className="hover:bg-emerald-50/30 transition group" key={String(row["id"])}>
-                          <td className="p-6 max-w-xs">
+                        <tr
+                          className="hover:bg-violet-50/30 transition group"
+                          key={String(row["id"])}
+                        >
+                          <td className="p-4 max-w-xs">
                             <p className="font-bold text-foreground break-words text-base">
                               {String(row["name"] ?? row["sku"] ?? "Product Image")}
                             </p>
-                            <code className="mt-1.5 block text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded-lg inline-block select-all">
-                              {String(row["id"])}
-                            </code>
+                            <p
+                              className="mt-1 text-xs text-muted-foreground truncate"
+                              title={String(row["id"])}
+                            >
+                              {String(row["slug"] ?? row["id"])}
+                            </p>
                           </td>
-                          <td className="p-6 font-medium text-muted-foreground">
+                          <td className="p-4 font-medium text-muted-foreground">
                             {table === "products"
                               ? `$${Number(row["price"]).toFixed(2)}`
                               : table === "categories"
-                              ? `Markup: ${row["retail_markup_percentage"] ?? 0}%`
-                              : table === "product_variants"
-                                ? `${row["size"] ?? "No size"} / ${row["color"] ?? "No color"} · Stock: ${row["inventory_quantity"]}`
-                                : String(row["slug"] ?? row["image_url"] ?? "")}
+                                ? `Markup: ${row["retail_markup_percentage"] ?? 0}%`
+                                : table === "product_variants"
+                                  ? `${row["size"] ?? "No size"} / ${row["color"] ?? "No color"} · Stock: ${row["inventory_quantity"]}`
+                                  : String(row["slug"] ?? row["image_url"] ?? "")}
                           </td>
-                          <td className="p-6 text-right">
-                            <button className="text-emerald-600 font-bold hover:text-emerald-700 underline underline-offset-4" onClick={() => setDraft(row)}>
+                          <td className="p-4 text-right">
+                            <button
+                              className="text-violet-600 font-bold hover:text-violet-700 underline underline-offset-4"
+                              onClick={() => setDraft(row)}
+                            >
                               Edit
                             </button>
                           </td>
@@ -450,10 +547,18 @@ function CatalogEditor({ table }: { table: Table }) {
                       ))}
                     </tbody>
                   </table>
-                  {!query.data.rows.length && <div className="p-12 text-center text-muted-foreground font-semibold">No records found.</div>}
+                  {!query.data.rows.length && (
+                    <div className="p-12 text-center text-muted-foreground font-semibold">
+                      No records found.
+                    </div>
+                  )}
                 </div>
-                <div className="p-6 border-t border-border/50 bg-[#f4f7f6] flex items-center justify-between">
-                  <button className={buttonOutline} disabled={page === 0} onClick={() => setPage(page - 1)}>
+                <div className="p-6 border-t border-border/50 bg-[#f6f7fb] flex items-center justify-between">
+                  <button
+                    className={buttonOutline}
+                    disabled={page === 0}
+                    onClick={() => setPage(page - 1)}
+                  >
                     Previous
                   </button>
                   <p className="text-sm font-semibold text-muted-foreground">
@@ -473,11 +578,16 @@ function CatalogEditor({ table }: { table: Table }) {
         </>
       ) : (
         <div className="max-w-2xl mx-auto">
-          <button className="flex items-center text-muted-foreground hover:text-emerald-700 font-bold mb-8 transition" onClick={() => setDraft(null)}>
+          <button
+            className="flex items-center text-muted-foreground hover:text-violet-700 font-bold mb-8 transition"
+            onClick={() => setDraft(null)}
+          >
             <ArrowLeft className="w-5 h-5 mr-2" /> Back to list
           </button>
-          <div className="rounded-[2rem] border border-border/50 bg-white p-8 md:p-12 shadow-sm">
-            <h3 className="mb-8 font-display text-3xl font-bold text-emerald-950">{draft["id"] ? "Edit Record" : "Create New Record"}</h3>
+          <div className="rounded-xl border border-border/50 bg-white p-8 md:p-12 shadow-sm">
+            <h3 className="mb-8 text-3xl font-bold text-violet-950">
+              {draft["id"] ? "Edit Record" : "Create New Record"}
+            </h3>
             <form
               key={String(draft["id"] ?? "new")}
               onSubmit={async (e) => {
@@ -530,7 +640,7 @@ function CatalogEditor({ table }: { table: Table }) {
                       />
                     ) : field.type === "checkbox" ? (
                       <input
-                        className="ml-3 accent-emerald-600 w-5 h-5"
+                        className="ml-3 accent-violet-600 w-5 h-5"
                         name={field.key}
                         type="checkbox"
                         defaultChecked={!!draft[field.key]}
@@ -545,7 +655,9 @@ function CatalogEditor({ table }: { table: Table }) {
                         step={
                           field.key === "price" ? "0.01" : field.type === "number" ? 1 : undefined
                         }
-                        defaultValue={String(draft[field.key] ?? (field.type === "number" ? 0 : ""))}
+                        defaultValue={String(
+                          draft[field.key] ?? (field.type === "number" ? 0 : ""),
+                        )}
                       />
                     )}
                   </label>
@@ -555,7 +667,12 @@ function CatalogEditor({ table }: { table: Table }) {
                 <button className={button} disabled={busy}>
                   {busy ? "Saving…" : "Save changes"}
                 </button>
-                <button type="button" className={buttonOutline} disabled={busy} onClick={() => setDraft(null)}>
+                <button
+                  type="button"
+                  className={buttonOutline}
+                  disabled={busy}
+                  onClick={() => setDraft(null)}
+                >
                   Cancel
                 </button>
               </div>
@@ -577,10 +694,13 @@ function OrdersAdmin() {
     queryFn: async () => {
       const { data, error, count } = await supabase
         .from("orders")
-        .select(`
+        .select(
+          `
           *,
           order_items (*)
-        `, { count: "exact" })
+        `,
+          { count: "exact" },
+        )
         .order("created_at", { ascending: false })
         .range(page * 20, page * 20 + 19);
 
@@ -604,44 +724,56 @@ function OrdersAdmin() {
   };
 
   if (query.isPending) return <p className="text-muted-foreground p-8">Loading orders…</p>;
-  if (query.isError) return <button className={buttonOutline} onClick={() => query.refetch()}>Retry loading orders</button>;
+  if (query.isError)
+    return (
+      <button className={buttonOutline} onClick={() => query.refetch()}>
+        Retry loading orders
+      </button>
+    );
 
   return (
     <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-10">
-        <h2 className="font-display text-4xl font-bold tracking-tight text-emerald-950">Orders</h2>
-        <p className="text-muted-foreground mt-2 text-lg">Manage and fulfill customer orders.</p>
+        <h2 className="text-3xl font-bold tracking-tight text-violet-950">Orders</h2>
+        <p className="text-muted-foreground mt-2 text-sm">Manage and fulfill customer orders.</p>
       </header>
 
-      <div className="rounded-[2rem] border border-border/50 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-border/50 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[#f4f7f6]">
+            <thead className="bg-[#f6f7fb]">
               <tr>
-                <th className="p-6 font-bold text-emerald-950">Order Info</th>
-                <th className="p-6 font-bold text-emerald-950">Items</th>
-                <th className="p-6 font-bold text-emerald-950">Amount</th>
-                <th className="p-6 font-bold text-emerald-950">Status</th>
+                <th className="p-4 font-semibold text-violet-950">Order Info</th>
+                <th className="p-4 font-semibold text-violet-950">Items</th>
+                <th className="p-4 font-semibold text-violet-950">Amount</th>
+                <th className="p-4 font-semibold text-violet-950">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
               {query.data.rows?.map((order: any) => (
-                <tr key={order.id} className="align-top hover:bg-emerald-50/30 transition">
+                <tr key={order.id} className="align-top hover:bg-violet-50/30 transition">
                   <td className="p-6">
-                    <p className="font-bold text-emerald-950 text-base">{new Date(order.created_at).toLocaleString()}</p>
-                    <code className="mt-2 block text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded-lg inline-block select-all">{order.id}</code>
-                    <p className="mt-3 text-xs font-semibold text-muted-foreground">User: <span className="text-foreground">{order.user_id}</span></p>
+                    <p className="font-bold text-violet-950 text-base">
+                      {new Date(order.created_at).toLocaleString()}
+                    </p>
+                    <code className="mt-2 block text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded-lg inline-block select-all">
+                      {order.id}
+                    </code>
+                    <p className="mt-3 text-xs font-semibold text-muted-foreground">
+                      User: <span className="text-foreground">{order.user_id}</span>
+                    </p>
                   </td>
                   <td className="p-6">
                     <ul className="list-inside list-disc space-y-1.5 text-xs font-medium text-muted-foreground">
                       {order.order_items?.map((item: any) => (
                         <li key={item.id}>
-                          <span className="font-bold text-emerald-950">{item.quantity}x</span> {item.product_name} (${item.price})
+                          <span className="font-bold text-violet-950">{item.quantity}x</span>{" "}
+                          {item.product_name} (${item.price})
                         </li>
                       ))}
                     </ul>
                   </td>
-                  <td className="p-6 font-bold text-emerald-950 text-base">
+                  <td className="p-4 font-semibold text-violet-950 text-base">
                     ${Number(order.total_amount).toFixed(2)}
                   </td>
                   <td className="p-6">
@@ -662,10 +794,14 @@ function OrdersAdmin() {
               ))}
             </tbody>
           </table>
-          {!query.data.rows?.length && <div className="p-12 text-center text-muted-foreground font-semibold">No orders found.</div>}
+          {!query.data.rows?.length && (
+            <div className="p-12 text-center text-muted-foreground font-semibold">
+              No orders found.
+            </div>
+          )}
         </div>
-        
-        <div className="p-6 border-t border-border/50 bg-[#f4f7f6] flex items-center justify-between">
+
+        <div className="p-6 border-t border-border/50 bg-[#f6f7fb] flex items-center justify-between">
           <button className={buttonOutline} disabled={page === 0} onClick={() => setPage(page - 1)}>
             Previous
           </button>
