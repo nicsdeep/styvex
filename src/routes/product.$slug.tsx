@@ -355,20 +355,20 @@ function ProductPage() {
           <div className="min-w-0">
             <div className="grid gap-3 sm:grid-cols-[76px_minmax(0,1fr)]">
               {sortedImages.length > 1 && (
-                <div className="order-2 flex gap-2 overflow-x-auto sm:order-1 sm:flex-col">
+                <div className="order-2 flex gap-3 overflow-x-auto pb-2 sm:order-1 sm:flex-col sm:pb-0 scrollbar-hide">
                   {sortedImages.map((image, index) => (
                     <button
                       key={image.id}
                       onClick={() => setActiveImageIndex(index)}
                       className={cn(
-                        "aspect-square w-[68px] shrink-0 overflow-hidden rounded-xl border-2 bg-muted transition",
+                        "aspect-square w-[72px] shrink-0 overflow-hidden rounded-xl transition-all duration-300",
                         activeImageIndex === index
-                          ? "border-brand"
-                          : "border-transparent hover:border-border",
+                          ? "ring-2 ring-ink ring-offset-2"
+                          : "ring-1 ring-border opacity-70 hover:opacity-100"
                       )}
                       aria-label={`View image ${index + 1}`}
                     >
-                      <img src={image.image_url} alt="" className="h-full w-full object-cover" />
+                      <img src={image.image_url} alt="" className="h-full w-full object-cover bg-white" />
                     </button>
                   ))}
                 </div>
@@ -421,8 +421,8 @@ function ProductPage() {
             )}
           </div>
 
-          <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-            <div className="rounded-2xl border border-border/70 bg-white p-5 shadow-[0_24px_60px_-38px_rgba(32,20,18,.5)] sm:p-7">
+          <div className="min-w-0 lg:sticky lg:top-28 lg:self-start lg:pl-6">
+            <div className="flex flex-col">
               <div className="flex items-start justify-between gap-5">
                 <div>
                   <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-brand">
@@ -448,7 +448,7 @@ function ProductPage() {
                 </div>
               </div>
 
-              <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.08] tracking-[-.035em] text-ink sm:text-4xl">
+              <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.1] tracking-[-.02em] text-ink sm:text-4xl lg:text-5xl">
                 {product.name}
               </h1>
               <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
@@ -490,7 +490,7 @@ function ProductPage() {
                       {availableColors.length} available
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {allColors.map((color) => {
                       const available = availableColors.includes(color);
                       return (
@@ -500,11 +500,11 @@ function ProductPage() {
                           disabled={!available}
                           onClick={() => setSelectedColor(color)}
                           className={cn(
-                            "rounded-lg border px-3.5 py-2 text-xs font-semibold transition",
+                            "rounded-full border px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300",
                             selectedColor === color
-                              ? "border-ink bg-ink text-white"
-                              : "border-border bg-white hover:border-brand",
-                            !available && "cursor-not-allowed opacity-35 line-through",
+                              ? "border-ink bg-ink text-white shadow-md"
+                              : "border-border bg-white text-ink hover:border-ink hover:bg-muted/50",
+                            !available && "cursor-not-allowed opacity-30 line-through hover:border-border"
                           )}
                         >
                           {color}
@@ -531,7 +531,7 @@ function ProductPage() {
                       <Ruler className="h-3.5 w-3.5" /> Size guide
                     </button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {allSizes.map((size) => {
                       const available = availableSizes.includes(size);
                       return (
@@ -541,11 +541,11 @@ function ProductPage() {
                           disabled={!available}
                           onClick={() => setSelectedSize(size)}
                           className={cn(
-                            "min-w-11 rounded-lg border px-3 py-2 text-xs font-semibold transition",
+                            "min-w-14 rounded-full border px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300",
                             selectedSize === size
-                              ? "border-ink bg-ink text-white"
-                              : "border-border bg-white hover:border-brand",
-                            !available && "cursor-not-allowed opacity-35 line-through",
+                              ? "border-ink bg-ink text-white shadow-md"
+                              : "border-border bg-white text-ink hover:border-ink hover:bg-muted/50",
+                            !available && "cursor-not-allowed opacity-30 line-through hover:border-border"
                           )}
                         >
                           {size}
@@ -556,14 +556,14 @@ function ProductPage() {
                 </fieldset>
               )}
 
-              <div className="mt-7 flex gap-3">
-                <div className="flex h-12 shrink-0 items-center rounded-lg border border-border bg-white">
+              <div className="mt-8 flex gap-4">
+                <div className="flex h-14 shrink-0 items-center rounded-full border border-border bg-white px-2">
                   <button
                     onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                    className="flex h-full w-10 items-center justify-center"
+                    className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-muted"
                     aria-label="Decrease quantity"
                   >
-                    <Minus className="h-3.5 w-3.5" />
+                    <Minus className="h-4 w-4" />
                   </button>
                   <span className="w-8 text-center text-sm font-bold">{quantity}</span>
                   <button
@@ -572,10 +572,10 @@ function ProductPage() {
                         Math.min(selectedVariant?.inventory_quantity || 99, value + 1),
                       )
                     }
-                    className="flex h-full w-10 items-center justify-center"
+                    className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-muted"
                     aria-label="Increase quantity"
                   >
-                    <Plus className="h-3.5 w-3.5" />
+                    <Plus className="h-4 w-4" />
                   </button>
                 </div>
                 <button
@@ -584,9 +584,9 @@ function ProductPage() {
                     variants.length > 0 &&
                     (!selectedVariant || selectedVariant.inventory_quantity === 0)
                   }
-                  className="flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-brand px-5 text-xs font-extrabold uppercase tracking-[.14em] text-white transition hover:bg-ink active:scale-[.99] disabled:cursor-not-allowed disabled:opacity-45"
+                  className="flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-ink px-8 text-[13px] font-extrabold uppercase tracking-[.14em] text-white transition hover:bg-brand hover:shadow-lg active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-45"
                 >
-                  <ShoppingBag className="h-4 w-4" /> Add to cart
+                  <ShoppingBag className="h-5 w-5" /> Add to bag
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">

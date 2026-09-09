@@ -148,11 +148,11 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg",
+        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-md bg-white transition duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]",
         className,
       )}
     >
-      <div className="relative aspect-square shrink-0 overflow-hidden bg-neutral-100">
+      <div className="relative aspect-square shrink-0 overflow-hidden bg-white">
         <Link
           to="/product/$slug"
           params={{ slug }}
@@ -186,24 +186,12 @@ export function ProductCard({
           )}
         </Link>
 
-        <div className="pointer-events-none absolute left-2 right-12 top-2 z-10 flex flex-wrap gap-1.5">
-          {discount > 0 && (
-            <span className="rounded-sm bg-brand px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
-              Save {discount}%
-            </span>
-          )}
-          {badges
-            .filter((badge) => !/%/.test(badge))
-            .slice(0, discount ? 0 : 1)
-            .map((badge) => (
-              <span
-                key={badge}
-                className="rounded-sm bg-ink px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white"
-              >
-                {badge}
-              </span>
-            ))}
-        </div>
+        {/* Discount Badge Jumia Style */}
+        {discount > 0 && (
+          <div className="absolute right-2 top-2 z-10 rounded bg-white/95 px-1.5 py-0.5 text-[11px] font-bold text-brand shadow-sm">
+            -{discount}%
+          </div>
+        )}
 
         <button
           onClick={(event) => {
@@ -211,97 +199,47 @@ export function ProductCard({
             event.stopPropagation();
             toggleWishlist.mutate();
           }}
-          className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition hover:scale-110 hover:text-brand"
+          className="absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition hover:scale-110 hover:text-brand"
           aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={cn("h-3.5 w-3.5", actuallyWishlisted && "fill-brand text-brand")} />
+          <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-brand text-brand")} />
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col p-3 sm:p-4">
+      <Link
+        to="/product/$slug"
+        params={{ slug }}
+        className="flex flex-1 flex-col p-2 sm:p-3"
+        aria-label={`View details for ${name}`}
+      >
         <div className="mb-1 flex items-center justify-between gap-2">
-          <span className="truncate text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">
-            {categoryName || "Styvex edit"}
-          </span>
           {soldOut && (
-            <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               Sold out
             </span>
           )}
         </div>
 
-        <Link
-          to="/product/$slug"
-          params={{ slug }}
-          className="line-clamp-2 h-10 shrink-0 text-sm font-semibold leading-5 text-foreground transition hover:text-brand"
+        <h3
+          className="line-clamp-2 h-10 shrink-0 text-[13px] font-normal leading-5 text-ink/90 transition group-hover:text-brand"
           title={name}
         >
           {name}
-        </Link>
+        </h3>
 
-        <div className="mt-2 flex h-5 shrink-0 items-center gap-1.5 text-xs">
-          {rating != null && !!reviewCount ? (
-            <>
-              <div className="flex text-amber-500" aria-hidden="true">
-                {[0, 1, 2, 3, 4].map((star) => (
-                  <Star
-                    key={star}
-                    className={cn("h-2.5 w-2.5", star < Math.round(rating) && "fill-current")}
-                  />
-                ))}
-              </div>
-              <span className="font-medium text-foreground">{rating.toFixed(1)}</span>
-              <span className="text-[10px] text-muted-foreground">({reviewCount})</span>
-            </>
-          ) : (
-            <span className="text-muted-foreground">No reviews yet</span>
-          )}
-        </div>
-
-        <div className="mt-auto pt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <span className="text-base font-bold tracking-tight text-foreground">
+        <div className="mt-auto pt-2 flex flex-col gap-0.5">
+          <span className="text-base font-bold text-ink">
             {formatPrice(price)}
           </span>
-          {compareAtPrice && compareAtPrice > price && (
+          {compareAtPrice && compareAtPrice > price ? (
             <span className="text-xs text-muted-foreground line-through">
               {formatPrice(compareAtPrice)}
             </span>
+          ) : (
+            <span className="text-xs text-transparent select-none">No discount</span>
           )}
         </div>
-
-        {(colors.length > 0 || sizes.length > 0) && (
-          <p className="mt-1 truncate text-[10px] font-medium text-muted-foreground">
-            {[
-              colors.length > 0 && `${colors.length} color${colors.length > 1 ? "s" : ""}`,
-              sizes.length > 0 && `${sizes.length} size${sizes.length > 1 ? "s" : ""}`,
-            ]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
-        )}
-
-        {needsOptions || soldOut ? (
-          <Link
-            to="/product/$slug"
-            params={{ slug }}
-            className={cn(
-              "mt-3 flex h-8 w-full items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-wider transition",
-              soldOut
-                ? "bg-muted text-muted-foreground"
-                : "bg-ink text-primary-foreground hover:bg-brand",
-            )}
-          >
-            {soldOut ? "View item" : "Options"}
-          </Link>
-        ) : (
-          <button
-            onClick={handleQuickAdd}
-            className="mt-3 flex h-8 w-full items-center justify-center gap-1.5 rounded-md bg-ink text-[10px] font-bold uppercase tracking-wider text-primary-foreground transition hover:bg-brand active:scale-[.98]"
-          >
-            <ShoppingBag className="h-3 w-3" /> Add
-          </button>
-        )}
-      </div>
+      </Link>
     </article>
   );
 }

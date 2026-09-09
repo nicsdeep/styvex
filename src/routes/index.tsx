@@ -171,15 +171,84 @@ function Hero() {
   );
 }
 
+function CategoryCard({ cat }: { cat: any }) {
+  // Extract all available product images for this category
+  const images = cat.products
+    ?.flatMap((p: any) => p.product_images?.map((pi: any) => pi.image_url))
+    .filter(Boolean);
+
+  const validImages =
+    images?.length > 0 ? images : [CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE];
+
+  const [currentImageIdx, setCurrentImageIdx] = useState(0);
+
+  useEffect(() => {
+    if (validImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIdx((prev) => {
+        let nextIdx;
+        do {
+          nextIdx = Math.floor(Math.random() * validImages.length);
+        } while (nextIdx === prev && validImages.length > 1);
+        return nextIdx;
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [validImages.length]);
+
+  return (
+    <Link
+      to="/category/$slug"
+      params={{ slug: cat.slug }}
+      className="group relative flex h-[230px] sm:h-[450px] w-full flex-col overflow-hidden rounded-[2rem] bg-muted luxury-shadow md:h-[550px]"
+    >
+      {validImages.map((img: string, idx: number) => (
+        <img
+          key={img + idx}
+          src={img}
+          alt={cat.name}
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-in-out group-hover:scale-105",
+            idx === currentImageIdx ? "opacity-100" : "opacity-0"
+          )}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
+
+      <div className="relative mt-auto flex flex-col p-4 text-white sm:p-8 md:p-10">
+        <span className="mb-2 hidden sm:block text-xs font-bold uppercase tracking-widest text-white/80">
+          Explore Collection
+        </span>
+        <h3 className="font-display text-xl sm:text-3xl font-semibold tracking-tight md:text-4xl">
+          {cat.name}
+        </h3>
+
+        <div className="mt-3 flex h-8 w-8 sm:mt-6 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white text-ink opacity-100 sm:opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-translate-y-2">
+          <ArrowRight className="h-5 w-5" />
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 // 3. Shop by Categories (Image Cards)
 function ShopByCategories() {
   const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories-with-images"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("id, name, slug")
-        .order("name");
+        .select(`
+          id, 
+          name, 
+          slug,
+          products(
+            product_images(image_url)
+          )
+        `)
+        .order("name")
+        .limit(10, { foreignTable: "products" })
+        .limit(1, { foreignTable: "products.product_images" });
       if (error) throw error;
       return data || [];
     },
@@ -203,33 +272,9 @@ function ShopByCategories() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-6">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to="/category/$slug"
-              params={{ slug: cat.slug }}
-              className="group flex flex-col gap-3"
-            >
-              <div className="aspect-square md:aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted luxury-shadow">
-                <img
-                  src={CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE}
-                  alt={cat.name}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="font-display text-xl font-semibold tracking-[-0.025em]">
-                    {cat.name}
-                  </span>
-                  <span className="text-xs text-muted-foreground">Explore the edit</span>
-                </div>
-                <div className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-background transition-colors group-hover:bg-brand group-hover:text-accent-foreground">
-                  <ArrowRight className="h-3 w-3" />
-                </div>
-              </div>
-            </Link>
+        <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-3">
+          {categories.map((cat: any) => (
+            <CategoryCard key={cat.id} cat={cat} />
           ))}
         </div>
       </div>

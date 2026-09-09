@@ -41,18 +41,36 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
+    // Fetch authoritative prices from the database
+    const productIds = items.map((i: any) => i.productId || i.product_id || i.id);
+    const { data: dbProducts, error: dbError } = await supabaseClient
+      .from("products")
+      .select("id, price")
+      .in("id", productIds);
+
+    if (dbError || !dbProducts) {
+      throw new Error("Failed to verify product prices from the database");
+    }
+
+    const priceMap = new Map(dbProducts.map((p: any) => [p.id, p.price]));
+
     // 2. Format line items for Stripe
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: item.name,
-          images: item.image ? [item.image] : [],
+    const lineItems = items.map((item: any) => {
+      const pId = item.productId || item.product_id || item.id;
+      const verifiedPrice = priceMap.get(pId) ?? item.price;
+
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item.name,
+            images: item.image ? [item.image] : (item.imageUrl ? [item.imageUrl] : []),
+          },
+          unit_amount: Math.round(verifiedPrice * 100),
         },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     // Create a simplified items payload for metadata to avoid 500-char limits
     const simplifiedItems = items.map((i: any) => ({ 

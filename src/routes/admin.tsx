@@ -43,14 +43,15 @@ const logos = [
 ];
 
 type Table = "products" | "categories" | "product_variants" | "product_images";
-type Field = { key: string; label: string; type?: string; required?: boolean };
+type Field = { key: string; label: string; type?: string; required?: boolean; readOnly?: boolean };
 
 const fields: Record<Table, Field[]> = {
   products: [
     { key: "name", label: "Name", required: true },
     { key: "slug", label: "URL slug", required: true },
     { key: "description", label: "Description", type: "textarea" },
-    { key: "price", label: "Price (USD)", type: "number", required: true },
+    { key: "supplier_cost", label: "Supplier Cost (Read-Only)", type: "number", readOnly: true },
+    { key: "price", label: "Retail Price (Auto-calculated)", type: "number", readOnly: true },
     { key: "category_id", label: "Category ID" },
     { key: "is_featured", label: "Featured product", type: "checkbox" },
   ],
@@ -595,6 +596,7 @@ function CatalogEditor({ table }: { table: Table }) {
                 const form = new FormData(e.currentTarget);
                 const payload: Record<string, unknown> = {};
                 for (const field of fields[table]) {
+                  if (field.readOnly) continue;
                   const value = form.get(field.key);
                   payload[field.key] =
                     field.type === "checkbox"
@@ -647,10 +649,11 @@ function CatalogEditor({ table }: { table: Table }) {
                       />
                     ) : (
                       <input
-                        className={cn(input, "mt-2")}
+                        className={cn(input, "mt-2", field.readOnly && "bg-slate-100 text-slate-500 cursor-not-allowed")}
                         name={field.key}
                         type={field.type ?? "text"}
                         required={field.required}
+                        disabled={field.readOnly}
                         min={field.type === "number" ? 0 : undefined}
                         step={
                           field.key === "price" ? "0.01" : field.type === "number" ? 1 : undefined
