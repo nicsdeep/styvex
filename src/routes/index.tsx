@@ -174,7 +174,7 @@ function Hero() {
 // 3. Shop by Categories (Image Cards)
 function ShopByCategories() {
   const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories-with-images"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
@@ -214,9 +214,8 @@ function ShopByCategories() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {categories.map((cat: any) => {
-            // Find the first product that has an image
             const productWithImage = cat.products?.find((p: any) => p.product_images?.length > 0);
-            const imageUrl = productWithImage?.product_images?.[0]?.image_url || DEFAULT_CATEGORY_IMAGE;
+            const imageUrl = productWithImage?.product_images?.[0]?.image_url || CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE;
 
             return (
               <Link
