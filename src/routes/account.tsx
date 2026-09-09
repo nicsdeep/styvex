@@ -102,7 +102,7 @@ function AccountPage() {
     }
   }
 
-  const handleOAuth = async (provider: 'google' | 'facebook' | 'linkedin_oidc') => {
+  const handleOAuth = async (provider: 'google' | 'facebook') => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -304,7 +304,6 @@ function AccountPage() {
                  <div className="flex justify-center gap-3 mt-4">
                    <button onClick={() => handleOAuth('facebook')} type="button" className="h-8 w-8 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xs font-bold shadow-sm transition hover:scale-105" aria-label="Facebook">f</button>
                    <button onClick={() => handleOAuth('google')} type="button" className="h-8 w-8 rounded-full bg-[#EA4335] text-white flex items-center justify-center text-xs font-bold shadow-sm transition hover:scale-105" aria-label="Google">G</button>
-                   <button onClick={() => handleOAuth('linkedin_oidc')} type="button" className="h-8 w-8 rounded-full bg-[#0A66C2] text-white flex items-center justify-center text-xs font-bold shadow-sm transition hover:scale-105" aria-label="LinkedIn">in</button>
                  </div>
                </div>
             )}
