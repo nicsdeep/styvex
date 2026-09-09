@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { BrandLogo } from "./brand-logo";
 import { useAuth } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
+import { useAdmin } from "@/hooks/use-admin";
 import { Search, User, Heart, ShoppingBag, Menu, Truck, Tag, Zap, ChevronDown } from "lucide-react";
 import {
   Sheet,
@@ -23,6 +24,7 @@ import { toast } from "sonner";
 
 export function SiteHeader() {
   const { user } = useAuth();
+  const isAdmin = useAdmin();
   const { totalItems } = useCart();
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -233,11 +235,16 @@ export function SiteHeader() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 rounded-xl p-2 shadow-xl border-border/70">
                 <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2">
-                  <Link to="/account">Profile</Link>
+                  <Link to="/account/profile">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2">
                   <Link to="/account/orders">Orders</Link>
                 </DropdownMenuItem>
+                {isAdmin.data && (
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2 text-emerald-600 focus:bg-emerald-50 focus:text-emerald-700">
+                    <Link to="/admin">Admin Dashboard</Link>
+                  </DropdownMenuItem>
+                )}
                 <div className="h-px bg-border my-1" />
                 <DropdownMenuItem 
                   className="cursor-pointer rounded-lg px-3 py-2 text-red-600 focus:bg-red-50 focus:text-red-700"

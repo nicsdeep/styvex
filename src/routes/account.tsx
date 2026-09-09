@@ -32,7 +32,7 @@ function AccountPage() {
   useEffect(() => {
     if (user && !isLoading) {
       if (location.pathname === "/account") {
-        void navigate({ to: "/account/orders", replace: true });
+        void navigate({ to: "/account/profile", replace: true });
       }
     }
   }, [user, isLoading, navigate, location.pathname]);
