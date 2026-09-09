@@ -171,6 +171,66 @@ function Hero() {
   );
 }
 
+function CategoryCard({ cat }: { cat: any }) {
+  // Extract all available product images for this category
+  const images = cat.products
+    ?.flatMap((p: any) => p.product_images?.map((pi: any) => pi.image_url))
+    .filter(Boolean);
+
+  const validImages =
+    images?.length > 0 ? images : [CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE];
+
+  const [currentImageIdx, setCurrentImageIdx] = useState(0);
+
+  useEffect(() => {
+    if (validImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIdx((prev) => {
+        let nextIdx;
+        do {
+          nextIdx = Math.floor(Math.random() * validImages.length);
+        } while (nextIdx === prev && validImages.length > 1);
+        return nextIdx;
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [validImages.length]);
+
+  return (
+    <Link
+      to="/category/$slug"
+      params={{ slug: cat.slug }}
+      className="group relative flex h-[450px] w-full flex-col overflow-hidden rounded-[2rem] bg-muted luxury-shadow md:h-[550px]"
+    >
+      {validImages.map((img: string, idx: number) => (
+        <img
+          key={img + idx}
+          src={img}
+          alt={cat.name}
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-all duration-1000 ease-in-out group-hover:scale-105",
+            idx === currentImageIdx ? "opacity-100" : "opacity-0"
+          )}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
+
+      <div className="relative mt-auto flex flex-col p-8 text-white md:p-10">
+        <span className="mb-2 text-xs font-bold uppercase tracking-widest text-white/80">
+          Explore Collection
+        </span>
+        <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+          {cat.name}
+        </h3>
+
+        <div className="mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-ink opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-translate-y-2">
+          <ArrowRight className="h-5 w-5" />
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 // 3. Shop by Categories (Image Cards)
 function ShopByCategories() {
   const { data: categories = [] } = useQuery({
@@ -187,7 +247,7 @@ function ShopByCategories() {
           )
         `)
         .order("name")
-        .limit(1, { foreignTable: "products" })
+        .limit(10, { foreignTable: "products" })
         .limit(1, { foreignTable: "products.product_images" });
       if (error) throw error;
       return data || [];
@@ -213,39 +273,9 @@ function ShopByCategories() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-          {categories.map((cat: any) => {
-            const productWithImage = cat.products?.find((p: any) => p.product_images?.length > 0);
-            const imageUrl = productWithImage?.product_images?.[0]?.image_url || CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE;
-
-            return (
-              <Link
-                key={cat.id}
-                to="/category/$slug"
-                params={{ slug: cat.slug }}
-                className="group relative flex h-[450px] w-full flex-col overflow-hidden rounded-[2rem] bg-muted luxury-shadow md:h-[550px]"
-              >
-                <img
-                  src={imageUrl}
-                  alt={cat.name}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
-                
-                <div className="relative mt-auto flex flex-col p-8 text-white md:p-10">
-                  <span className="mb-2 text-xs font-bold uppercase tracking-widest text-white/80">
-                    Explore Collection
-                  </span>
-                  <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-                    {cat.name}
-                  </h3>
-                  
-                  <div className="mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-ink opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:-translate-y-2">
-                    <ArrowRight className="h-5 w-5" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          {categories.map((cat: any) => (
+            <CategoryCard key={cat.id} cat={cat} />
+          ))}
         </div>
       </div>
     </section>
