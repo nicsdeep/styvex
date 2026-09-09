@@ -156,13 +156,17 @@ async function run() {
           name: item.nameEn,
           slug: productSlug,
           description: `Imported from CJ Dropshipping. SKU: ${item.sku}`,
-          price: parseFloat(item.sellPrice) * 1.5, // 50% markup
+          supplier_cost: parseFloat(item.sellPrice),
           category_id: categoryId,
           is_featured: true
         }]);
         productId = insertedProd[0].id;
       } else {
         productId = existingProducts[0].id;
+        // Update existing product with latest supplier cost
+        await supabaseRequest("PATCH", "products", {
+          supplier_cost: parseFloat(item.sellPrice)
+        }, `?id=eq.${productId}`);
       }
 
       // Sync Image
