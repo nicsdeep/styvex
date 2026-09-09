@@ -1,4 +1,4 @@
-import { ProductPagination, PRODUCTS_PER_PAGE } from "@/components/product-pagination";
+import { ProductPagination, useProductPageSize } from "@/components/product-pagination";
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/shop")({
 
 function ShopComponent() {
   const [page, setPage] = useState(1);
+  const pageSize = useProductPageSize();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"featured" | "newest" | "price-low" | "price-high">(
@@ -80,12 +81,9 @@ function ShopComponent() {
     },
   });
 
-  useEffect(() => setPage(1), [selectedCategory, priceRange, sortBy]);
-  const currentPage = Math.min(page, Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE)));
-  const pageProducts = products.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE,
-  );
+  useEffect(() => setPage(1), [selectedCategory, priceRange, sortBy, pageSize]);
+  const currentPage = Math.min(page, Math.max(1, Math.ceil(products.length / pageSize)));
+  const pageProducts = products.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -269,9 +267,8 @@ function ShopComponent() {
             </div>
 
             <div className="mb-5 text-sm text-muted-foreground">
-              Showing {products.length ? (currentPage - 1) * PRODUCTS_PER_PAGE + 1 : 0}–
-              {Math.min(currentPage * PRODUCTS_PER_PAGE, products.length)} of {products.length}{" "}
-              products
+              Showing {products.length ? (currentPage - 1) * pageSize + 1 : 0}–
+              {Math.min(currentPage * pageSize, products.length)} of {products.length} products
             </div>
 
             {isLoading ? (
@@ -314,6 +311,7 @@ function ShopComponent() {
               </div>
             )}
             <ProductPagination
+              pageSize={pageSize}
               page={currentPage}
               total={products.length}
               onChange={(nextPage) => {

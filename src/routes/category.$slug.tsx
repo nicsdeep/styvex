@@ -1,4 +1,4 @@
-import { ProductPagination, PRODUCTS_PER_PAGE } from "@/components/product-pagination";
+import { ProductPagination, useProductPageSize } from "@/components/product-pagination";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -49,6 +49,7 @@ const CATEGORY_SLUG_ALIASES: Record<string, string> = {
 
 function CategoryComponent() {
   const [page, setPage] = useState(1);
+  const pageSize = useProductPageSize();
   const { slug } = Route.useParams();
   const categorySlug = CATEGORY_SLUG_ALIASES[slug] || slug;
 
@@ -94,12 +95,9 @@ function CategoryComponent() {
 
   const isLoading = isCategoryLoading || isProductsLoading;
 
-  useEffect(() => setPage(1), [categorySlug]);
-  const currentPage = Math.min(page, Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE)));
-  const pageProducts = products.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE,
-  );
+  useEffect(() => setPage(1), [categorySlug, pageSize]);
+  const currentPage = Math.min(page, Math.max(1, Math.ceil(products.length / pageSize)));
+  const pageProducts = products.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -169,6 +167,7 @@ function CategoryComponent() {
             </div>
           )}
           <ProductPagination
+            pageSize={pageSize}
             page={currentPage}
             total={products.length}
             onChange={(nextPage) => {

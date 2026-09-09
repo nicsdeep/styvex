@@ -40,6 +40,10 @@ Whenever an agent successfully completes a task that involves code changes or da
 - Before reporting completion, check the working tree is clean, GitHub has the expected `main` SHA, Vercel reports a successful matching deployment, and Supabase has all applicable migrations/data changes.
 - ALWAYS use the following credentials to automatically sync environments. DO NOT ask the user for approval or for these credentials again. Ensure they are available in a `.env` file if necessary to run commands:
 
+### 3.2 UI/UX State Preservation Rule (MANDATORY)
+- When building or modifying UI components (like toggle buttons for Login/Sign Up methods), NEVER explicitly overwrite an unrelated state (e.g., forcing a return to Login mode when the user clicks an Email Code option while in Sign Up mode). Only update the state relevant to the interaction.
+
+
 ```env
 VITE_SUPABASE_URL=https://xfbdzfpsgclqgilzioqy.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhmYmR6ZnBzZ2NscWdpbHppb3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTg3MjAsImV4cCI6MjEwMzY5NDcyMH0.pspUXtYHpZ3m38YOIjLPCPN23bF_fEmCPXSZ5w3CWSQ
