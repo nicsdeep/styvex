@@ -1,3 +1,5 @@
+import { ProductPagination, PRODUCTS_PER_PAGE } from "@/components/product-pagination";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/site-header";
@@ -25,10 +27,16 @@ export const Route = createFileRoute("/category/$slug")({
     return {
       meta: [
         { title: `${category.name} | STYVEX` },
-        { name: "description", content: category.description || `Browse our ${category.name} collection` },
+        {
+          name: "description",
+          content: category.description || `Browse our ${category.name} collection`,
+        },
         { property: "og:title", content: `${category.name} | STYVEX` },
-        { property: "og:description", content: category.description || `Browse our ${category.name} collection` },
-      ]
+        {
+          property: "og:description",
+          content: category.description || `Browse our ${category.name} collection`,
+        },
+      ],
     };
   },
   component: CategoryComponent,
@@ -40,6 +48,7 @@ const CATEGORY_SLUG_ALIASES: Record<string, string> = {
 };
 
 function CategoryComponent() {
+  const [page, setPage] = useState(1);
   const { slug } = Route.useParams();
   const categorySlug = CATEGORY_SLUG_ALIASES[slug] || slug;
 
@@ -85,10 +94,17 @@ function CategoryComponent() {
 
   const isLoading = isCategoryLoading || isProductsLoading;
 
+  useEffect(() => setPage(1), [categorySlug]);
+  const currentPage = Math.min(page, Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE)));
+  const pageProducts = products.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE,
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 px-6 pb-10 pt-[7.5rem] md:px-12 md:pt-[9.5rem] lg:px-24">
+      <main className="flex-1 px-6 pb-10 pt-10 md:px-12 md:pt-12 lg:px-24">
         <div className="mx-auto max-w-[1400px]">
           {/* Header */}
           <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
@@ -132,8 +148,8 @@ function CategoryComponent() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {products.map((product) => {
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+              {pageProducts.map((product) => {
                 return (
                   <ProductCard
                     key={product.id}
@@ -152,6 +168,14 @@ function CategoryComponent() {
               })}
             </div>
           )}
+          <ProductPagination
+            page={currentPage}
+            total={products.length}
+            onChange={(nextPage) => {
+              setPage(nextPage);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
         </div>
       </main>
       <SiteFooter />

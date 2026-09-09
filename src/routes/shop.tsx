@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { ProductPagination, PRODUCTS_PER_PAGE } from "@/components/product-pagination";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/site-header";
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/shop")({
 });
 
 function ShopComponent() {
+  const [page, setPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"featured" | "newest" | "price-low" | "price-high">(
@@ -78,14 +80,21 @@ function ShopComponent() {
     },
   });
 
+  useEffect(() => setPage(1), [selectedCategory, priceRange, sortBy]);
+  const currentPage = Math.min(page, Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE)));
+  const pageProducts = products.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE,
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 pt-[4.5rem] sm:pt-[6.5rem]">
+      <main className="flex-1 pt-0">
         <div className="mx-auto flex max-w-[1600px] flex-col px-4 py-8 md:flex-row md:px-8 md:py-12">
           {/* Sidebar */}
           <aside className="w-full md:w-64 flex-shrink-0 pr-8 mb-8 md:mb-0 hidden md:block">
-            <div className="sticky top-24">
+            <div className="sticky top-32">
               <div className="flex items-center gap-2 font-bold mb-6 text-foreground uppercase tracking-wider text-sm">
                 <Filter className="w-4 h-4" />
                 Filters
@@ -196,7 +205,7 @@ function ShopComponent() {
           </aside>
 
           {/* Product Grid */}
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
               <div>
                 <span className="eyebrow text-brand">The Styvex edit</span>
@@ -260,7 +269,9 @@ function ShopComponent() {
             </div>
 
             <div className="mb-5 text-sm text-muted-foreground">
-              Showing {products.length} curated results
+              Showing {products.length ? (currentPage - 1) * PRODUCTS_PER_PAGE + 1 : 0}–
+              {Math.min(currentPage * PRODUCTS_PER_PAGE, products.length)} of {products.length}{" "}
+              products
             </div>
 
             {isLoading ? (
@@ -281,8 +292,8 @@ function ShopComponent() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
-                {products.map((product) => {
+              <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+                {pageProducts.map((product) => {
                   return (
                     <ProductCard
                       key={product.id}
@@ -302,6 +313,14 @@ function ShopComponent() {
                 })}
               </div>
             )}
+            <ProductPagination
+              page={currentPage}
+              total={products.length}
+              onChange={(nextPage) => {
+                setPage(nextPage);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
           </div>
         </div>
       </main>

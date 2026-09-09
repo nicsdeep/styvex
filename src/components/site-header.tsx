@@ -37,7 +37,7 @@ export function SiteHeader() {
   });
 
   return (
-    <header className="fixed top-0 z-50 w-full border-y border-border/70 bg-white shadow-[0_1px_0_rgba(59,37,28,0.05)]">
+    <header className="sticky top-0 z-50 w-full shrink-0 border-y border-border/70 bg-white shadow-[0_1px_0_rgba(59,37,28,0.05)]">
       <div className="hidden border-b border-white/10 bg-ink text-primary-foreground sm:block">
         <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.65rem] font-semibold uppercase tracking-widest md:px-10 lg:px-14">
           <p className="flex items-center justify-center gap-2 opacity-90">
@@ -53,7 +53,7 @@ export function SiteHeader() {
       </div>
       <div className="mx-auto flex h-[4.5rem] max-w-[1540px] items-center justify-between px-5 md:px-10 lg:px-14">
         {/* Mobile Menu & Logo */}
-        <div className="flex items-center gap-4 md:hidden">
+        <div className="flex items-center gap-4 lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="-ml-2">
@@ -80,24 +80,7 @@ export function SiteHeader() {
                   >
                     Home
                   </Link>
-                  <Link
-                    to="/shop"
-                    className="font-display text-2xl font-semibold transition-colors hover:text-brand"
-                  >
-                    Shop all
-                  </Link>
-                  <a
-                    href="/#new-arrivals"
-                    className="font-display text-2xl font-semibold transition-colors hover:text-brand"
-                  >
-                    New arrivals
-                  </a>
-                  <a
-                    href="/#best-sellers"
-                    className="font-display text-2xl font-semibold transition-colors hover:text-brand"
-                  >
-                    Best sellers
-                  </a>
+
                   <Link
                     to="/about"
                     className="font-display text-2xl font-semibold transition-colors hover:text-brand"
@@ -133,47 +116,30 @@ export function SiteHeader() {
         </div>
 
         {/* Desktop Logo */}
-        <div className="hidden md:flex md:flex-1">
+        <div className="hidden lg:flex lg:flex-1">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
             <BrandLogo />
           </Link>
         </div>
 
         {/* Desktop Centered Logo / Mobile Centered Logo */}
-        <div className="flex min-w-0 flex-1 justify-center md:hidden">
+        <div className="flex min-w-0 flex-1 justify-center lg:hidden">
           <Link to="/" className="flex items-center gap-2" aria-label="STYVEX home">
             <BrandLogo mobile />
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex md:flex-auto md:items-center md:justify-center md:gap-6 lg:gap-8">
+        <nav className="hidden lg:flex lg:flex-auto lg:items-center lg:justify-center lg:gap-6">
           <Link
             to="/"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Home
           </Link>
-          <Link
-            to="/shop"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
-          >
-            Shop
-          </Link>
-          <a
-            href="/#new-arrivals"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
-          >
-            New arrivals
-          </a>
-          <a
-            href="/#best-sellers"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
-          >
-            Best sellers
-          </a>
+
           <DropdownMenu>
-            <DropdownMenuTrigger className="relative flex items-center gap-1 py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground outline-none transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100 data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
+            <DropdownMenuTrigger className="relative flex items-center gap-1 py-7 text-xs font-bold uppercase tracking-widest text-muted-foreground outline-none transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100 data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
               Categories <ChevronDown className="h-4 w-4" aria-hidden="true" />
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -201,19 +167,19 @@ export function SiteHeader() {
           </DropdownMenu>
           <Link
             to="/about"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             About
           </Link>
           <Link
             to="/blog"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Blog
           </Link>
           <Link
             to="/contact"
-            className="relative py-7 text-xs lg:text-sm font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
+            className="relative py-7 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors after:absolute after:inset-x-0 after:bottom-[1.05rem] after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform hover:text-foreground hover:after:scale-x-100"
           >
             Contact
           </Link>
@@ -231,7 +197,10 @@ export function SiteHeader() {
                 <User className="h-5 w-5" />
                 <span className="hidden text-xs xl:inline">Account</span>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 rounded-xl p-2 shadow-xl border-border/70">
+              <DropdownMenuContent
+                align="end"
+                className="w-48 rounded-xl p-2 shadow-xl border-border/70"
+              >
                 <DropdownMenuItem asChild className="cursor-pointer rounded-lg px-3 py-2">
                   <Link to="/account">Profile</Link>
                 </DropdownMenuItem>
@@ -239,7 +208,7 @@ export function SiteHeader() {
                   <Link to="/account/orders">Orders</Link>
                 </DropdownMenuItem>
                 <div className="h-px bg-border my-1" />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="cursor-pointer rounded-lg px-3 py-2 text-red-600 focus:bg-red-50 focus:text-red-700"
                   onClick={async () => {
                     await supabase.auth.signOut();

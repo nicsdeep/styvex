@@ -142,6 +142,10 @@
 }
 
 @layer base {
+  html {
+    scroll-padding-top: 8rem;
+  }
+
   * {
     border-color: var(--color-border);
   }

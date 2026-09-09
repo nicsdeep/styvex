@@ -148,11 +148,11 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm transition duration-300 hover:shadow-md",
+        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg",
         className,
       )}
     >
-      <div className="relative aspect-[4/5] sm:aspect-square overflow-hidden bg-muted/30">
+      <div className="relative aspect-square shrink-0 overflow-hidden bg-neutral-100">
         <Link
           to="/product/$slug"
           params={{ slug }}
@@ -186,20 +186,23 @@ export function ProductCard({
           )}
         </Link>
 
-        <div className="pointer-events-none absolute left-2 top-2 z-10 flex flex-wrap gap-1.5">
+        <div className="pointer-events-none absolute left-2 right-12 top-2 z-10 flex flex-wrap gap-1.5">
           {discount > 0 && (
             <span className="rounded-sm bg-brand px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
               Save {discount}%
             </span>
           )}
-          {badges.map((badge) => (
-            <span
-              key={badge}
-              className="rounded-sm bg-ink px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white"
-            >
-              {badge}
-            </span>
-          ))}
+          {badges
+            .filter((badge) => !/%/.test(badge))
+            .slice(0, discount ? 0 : 1)
+            .map((badge) => (
+              <span
+                key={badge}
+                className="rounded-sm bg-ink px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white"
+              >
+                {badge}
+              </span>
+            ))}
         </div>
 
         <button
@@ -221,27 +224,38 @@ export function ProductCard({
             {categoryName || "Styvex edit"}
           </span>
           {soldOut && (
-            <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Sold out</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+              Sold out
+            </span>
           )}
         </div>
-        
+
         <Link
           to="/product/$slug"
           params={{ slug }}
-          className="line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-tight text-foreground transition hover:text-brand"
+          className="line-clamp-2 h-10 shrink-0 text-sm font-semibold leading-5 text-foreground transition hover:text-brand"
           title={name}
         >
           {name}
         </Link>
 
-        <div className="mt-1 flex items-center gap-1.5 text-xs">
-          <div className="flex text-amber-500" aria-hidden="true">
-            {[0, 1, 2, 3, 4].map((star) => (
-              <Star key={star} className="h-2.5 w-2.5 fill-current" />
-            ))}
-          </div>
-          <span className="font-medium text-foreground">{rating?.toFixed(1) || "5.0"}</span>
-          <span className="text-[10px] text-muted-foreground">{reviewCount ? `(${reviewCount})` : "New"}</span>
+        <div className="mt-2 flex h-5 shrink-0 items-center gap-1.5 text-xs">
+          {rating != null && !!reviewCount ? (
+            <>
+              <div className="flex text-amber-500" aria-hidden="true">
+                {[0, 1, 2, 3, 4].map((star) => (
+                  <Star
+                    key={star}
+                    className={cn("h-2.5 w-2.5", star < Math.round(rating) && "fill-current")}
+                  />
+                ))}
+              </div>
+              <span className="font-medium text-foreground">{rating.toFixed(1)}</span>
+              <span className="text-[10px] text-muted-foreground">({reviewCount})</span>
+            </>
+          ) : (
+            <span className="text-muted-foreground">No reviews yet</span>
+          )}
         </div>
 
         <div className="mt-auto pt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -272,7 +286,9 @@ export function ProductCard({
             params={{ slug }}
             className={cn(
               "mt-3 flex h-8 w-full items-center justify-center rounded-md text-[10px] font-bold uppercase tracking-wider transition",
-              soldOut ? "bg-muted text-muted-foreground" : "bg-ink text-primary-foreground hover:bg-brand",
+              soldOut
+                ? "bg-muted text-muted-foreground"
+                : "bg-ink text-primary-foreground hover:bg-brand",
             )}
           >
             {soldOut ? "View item" : "Options"}

@@ -42,7 +42,7 @@ function OrdersPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-16 pt-36">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-16 pt-12">
         <h1 className="text-3xl font-semibold">Order History</h1>
         <p className="mt-2 text-muted-foreground">
           View your recent orders and their status.

@@ -11,7 +11,7 @@ function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 pt-[4.5rem] sm:pt-[6.5rem]">
+      <main className="flex-1 pt-0">
         <section className="mx-auto max-w-[1000px] px-6 py-20 text-center md:py-28">
           <span className="eyebrow text-brand">About STYVEX</span>
           <h1 className="mx-auto mt-5 max-w-3xl font-display text-5xl font-semibold tracking-[-0.045em] text-ink md:text-7xl">

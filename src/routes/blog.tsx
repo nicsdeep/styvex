@@ -17,7 +17,7 @@ function BlogPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="flex-1 pt-[4.5rem] sm:pt-[6.5rem]">
+      <main className="flex-1 pt-0">
         <section className="mx-auto max-w-[1540px] px-6 py-16 md:px-10 md:py-24 lg:px-14">
           <span className="eyebrow text-brand">Journal</span>
           <h1 className="mt-4 font-display text-5xl font-semibold tracking-[-0.045em] text-ink md:text-7xl">The STYVEX journal.</h1>

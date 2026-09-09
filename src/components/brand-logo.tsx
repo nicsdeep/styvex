@@ -8,7 +8,7 @@ export function BrandLogo({
   footer?: boolean;
   mobile?: boolean;
 }) {
-  const { data } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["brand-settings"],
     staleTime: 60000,
     queryFn: async () => {
@@ -21,18 +21,28 @@ export function BrandLogo({
       return data;
     },
   });
-  const height = footer ? (data?.footer_height ?? 40) : (data?.header_height ?? 40);
+  const height = footer ? (data?.footer_height ?? 40) : 24;
   return (
-    <img
-      src={
-        footer
-          ? (data?.footer_logo ?? "/styvex-footer-white.svg")
-          : (data?.header_logo ?? "/styvex_logo2.svg")
-      }
-      alt="STYVEX"
-      width={149}
-      height={40}
-      style={{ height: mobile ? Math.min(height, 36) : height, width: "auto", maxWidth: "100%" }}
-    />
+    <span
+      className="inline-flex shrink-0 items-center justify-center"
+      style={{ width: footer ? 149 : 110, height: footer ? height : 32 }}
+    >
+      <img
+        src={
+          footer
+            ? (data?.footer_logo ?? "/styvex-footer-white.svg")
+            : (data?.header_logo ?? "/styvex_logo2.svg")
+        }
+        alt="STYVEX"
+        width={149}
+        height={40}
+        style={{
+          height: mobile ? Math.min(height, 36) : height,
+          width: "100%",
+          objectFit: "contain",
+          visibility: data || isError ? "visible" : "hidden",
+        }}
+      />
+    </span>
   );
 }

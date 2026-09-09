@@ -118,7 +118,7 @@ function CheckoutPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#fffdfb]">
       <SiteHeader />
-      <main className="flex-1 pb-24 pt-[4.5rem] sm:pt-[6.5rem]">
+      <main className="flex-1 pb-24 pt-0">
         <div className="border-b border-border/60 bg-ink text-white">
           <div className="mx-auto flex max-w-[1540px] items-center justify-center gap-7 px-5 py-2.5 text-[10px] font-bold uppercase tracking-[.14em]">
             <span className="flex items-center gap-2">
