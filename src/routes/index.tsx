@@ -85,7 +85,7 @@ function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden bg-background">
-      <div className="relative mx-auto min-h-[78vh] max-w-[1540px]">
+      <div className="relative mx-auto flex max-w-[1540px] flex-col lg:block lg:min-h-[78vh]">
         <div className="absolute inset-0 hidden lg:block" aria-hidden="true">
           {HERO_IMAGES.map((image, index) => (
             <img
@@ -108,18 +108,18 @@ function Hero() {
         </div>
 
         {/* Left Content */}
-        <div className="relative z-10 flex min-h-[68vh] max-w-2xl flex-col justify-center px-5 py-20 md:px-10 lg:min-h-[78vh] lg:px-14">
-          <span className="eyebrow mb-7 text-brand animate-in fade-in slide-in-from-bottom-4">
+        <div className="relative z-10 flex max-w-2xl flex-col justify-center px-5 py-6 md:px-10 lg:min-h-[78vh] lg:px-14 lg:py-20">
+          <span className="eyebrow mb-3 text-brand lg:mb-7 animate-in fade-in slide-in-from-bottom-4">
             The new season
           </span>
           <h1
-            className="font-display text-balance mb-7 max-w-2xl text-5xl font-semibold leading-[0.96] tracking-[-0.045em] text-ink md:text-7xl lg:text-[5.8rem] animate-in fade-in slide-in-from-bottom-6"
+            className="font-display text-balance mb-3 max-w-2xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.035em] text-ink sm:text-4xl lg:mb-7 lg:text-[5.8rem] lg:leading-[0.96] lg:tracking-[-0.045em] animate-in fade-in slide-in-from-bottom-6"
             style={{ animationDelay: "100ms" }}
           >
             Made to be noticed. Worn your way.
           </h1>
           <p
-            className="mb-10 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg animate-in fade-in slide-in-from-bottom-8"
+            className="mb-5 max-w-lg text-sm leading-relaxed text-muted-foreground lg:mb-10 lg:text-lg animate-in fade-in slide-in-from-bottom-8"
             style={{ animationDelay: "200ms" }}
           >
             A considered edit of fashion, jewelry, and everyday pieces that make the ordinary feel
@@ -127,25 +127,25 @@ function Hero() {
           </p>
 
           <div
-            className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-bottom-10"
+            className="grid grid-cols-2 gap-2 lg:flex lg:flex-row lg:gap-4 animate-in fade-in slide-in-from-bottom-10"
             style={{ animationDelay: "300ms" }}
           >
             <Link
               to="/shop"
-              className="flex items-center justify-center rounded-full bg-brand px-8 py-4 text-sm font-bold text-accent-foreground transition-all hover:-translate-y-0.5 hover:bg-ink luxury-shadow"
+              className="flex min-h-11 items-center justify-center rounded-full bg-brand px-3 py-3 text-xs font-bold text-accent-foreground lg:px-8 lg:py-4 lg:text-sm transition-all hover:-translate-y-0.5 hover:bg-ink luxury-shadow"
             >
               Shop Now <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
             <Link
               to={"/category/womens-clothing" as any}
-              className="flex items-center justify-center rounded-full border border-foreground/20 bg-background/40 px-8 py-4 text-sm font-bold text-foreground transition-all hover:-translate-y-0.5 hover:bg-background"
+              className="flex min-h-11 items-center justify-center rounded-full border border-foreground/20 bg-background/40 px-3 py-3 text-xs font-bold text-foreground lg:px-8 lg:py-4 lg:text-sm transition-all hover:-translate-y-0.5 hover:bg-background"
             >
               Explore Collection
             </Link>
           </div>
 
           <div
-            className="mt-14 border-l border-brand pl-4 animate-in fade-in"
+            className="hidden lg:block mt-14 border-l border-brand pl-4 animate-in fade-in"
             style={{ animationDelay: "500ms" }}
           >
             <span className="eyebrow text-muted-foreground">
@@ -154,7 +154,7 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-5 mb-12 h-[390px] overflow-hidden rounded-[2rem] bg-ink md:mx-10 lg:hidden">
+        <div className="relative order-first mx-5 mt-4 h-[210px] overflow-hidden rounded-2xl bg-ink sm:h-[280px] md:mx-10 lg:hidden">
           {HERO_IMAGES.map((image, index) => (
             <img
               key={image}
@@ -186,12 +186,12 @@ function ShopByCategories() {
   });
 
   return (
-    <section className="bg-background py-20 md:py-28">
+    <section className="bg-background py-10 md:py-28">
       <div className="mx-auto max-w-[1540px] px-5 md:px-10 lg:px-14">
-        <div className="mb-10 flex items-end justify-between">
+        <div className="mb-6 flex items-end justify-between md:mb-10">
           <div>
             <span className="eyebrow text-brand">Curated for you</span>
-            <h2 className="font-display mt-3 text-4xl font-semibold tracking-[-0.035em] text-ink md:text-5xl">
+            <h2 className="font-display mt-3 text-3xl font-semibold tracking-[-0.035em] text-ink md:text-5xl">
               Shop by mood
             </h2>
           </div>
@@ -211,7 +211,7 @@ function ShopByCategories() {
               params={{ slug: cat.slug }}
               className="group flex flex-col gap-3"
             >
-              <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted luxury-shadow">
+              <div className="aspect-square md:aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted luxury-shadow">
                 <img
                   src={CATEGORY_IMAGES[cat.slug] || DEFAULT_CATEGORY_IMAGE}
                   alt={cat.name}
