@@ -102,20 +102,6 @@ function AccountPage() {
     }
   }
 
-  const handleOAuth = async (provider: 'google' | 'facebook') => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/account`,
-        },
-      });
-      if (error) throw error;
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Authentication failed.");
-    }
-  };
-
 
   const inputClass = "h-12 w-full rounded-full border border-neutral-200 bg-neutral-50 px-5 text-sm focus:border-neutral-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-neutral-900 transition-all";
   const buttonClass = "h-12 w-full rounded-full bg-neutral-900 px-4 font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-50 hover:bg-neutral-800 shadow-lg shadow-neutral-900/20";
@@ -293,20 +279,6 @@ function AccountPage() {
 
             </form>
 
-            {/* Social Icons */}
-            {!isResetPassword && (
-               <div className="mt-8">
-                 <div className="flex items-center justify-center space-x-4">
-                   <div className="h-px bg-neutral-100 flex-1"></div>
-                   <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold">Or continue with</span>
-                   <div className="h-px bg-neutral-100 flex-1"></div>
-                 </div>
-                 <div className="flex justify-center gap-3 mt-4">
-                   <button onClick={() => handleOAuth('facebook')} type="button" className="h-8 w-8 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xs font-bold shadow-sm transition hover:scale-105" aria-label="Facebook">f</button>
-                   <button onClick={() => handleOAuth('google')} type="button" className="h-8 w-8 rounded-full bg-[#EA4335] text-white flex items-center justify-center text-xs font-bold shadow-sm transition hover:scale-105" aria-label="Google">G</button>
-                 </div>
-               </div>
-            )}
 
             {/* Bottom Links */}
             <div className="mt-8 text-center">
