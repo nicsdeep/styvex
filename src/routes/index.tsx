@@ -76,6 +76,7 @@ function Hero() {
   const [activeHeroImage, setActiveHeroImage] = useState(0);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rotation = window.setInterval(() => {
       setActiveHeroImage((current) => (current + 1) % HERO_IMAGES.length);
     }, 7000);
@@ -108,7 +109,7 @@ function Hero() {
         </div>
 
         {/* Left Content */}
-        <div className="relative z-10 flex max-w-2xl flex-col justify-center px-5 py-6 md:px-10 lg:min-h-[78vh] lg:px-14 lg:py-20">
+        <div className="relative z-10 flex max-w-2xl flex-col justify-center px-5 pb-6 pt-[220px] sm:pt-[280px] md:px-10 lg:min-h-[78vh] lg:px-14 lg:py-20">
           <span className="eyebrow mb-3 text-brand lg:mb-7 animate-in fade-in slide-in-from-bottom-4">
             The new season
           </span>
@@ -154,15 +155,19 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative order-first mx-5 mt-4 h-[210px] overflow-hidden rounded-2xl bg-ink sm:h-[280px] md:mx-10 lg:hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[350px] overflow-hidden sm:h-[410px] lg:hidden" aria-hidden="true">
           {HERO_IMAGES.map((image, index) => (
             <img
               key={image}
               src={image}
-              alt={index === activeHeroImage ? "Editorial STYVEX fashion collection" : ""}
-              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1800ms] ease-out ${
+              alt=""
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1800ms] ease-out motion-reduce:transition-none ${
                 index === activeHeroImage ? "opacity-100" : "opacity-0"
               }`}
+              style={{
+                maskImage: "linear-gradient(to bottom, black 0%, black 28%, transparent 76%)",
+                WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 28%, transparent 76%)",
+              }}
             />
           ))}
         </div>
