@@ -74,7 +74,6 @@ const DEFAULT_CATEGORY_IMAGE =
 // 2. Hero Section — restrained editorial image rotation
 function Hero() {
   const [activeHeroImage, setActiveHeroImage] = useState(0);
-  const [paused, setPaused] = useState(false);
   const { data: catalogSlides = [] } = useQuery({
     queryKey: ["hero-catalog-products"],
     staleTime: 5 * 60 * 1000,
@@ -100,13 +99,13 @@ function Hero() {
     index === activeHeroImage % slides.length || index === (activeHeroImage + 1) % slides.length || index === (activeHeroImage + slides.length - 1) % slides.length);
 
   useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rotation = window.setInterval(() => {
       if (!document.hidden) setActiveHeroImage((current) => (current + 1) % slides.length);
-    }, 5000);
+    }, 12000);
 
     return () => window.clearInterval(rotation);
-  }, [paused, slides.length]);
+  }, [slides.length]);
 
   return (
     <section className="relative w-full overflow-hidden bg-background">
@@ -133,7 +132,6 @@ function Hero() {
         </div>
 
         <Link to={currentSlide.slug ? "/product/$slug" : "/shop"} params={{ slug: currentSlide.slug }} aria-label={`View ${currentSlide.name}`} className="absolute inset-0 z-[5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
-        <button type="button" onClick={() => setPaused(value => !value)} className="absolute right-4 top-4 z-20 rounded-full bg-white/95 px-3 py-2 text-xs font-semibold shadow-sm" aria-pressed={paused}>{paused ? "Play slideshow" : "Pause slideshow"}</button>
         {/* Text leaves the banner click target available; CTAs remain separate. */}
         <div className="pointer-events-none relative z-10 flex max-w-2xl flex-col justify-center px-5 pb-6 pt-[220px] sm:pt-[280px] md:px-10 lg:min-h-[78vh] lg:px-14 lg:py-20">
           <span className="eyebrow mb-3 text-brand lg:mb-7 animate-in fade-in slide-in-from-bottom-4">
