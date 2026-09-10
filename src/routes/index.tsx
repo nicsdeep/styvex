@@ -74,28 +74,52 @@ const DEFAULT_CATEGORY_IMAGE =
 // 2. Hero Section — restrained editorial image rotation
 function Hero() {
   const [activeHeroImage, setActiveHeroImage] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const { data: catalogSlides = [] } = useQuery({
+    queryKey: ["hero-catalog-products"],
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("products")
+        .select("id, name, slug, product_images(image_url, display_order)")
+        .order("created_at", { ascending: false }).limit(100);
+      if (error) throw error;
+      const slides = (data || []).flatMap(product => {
+        const image = [...product.product_images].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))[0]?.image_url;
+        return image ? [{ image, name: product.name, slug: product.slug }] : [];
+      });
+      for (let i = slides.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [slides[i], slides[j]] = [slides[j]!, slides[i]!];
+      }
+      return slides.slice(0, 30);
+    },
+  });
+  const slides = catalogSlides.length ? catalogSlides : HERO_IMAGES.map(image => ({ image, name: "Explore the collection", slug: "" }));
+  const currentSlide = slides[activeHeroImage % slides.length]!;
+  const visibleSlides = slides.map((slide, index) => ({ ...slide, index })).filter(({ index }) =>
+    index === activeHeroImage % slides.length || index === (activeHeroImage + 1) % slides.length || index === (activeHeroImage + slides.length - 1) % slides.length);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rotation = window.setInterval(() => {
-      setActiveHeroImage((current) => (current + 1) % HERO_IMAGES.length);
-    }, 7000);
+      if (!document.hidden) setActiveHeroImage((current) => (current + 1) % slides.length);
+    }, 5000);
 
     return () => window.clearInterval(rotation);
-  }, []);
+  }, [paused, slides.length]);
 
   return (
     <section className="relative w-full overflow-hidden bg-background">
       <div className="relative mx-auto flex max-w-[1540px] flex-col lg:block lg:min-h-[78vh]">
         <div className="absolute inset-0 hidden lg:block" aria-hidden="true">
-          {HERO_IMAGES.map((image, index) => (
+          {visibleSlides.map(({ image, index }) => (
             <img
               key={image}
               src={image}
               alt=""
               aria-hidden="true"
               className={`absolute inset-0 h-full w-full object-cover object-[82%_center] transition-opacity duration-[1800ms] ease-out ${
-                index === activeHeroImage ? "opacity-100" : "opacity-0"
+                index === activeHeroImage % slides.length ? "opacity-100" : "opacity-0"
               }`}
               style={{
                 maskImage:
@@ -108,8 +132,10 @@ function Hero() {
           <div className="absolute inset-0 bg-gradient-to-t from-ink/10 via-transparent to-background/15" />
         </div>
 
-        {/* Left Content */}
-        <div className="relative z-10 flex max-w-2xl flex-col justify-center px-5 pb-6 pt-[220px] sm:pt-[280px] md:px-10 lg:min-h-[78vh] lg:px-14 lg:py-20">
+        <Link to={currentSlide.slug ? "/product/$slug" : "/shop"} params={{ slug: currentSlide.slug }} aria-label={`View ${currentSlide.name}`} className="absolute inset-0 z-[5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand" />
+        <button type="button" onClick={() => setPaused(value => !value)} className="absolute right-4 top-4 z-20 rounded-full bg-white/95 px-3 py-2 text-xs font-semibold shadow-sm" aria-pressed={paused}>{paused ? "Play slideshow" : "Pause slideshow"}</button>
+        {/* Text leaves the banner click target available; CTAs remain separate. */}
+        <div className="pointer-events-none relative z-10 flex max-w-2xl flex-col justify-center px-5 pb-6 pt-[220px] sm:pt-[280px] md:px-10 lg:min-h-[78vh] lg:px-14 lg:py-20">
           <span className="eyebrow mb-3 text-brand lg:mb-7 animate-in fade-in slide-in-from-bottom-4">
             The new season
           </span>
@@ -128,7 +154,7 @@ function Hero() {
           </p>
 
           <div
-            className="grid grid-cols-2 gap-2 lg:flex lg:flex-row lg:gap-4 animate-in fade-in slide-in-from-bottom-10"
+            className="pointer-events-auto grid grid-cols-2 gap-2 lg:flex lg:flex-row lg:gap-4 animate-in fade-in slide-in-from-bottom-10"
             style={{ animationDelay: "300ms" }}
           >
             <Link
@@ -156,13 +182,13 @@ function Hero() {
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[350px] overflow-hidden sm:h-[410px] lg:hidden" aria-hidden="true">
-          {HERO_IMAGES.map((image, index) => (
+          {visibleSlides.map(({ image, index }) => (
             <img
               key={image}
               src={image}
               alt=""
               className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1800ms] ease-out motion-reduce:transition-none ${
-                index === activeHeroImage ? "opacity-100" : "opacity-0"
+                index === activeHeroImage % slides.length ? "opacity-100" : "opacity-0"
               }`}
               style={{
                 maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 28%, transparent 76%)",

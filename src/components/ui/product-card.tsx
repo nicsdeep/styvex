@@ -156,7 +156,7 @@ export function ProductCard({
         <Link
           to="/product/$slug"
           params={{ slug }}
-          className="absolute inset-0"
+          className="absolute inset-0 z-[1]"
           aria-label={`View ${name}`}
         >
           {imageUrl ? (
@@ -212,7 +212,7 @@ export function ProductCard({
       </div>
 
       <div className="flex flex-1 flex-col px-1 pb-1 pt-3 sm:pt-4">
-        <Link to="/product/$slug" params={{ slug }}>
+        <Link to="/product/$slug" params={{ slug }} className="after:absolute after:inset-0 after:content-[''] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand">
         <h3
           className="line-clamp-2 min-h-10 text-[13px] font-semibold leading-5 tracking-tight transition group-hover:text-brand sm:min-h-12 sm:text-lg sm:leading-6"
           title={name}
@@ -232,9 +232,9 @@ export function ProductCard({
           <span className="text-sm font-bold sm:text-base">{formatPrice(price)}</span>
           </div>
           {needsOptions && !soldOut ? (
-            <Link to="/product/$slug" params={{ slug }} className="flex min-h-11 items-center justify-center rounded-full bg-black px-3 py-2 text-center text-[11px] font-semibold text-white transition hover:bg-neutral-800 sm:text-xs">Choose options</Link>
+            <Link to="/product/$slug" params={{ slug }} className="relative z-10 flex min-h-11 items-center justify-center rounded-full bg-black px-3 py-2 text-center text-[11px] font-semibold text-white transition hover:bg-neutral-800 sm:text-xs">Choose options</Link>
           ) : (
-            <button type="button" onClick={handleQuickAdd} disabled={soldOut} className="min-h-11 rounded-full bg-black px-3 py-2 text-[11px] font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500 sm:text-xs">{soldOut ? "Sold out" : "Add to Cart"}</button>
+            <button type="button" onClick={handleQuickAdd} disabled={soldOut} className="relative z-10 min-h-11 rounded-full bg-black px-3 py-2 text-[11px] font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500 sm:text-xs">{soldOut ? "Sold out" : "Add to Cart"}</button>
           )}
         </div>
       </div>
