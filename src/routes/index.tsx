@@ -165,8 +165,8 @@ function Hero() {
                 index === activeHeroImage ? "opacity-100" : "opacity-0"
               }`}
               style={{
-                maskImage: "linear-gradient(to bottom, black 0%, black 28%, transparent 76%)",
-                WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 28%, transparent 76%)",
+                maskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 28%, transparent 76%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 16%, black 28%, transparent 76%)",
               }}
             />
           ))}

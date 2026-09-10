@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -148,11 +148,11 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-md bg-white transition duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]",
+        "group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[24px] border border-black/[0.07] bg-white p-2 text-black transition-shadow duration-200 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] sm:p-3",
         className,
       )}
     >
-      <div className="relative aspect-square shrink-0 overflow-hidden bg-white">
+      <div className="relative aspect-square shrink-0 overflow-hidden rounded-[18px] bg-neutral-50 sm:aspect-[4/3]">
         <Link
           to="/product/$slug"
           params={{ slug }}
@@ -186,12 +186,15 @@ export function ProductCard({
           )}
         </Link>
 
-        {/* Discount Badge Jumia Style */}
-        {discount > 0 && (
-          <div className="absolute right-2 top-2 z-10 rounded bg-white/95 px-1.5 py-0.5 text-[11px] font-bold text-brand shadow-sm">
-            -{discount}%
+        {(badges.length > 0 || discount > 0) && (
+          <div className="absolute right-0 top-0 z-10 max-w-[85%] rounded-bl-2xl bg-black px-3 py-2 text-[10px] font-semibold capitalize text-white sm:text-xs">
+            {badges[0]?.replace(/[-_]/g, " ") || `Save ${discount}%`}
           </div>
         )}
+
+        {rating != null && rating > 0 && (reviewCount ?? 0) > 0 && <div className="absolute bottom-2 left-2 flex min-h-8 items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold sm:text-sm">
+            <><span>{rating.toFixed(1)}</span><Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" /><span className="sr-only">out of 5, {reviewCount} reviews</span></>
+        </div>}
 
         <button
           onClick={(event) => {
@@ -199,47 +202,42 @@ export function ProductCard({
             event.stopPropagation();
             toggleWishlist.mutate();
           }}
-          className="absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition hover:scale-110 hover:text-brand"
+          className="absolute right-2 bottom-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black shadow-sm transition hover:scale-105 hover:text-brand sm:h-11 sm:w-11"
+          aria-pressed={actuallyWishlisted}
+          disabled={toggleWishlist.isPending}
           aria-label={actuallyWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
           <Heart className={cn("h-4 w-4", actuallyWishlisted && "fill-brand text-brand")} />
         </button>
       </div>
 
-      <Link
-        to="/product/$slug"
-        params={{ slug }}
-        className="flex flex-1 flex-col p-2 sm:p-3"
-        aria-label={`View details for ${name}`}
-      >
-        <div className="mb-1 flex items-center justify-between gap-2">
-          {soldOut && (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              Sold out
-            </span>
-          )}
-        </div>
-
+      <div className="flex flex-1 flex-col px-1 pb-1 pt-3 sm:pt-4">
+        <Link to="/product/$slug" params={{ slug }}>
         <h3
-          className="line-clamp-2 h-10 shrink-0 text-[13px] font-normal leading-5 text-ink/90 transition group-hover:text-brand"
+          className="line-clamp-2 min-h-10 text-[13px] font-semibold leading-5 tracking-tight transition group-hover:text-brand sm:min-h-12 sm:text-lg sm:leading-6"
           title={name}
         >
           {name}
         </h3>
-
-        <div className="mt-auto pt-2 flex flex-col gap-0.5">
-          <span className="text-base font-bold text-ink">
-            {formatPrice(price)}
-          </span>
+        </Link>
+        <p className="mt-1 text-[10px] leading-relaxed text-neutral-600 sm:text-xs">Free shipping over $50 · Easy returns</p>
+        {categoryName && <p className="mt-1 text-[10px] text-neutral-500">{categoryName}</p>}
+        <div className="mt-auto flex flex-col gap-3 pt-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           {compareAtPrice && compareAtPrice > price ? (
-            <span className="text-xs text-muted-foreground line-through">
+            <span className="text-[11px] text-neutral-400 line-through sm:text-xs">
               {formatPrice(compareAtPrice)}
             </span>
+          ) : null}
+          <span className="text-sm font-bold sm:text-base">{formatPrice(price)}</span>
+          </div>
+          {needsOptions && !soldOut ? (
+            <Link to="/product/$slug" params={{ slug }} className="flex min-h-11 items-center justify-center rounded-full bg-black px-3 py-2 text-center text-[11px] font-semibold text-white transition hover:bg-neutral-800 sm:text-xs">Choose options</Link>
           ) : (
-            <span className="text-xs text-transparent select-none">No discount</span>
+            <button type="button" onClick={handleQuickAdd} disabled={soldOut} className="min-h-11 rounded-full bg-black px-3 py-2 text-[11px] font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500 sm:text-xs">{soldOut ? "Sold out" : "Add to Cart"}</button>
           )}
         </div>
-      </Link>
+      </div>
     </article>
   );
 }
