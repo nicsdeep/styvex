@@ -134,7 +134,7 @@ function Hero() {
               to="/shop"
               className="flex min-h-11 items-center justify-center rounded-full bg-brand px-3 py-3 text-xs font-bold text-accent-foreground lg:px-8 lg:py-4 lg:text-sm transition-all hover:-translate-y-0.5 hover:bg-ink luxury-shadow"
             >
-              Shop Now <ArrowRight className="ml-2 h-4 w-4" />
+              Shop Now
             </Link>
             <Link
               to={"/category/womens-clothing" as any}
@@ -268,7 +268,7 @@ function ShopByCategories() {
             to="/shop"
             className="hidden items-center gap-1 text-sm font-semibold text-muted-foreground transition-colors hover:text-brand sm:flex"
           >
-            View All Categories <ArrowRight className="h-4 w-4" />
+            View All Categories
           </Link>
         </div>
 
@@ -311,7 +311,7 @@ function ProductCarousel({
             to={viewAllLink}
             className="hidden items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-brand md:flex"
           >
-            View All <ArrowRight className="h-4 w-4" />
+            View All
           </Link>
         </div>
 
