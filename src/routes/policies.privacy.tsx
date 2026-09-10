@@ -24,7 +24,7 @@ function PrivacyPolicy() {
           <ul className="list-disc pl-5 space-y-2">
             <li><strong>Identity Data:</strong> includes first name, last name, username or similar identifier.</li>
             <li><strong>Contact Data:</strong> includes billing address, delivery address, email address and telephone numbers.</li>
-            <li><strong>Financial Data:</strong> includes payment card details.</li>
+            <li><strong>Payment Data:</strong> card details are entered on the payment provider's hosted checkout, not in the STYVEX address form. Order records may include payment references and status.</li>
             <li><strong>Transaction Data:</strong> includes details about payments to and from you and other details of products you have purchased from us.</li>
             <li><strong>Technical Data:</strong> includes internet protocol (IP) address, your login data, browser type and version.</li>
           </ul>

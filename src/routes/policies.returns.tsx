@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { RETURN_WINDOW_DAYS } from "@/lib/store-policy";
 
 export const Route = createFileRoute("/policies/returns")({
   component: ReturnsPolicy,
@@ -19,7 +20,7 @@ function ReturnsPolicy() {
           
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Returns</h2>
           <p>
-            Our return window is 30 days. If 30 days have gone by since your purchase, unfortunately, we can’t offer you a refund or exchange. To be eligible for a return, your item must be unused and in the same condition that you received it. It must also be in the original packaging with all tags attached.
+            Request a return within {RETURN_WINDOW_DAYS} days of delivery. Items must be unused, in their original condition and packaging, with tags attached. Contact us before sending an item back so we can confirm the return instructions.
           </p>
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Refunds</h2>
@@ -29,12 +30,12 @@ function ReturnsPolicy() {
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Exchanges</h2>
           <p>
-            We only replace items if they are defective or damaged. If you need to exchange it for the same item, send us an email at returns@styvex.com and we will provide a return label.
+            Contact us about defective or damaged items. Replacement availability and any return instructions will be confirmed for your order.
           </p>
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Shipping Returns</h2>
           <p>
-            To return your product, please visit our Returns Portal. We provide prepaid return shipping labels for domestic returns. A return shipping fee of $8 will be deducted from your final refund amount. Original shipping costs are non-refundable.
+            Use the Contact Us page to request a return; there is no automated returns portal. Return shipping arrangements and any applicable costs will be confirmed before you send the item. Original shipping costs are non-refundable, except where applicable consumer rights require otherwise.
           </p>
         </div>
       </main>

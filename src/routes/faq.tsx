@@ -10,19 +10,19 @@ function FAQPage() {
   const faqs = [
     {
       question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express) as well as PayPal, Apple Pay, and Google Pay for secure and convenient checkout.",
+      answer: "Use the payment methods shown on the payment page. If payment is unavailable, your bag is retained and no successful order is confirmed. PayPal is not currently offered.",
     },
     {
       question: "Do you ship internationally?",
-      answer: "Yes, we ship to most countries worldwide. International shipping rates and delivery times are calculated at checkout. Please note that customs duties and taxes are the responsibility of the recipient.",
+      answer: "We ship to the destinations listed in checkout. See the Shipping Policy for estimates and U.S. free-shipping eligibility. International customs duties and taxes may be payable by the recipient.",
     },
     {
       question: "How can I track my order?",
-      answer: "Once your order has been dispatched, you will receive a shipping confirmation email containing a tracking link. You can also track your order directly on our Track Order page.",
+      answer: "Contact us with your order reference for shipment updates. Live tracking lookup is not yet available on the site. Use a carrier tracking link if one has been supplied for your order.",
     },
     {
       question: "What is your return policy?",
-      answer: "We offer a 30-day return policy for unused items in their original packaging with tags attached. Please visit our Return Policy page for full details and instructions on how to initiate a return.",
+      answer: "Request a return within 30 days of delivery for unused items in their original packaging with tags attached. See the Return Policy for instructions.",
     },
     {
       question: "Can I cancel or modify my order?",

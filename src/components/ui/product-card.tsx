@@ -7,6 +7,7 @@ import { useAuth } from "@/context/auth-context";
 import { useCart } from "@/context/cart-context";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { FREE_SHIPPING_COPY } from "@/lib/store-policy";
 
 type ProductVariant = {
   id: string;
@@ -220,7 +221,7 @@ export function ProductCard({
           {name}
         </h3>
         </Link>
-        <p className="mt-1 text-[10px] leading-relaxed text-neutral-600 sm:text-xs">Free shipping over $50 · Easy returns</p>
+        <p className="mt-1 text-[10px] leading-relaxed text-neutral-600 sm:text-xs">{FREE_SHIPPING_COPY} · Easy returns</p>
         {categoryName && <p className="mt-1 text-[10px] text-neutral-500">{categoryName}</p>}
         <div className="mt-auto flex flex-col gap-3 pt-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">

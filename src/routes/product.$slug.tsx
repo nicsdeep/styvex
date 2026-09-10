@@ -25,6 +25,8 @@ import {
 import { toast } from "sonner";
 
 import { ProductCard } from "@/components/ui/product-card";
+import { StoreBenefits } from "@/components/store-benefits";
+import { FREE_SHIPPING_COPY } from "@/lib/store-policy";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { useAuth } from "@/context/auth-context";
@@ -313,7 +315,7 @@ function ProductPage() {
         <div className="border-b border-border/60 bg-ink text-white">
           <div className="mx-auto flex max-w-[1540px] items-center justify-center gap-7 px-5 py-2.5 text-[10px] font-bold uppercase tracking-[.14em] sm:text-xs">
             <span className="flex items-center gap-2">
-              <Truck className="h-3.5 w-3.5 text-brand-soft" /> Free shipping over $50
+              <Truck className="h-3.5 w-3.5 text-brand-soft" /> {FREE_SHIPPING_COPY}
             </span>
             <span className="hidden items-center gap-2 sm:flex">
               <RotateCcw className="h-3.5 w-3.5 text-brand-soft" /> 30-day returns
@@ -600,19 +602,8 @@ function ProductPage() {
                     : "Ready to order"}
               </div>
 
-              <div className="mt-6 grid grid-cols-3 divide-x divide-border rounded-xl bg-muted/55 px-2 py-4 text-center">
-                <div className="px-2">
-                  <Truck className="mx-auto h-4 w-4 text-brand" />
-                  <p className="mt-1.5 text-[10px] font-bold uppercase">Tracked delivery</p>
-                </div>
-                <div className="px-2">
-                  <RotateCcw className="mx-auto h-4 w-4 text-brand" />
-                  <p className="mt-1.5 text-[10px] font-bold uppercase">Easy returns</p>
-                </div>
-                <div className="px-2">
-                  <ShieldCheck className="mx-auto h-4 w-4 text-brand" />
-                  <p className="mt-1.5 text-[10px] font-bold uppercase">Buyer protection</p>
-                </div>
+              <div className="mt-6">
+                <StoreBenefits compact />
               </div>
             </div>
           </div>

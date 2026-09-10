@@ -43,7 +43,7 @@ export function SiteHeader() {
       <div className="hidden border-b border-white/10 bg-ink text-primary-foreground sm:block">
         <div className="mx-auto grid h-8 max-w-[1540px] grid-cols-3 items-center px-5 text-[0.65rem] font-semibold uppercase tracking-widest md:px-10 lg:px-14">
           <p className="flex items-center justify-center gap-2 opacity-90">
-            <Truck className="h-3 w-3" aria-hidden="true" /> Complimentary U.S. shipping over $50
+            <Truck className="h-3 w-3" aria-hidden="true" /> {FREE_SHIPPING_COPY}
           </p>
           <p className="flex items-center justify-center gap-2 border-x border-white/15 px-4 text-white">
             <Tag className="h-3 w-3 text-brand" aria-hidden="true" /> New arrivals, selected weekly
@@ -260,3 +260,4 @@ export function SiteHeader() {
     </header>
   );
 }
+import { FREE_SHIPPING_COPY } from "@/lib/store-policy";

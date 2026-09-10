@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { FREE_SHIPPING_COPY, DELIVERY_COPY, estimateShipping } from "@/lib/store-policy";
 
 export const Route = createFileRoute("/policies/shipping")({
   component: ShippingPolicy,
@@ -14,30 +15,32 @@ function ShippingPolicy() {
         <h1 className="text-4xl font-serif mb-8 text-foreground">Shipping Policy</h1>
         <div className="space-y-6 text-foreground/80 leading-relaxed">
           <p>
-            At STYVEX, we aim to deliver your order as quickly and safely as possible. We offer a variety of shipping options to meet your needs.
+            {FREE_SHIPPING_COPY}. This offer applies to the merchandise subtotal in USD, excluding shipping. International orders do not qualify for this U.S. offer.
           </p>
           
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Processing Time</h2>
           <p>
-            All orders are processed within 1-2 business days. Orders are not shipped or delivered on weekends or holidays. If we are experiencing a high volume of orders, shipments may be delayed by a few days. Please allow additional days in transit for delivery.
+            Processing depends on supplier availability. Weekends, holidays and supplier delays can affect dispatch. {DELIVERY_COPY}
           </p>
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Shipping Rates & Delivery Estimates</h2>
-          <p>Shipping charges for your order will be calculated and displayed at checkout.</p>
+          <p>Checkout displays the estimates below. Review the final charges on the payment page before paying. Expedited and overnight options are not currently offered.</p>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Standard Shipping:</strong> 3-5 business days (Free on orders over $200, otherwise $8)</li>
-            <li><strong>Expedited Shipping:</strong> 2 business days ($15)</li>
-            <li><strong>Overnight Shipping:</strong> 1 business day ($25)</li>
+            <li>U.S. standard shipping: ${estimateShipping("US", 1).toFixed(2)} below or at the free-shipping threshold.</li>
+            <li>Canada: ${estimateShipping("CA", 1).toFixed(2)}.</li>
+            <li>United Kingdom, France and Germany: ${estimateShipping("GB", 1).toFixed(2)}.</li>
+            <li>Kenya and South Africa: ${estimateShipping("KE", 1).toFixed(2)}.</li>
+            <li>Australia, Italy and Japan: ${estimateShipping("AU", 1).toFixed(2)}.</li>
           </ul>
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">International Shipping</h2>
           <p>
-            We currently ship to select international destinations. Shipping rates and delivery times vary by country and will be displayed at checkout. Your order may be subject to import duties and taxes (including VAT), which are incurred once a shipment reaches your destination country. STYVEX is not responsible for these charges if they are applied and are your responsibility as the customer.
+            Available destinations are listed in checkout. International orders may incur customs duties and taxes payable by the recipient. Arrival dates and carriers are not guaranteed before dispatch.
           </p>
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Order Tracking</h2>
           <p>
-            You will receive a Shipment Confirmation email once your order has shipped containing your tracking number(s). The tracking number will be active within 24 hours.
+            Contact us with your order reference for shipment updates. Live tracking lookup is not currently available on the site; use a carrier tracking link if one has been supplied for your order.
           </p>
         </div>
       </main>

@@ -43,6 +43,13 @@ Whenever an agent successfully completes a task that involves code changes or da
 ### 3.2 UI/UX State Preservation Rule (MANDATORY)
 - When building or modifying UI components (like toggle buttons for Login/Sign Up methods), NEVER explicitly overwrite an unrelated state (e.g., forcing a return to Login mode when the user clicks an Email Code option while in Sign Up mode). Only update the state relevant to the interaction.
 
+### 3.3 Policy and Checkout Consistency (MANDATORY)
+- On every task, check whether the change affects prices, shipping eligibility/rates, delivery estimates, returns, payment methods, tracking, or customer promises. Update affected policies, FAQs, banners, product captions, and checkout in the same change.
+- Reuse `src/lib/store-policy.ts` for shared storefront rules. Never treat example text in reference images as authorization to change business terms.
+- Verify the actual payment backend agrees with displayed charges before claiming checkout parity. Never show simulated payment success to customers or clear a cart after payment failure.
+- Use factual, professional language. Do not advertise unimplemented tracking, payment methods, guaranteed delivery, or around-the-clock support.
+- Record unresolved discrepancies in `docs/policy-audit.md` and report them explicitly; do not claim a full audit passed while blockers remain.
+
 
 ```env
 VITE_SUPABASE_URL=https://xfbdzfpsgclqgilzioqy.supabase.co

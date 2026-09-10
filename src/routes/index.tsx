@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Truck, RefreshCcw, ShieldCheck, Headset } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { StoreBenefits } from "@/components/store-benefits";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
 
@@ -28,30 +29,10 @@ export const Route = createFileRoute("/")({
 
 // 1. Trust Bar
 function TrustBar() {
-  const features = [
-    { icon: Truck, title: "Free Shipping", subtitle: "On orders over $50" },
-    { icon: ShieldCheck, title: "Secure Payments", subtitle: "100% secure checkout" },
-    { icon: RefreshCcw, title: "Easy Returns", subtitle: "30-day return policy" },
-    { icon: Headset, title: "24/7 Support", subtitle: "Always here to help" },
-  ];
-
   return (
-    <section className="mx-5 mt-8 rounded-2xl border border-border/70 bg-card py-7 md:mx-10 md:mt-12 lg:mx-14">
-      <div className="mx-auto grid max-w-[1540px] grid-cols-2 gap-x-4 gap-y-7 px-5 md:grid-cols-4 md:gap-6 md:px-10 lg:px-14">
-        {features.map((feat, i) => (
-          <div
-            key={i}
-            className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4"
-          >
-            <feat.icon className="h-5 w-5 text-brand stroke-[1.5]" />
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-foreground leading-tight">{feat.title}</span>
-              <span className="text-xs text-muted-foreground mt-0.5">{feat.subtitle}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+    <div className="mx-auto mt-6 max-w-[1540px] px-5 md:mt-10 md:px-10 lg:px-14">
+      <StoreBenefits />
+    </div>
   );
 }
 
