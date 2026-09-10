@@ -351,8 +351,8 @@ function ProductPage() {
           <span className="truncate text-foreground">{product.name}</span>
         </nav>
 
-        <section className="mx-auto grid max-w-[1540px] gap-8 px-5 pb-12 md:px-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(380px,.75fr)] lg:gap-12 lg:px-14 lg:pb-16">
-          <div className="min-w-0">
+        <section className="mx-auto grid max-w-[1540px] gap-8 px-5 pb-12 md:px-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-16 lg:px-14 lg:pb-16">
+          <div className="min-w-0 max-w-2xl justify-self-center lg:justify-self-end w-full">
             <div className="grid gap-3 sm:grid-cols-[76px_minmax(0,1fr)]">
               {sortedImages.length > 1 && (
                 <div className="order-2 flex gap-3 overflow-x-auto pb-2 sm:order-1 sm:flex-col sm:pb-0 scrollbar-hide">
@@ -375,16 +375,16 @@ function ProductPage() {
               )}
               <div
                 className={cn(
-                  "relative order-1 overflow-hidden rounded-2xl bg-[#f4f1ed] sm:order-2",
+                  "relative order-1 overflow-hidden rounded-2xl bg-white sm:order-2",
                   sortedImages.length > 1 ? "" : "sm:col-span-2",
                 )}
               >
-                <div className="aspect-[4/5] sm:aspect-[5/6] lg:aspect-[4/5]">
+                <div className="aspect-square md:aspect-[4/5] max-h-[750px]">
                   {sortedImages[activeImageIndex] ? (
                     <img
                       src={sortedImages[activeImageIndex].image_url}
                       alt={product.name}
-                      className="h-full w-full cursor-zoom-in object-cover transition duration-500 hover:scale-[1.025]"
+                      className="h-full w-full cursor-zoom-in object-contain transition duration-500 hover:scale-[1.025]"
                       onClick={() => setIsImageZoomed(true)}
                     />
                   ) : (
@@ -394,11 +394,13 @@ function ProductPage() {
                   )}
                 </div>
                 <div className="absolute left-4 top-4 flex gap-2">
-                  <span className="rounded-md bg-brand px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
-                    Save {discount}%
-                  </span>
+                  {discount > 0 && (
+                    <span className="rounded-md bg-brand px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-sm">
+                      Save {discount}%
+                    </span>
+                  )}
                   {product.is_featured && (
-                    <span className="rounded-md bg-ink px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
+                    <span className="rounded-md bg-ink px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-sm">
                       Bestseller
                     </span>
                   )}
@@ -406,7 +408,7 @@ function ProductPage() {
                 {sortedImages.length > 0 && (
                   <button
                     onClick={() => setIsImageZoomed(true)}
-                    className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow backdrop-blur"
+                    className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow backdrop-blur transition hover:scale-110"
                     aria-label="Zoom product image"
                   >
                     <ZoomIn className="h-4 w-4" />
