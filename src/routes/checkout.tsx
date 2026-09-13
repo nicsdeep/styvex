@@ -37,9 +37,12 @@ function CheckoutPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
+  const [address2, setAddress2] = useState("");
   const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [country, setCountry] = useState("US");
   const [zip, setZip] = useState("");
+  const [phone, setPhone] = useState("");
 
   const shippingCost = useMemo(() => {
     if (items.length === 0) return 0;
@@ -72,10 +75,13 @@ function CheckoutPage() {
             name: `${firstName} ${lastName}`,
             address: {
               line1: address,
+              line2: address2,
               city,
+              state,
               country,
               postal_code: zip,
             },
+            phone,
           },
         },
       });
@@ -200,6 +206,17 @@ function CheckoutPage() {
                         ))}
                       </select>
                     </div>
+                    <div className="space-y-2 col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Apartment, suite, etc. (optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={address2} aria-label="Apartment, suite, or unit" autoComplete="address-line2"
+                        onChange={(e) => setAddress2(e.target.value)}
+                        className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                      />
+                    </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         City
@@ -214,6 +231,18 @@ function CheckoutPage() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        State / Province
+                      </label>
+                      <input
+                        type="text"
+                        required={country === "US" || country === "CA"}
+                        value={state} aria-label="State or province" autoComplete="address-level1"
+                        onChange={(e) => setState(e.target.value)}
+                        className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Postal Code
                       </label>
                       <input
@@ -221,6 +250,17 @@ function CheckoutPage() {
                         required
                         value={zip} aria-label="Postal code" autoComplete="postal-code"
                         onChange={(e) => setZip(e.target.value)}
+                        className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+                      />
+                    </div>
+                    <div className="space-y-2 col-span-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                        Phone (optional)
+                      </label>
+                      <input
+                        type="tel"
+                        value={phone} aria-label="Phone number" autoComplete="tel"
+                        onChange={(e) => setPhone(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
                     </div>

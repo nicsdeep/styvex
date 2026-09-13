@@ -12,8 +12,8 @@
 - AGENTS.md section 3.3 requires policy updates and backend verification in every affected task.
 
 ## Unresolved release blockers — do not claim full payment parity
-- Repository `create-checkout-session` does not add shipping to Stripe line items or shipping options, although the storefront displays an estimate. Its deployed behavior has not been verified by this audit.
-- The server function still has mock-success behavior when Stripe is not configured; the updated storefront refuses that URL. Direct server callers are not addressed by the frontend guard.
-- Stripe configuration, real paid-order recording/webhooks, refund operations, and supplier/carrier tracking require end-to-end verification. No payment or order was placed during this audit.
+- Checkout now persists an authoritative pending order before redirecting to Stripe and adds the displayed shipping charge to the Stripe session. The deployed behavior still requires an end-to-end paid test.
+- The server mock-success fallback was removed; checkout fails closed when Stripe is not configured.
+- Paid Stripe webhooks create Printful draft orders only after `payment_status=paid`. Drafts do not submit fulfillment or charge the Printful billing method.
+- Stripe secrets/webhook delivery, Printful token/store setup, a real paid order, refunds, and supplier/carrier tracking still require end-to-end verification.
 - Privacy/terms require owner review of actual operational practices; this technical pass is not a legal compliance certification.
-- No database migration or Edge Function deployment was performed in this pass.

@@ -39,32 +39,32 @@ export type Database = {
   }
   public: {
     Tables: {
-      orders: {
+      categories: {
         Row: {
-          id: string
-          user_id: string
-          stripe_session_id: string | null
-          total_amount: number
-          status: string
           created_at: string
+          description: string | null
+          id: string
+          name: string
+          retail_markup_percentage: number | null
+          slug: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          stripe_session_id?: string | null
-          total_amount: number
-          status?: string
           created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          retail_markup_percentage?: number | null
+          slug: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          stripe_session_id?: string | null
-          total_amount?: number
-          status?: string
           created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          retail_markup_percentage?: number | null
+          slug?: string
           updated_at?: string
         }
         Relationships: []
@@ -73,26 +73,35 @@ export type Database = {
         Row: {
           id: string
           order_id: string
+          price: number
           product_id: string | null
           product_name: string
           quantity: number
-          price: number
+          supplier: string
+          supplier_variant_id: string | null
+          variant_id: string | null
         }
         Insert: {
           id?: string
           order_id: string
+          price: number
           product_id?: string | null
           product_name: string
           quantity: number
-          price: number
+          supplier?: string
+          supplier_variant_id?: string | null
+          variant_id?: string | null
         }
         Update: {
           id?: string
           order_id?: string
+          price?: number
           product_id?: string | null
           product_name?: string
           quantity?: number
-          price?: number
+          supplier?: string
+          supplier_variant_id?: string | null
+          variant_id?: string | null
         }
         Relationships: [
           {
@@ -101,48 +110,66 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
-      user_roles: {
-        Row: { id: string; user_id: string; role: 'admin'; created_at: string }
-        Insert: { user_id: string; role: 'admin'; id?: string; created_at?: string }
-        Update: { role?: 'admin' }
-        Relationships: []
-      }
-      store_settings: {
-        Row: { id: number; header_logo: string; footer_logo: string; header_height: number; footer_height: number }
-        Insert: { id?: number; header_logo?: string; footer_logo?: string; header_height?: number; footer_height?: number }
-        Update: { header_logo?: string; footer_logo?: string; header_height?: number; footer_height?: number }
-        Relationships: []
-      }
-      categories: {
+      orders: {
         Row: {
           created_at: string
-          description: string | null
+          currency: string
+          customer_email: string | null
+          fulfillment_error: string | null
+          fulfillment_provider: string | null
+          fulfillment_status: string
           id: string
-          name: string
-          slug: string
-          retail_markup_percentage: number | null
+          payment_status: string
+          shipping_address: Json | null
+          shipping_amount: number
+          status: string
+          stripe_session_id: string | null
+          subtotal_amount: number | null
+          supplier_order_id: string | null
+          total_amount: number
           updated_at: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          description?: string | null
+          currency?: string
+          customer_email?: string | null
+          fulfillment_error?: string | null
+          fulfillment_provider?: string | null
+          fulfillment_status?: string
           id?: string
-          name: string
-          slug: string
-          retail_markup_percentage?: number | null
+          payment_status?: string
+          shipping_address?: Json | null
+          shipping_amount?: number
+          status?: string
+          stripe_session_id?: string | null
+          subtotal_amount?: number | null
+          supplier_order_id?: string | null
+          total_amount: number
           updated_at?: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          description?: string | null
+          currency?: string
+          customer_email?: string | null
+          fulfillment_error?: string | null
+          fulfillment_provider?: string | null
+          fulfillment_status?: string
           id?: string
-          name?: string
-          slug?: string
-          retail_markup_percentage?: number | null
+          payment_status?: string
+          shipping_address?: Json | null
+          shipping_amount?: number
+          status?: string
+          stripe_session_id?: string | null
+          subtotal_amount?: number | null
+          supplier_order_id?: string | null
+          total_amount?: number
           updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -187,6 +214,7 @@ export type Database = {
           product_id: string
           size: string | null
           sku: string
+          supplier_variant_id: string | null
           updated_at: string
         }
         Insert: {
@@ -197,6 +225,7 @@ export type Database = {
           product_id: string
           size?: string | null
           sku: string
+          supplier_variant_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -207,6 +236,7 @@ export type Database = {
           product_id?: string
           size?: string | null
           sku?: string
+          supplier_variant_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -221,39 +251,51 @@ export type Database = {
       }
       products: {
         Row: {
+          base_review_count: number | null
           category_id: string | null
           created_at: string
           description: string | null
+          fts: unknown
           id: string
           is_featured: boolean
           name: string
           price: number
           slug: string
-          base_review_count: number | null
+          supplier: string
+          supplier_cost: number | null
+          supplier_product_id: string | null
           updated_at: string
         }
         Insert: {
+          base_review_count?: number | null
           category_id?: string | null
           created_at?: string
           description?: string | null
+          fts?: unknown
           id?: string
           is_featured?: boolean
           name: string
           price?: number
           slug: string
-          base_review_count?: number | null
+          supplier?: string
+          supplier_cost?: number | null
+          supplier_product_id?: string | null
           updated_at?: string
         }
         Update: {
+          base_review_count?: number | null
           category_id?: string | null
           created_at?: string
           description?: string | null
+          fts?: unknown
           id?: string
           is_featured?: boolean
           name?: string
           price?: number
           slug?: string
-          base_review_count?: number | null
+          supplier?: string
+          supplier_cost?: number | null
+          supplier_product_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -265,6 +307,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          interested_products: Json | null
+          is_onboarded: boolean
+          updated_at: string
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          interested_products?: Json | null
+          is_onboarded?: boolean
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          interested_products?: Json | null
+          is_onboarded?: boolean
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      store_settings: {
+        Row: {
+          footer_height: number
+          footer_logo: string
+          header_height: number
+          header_logo: string
+          id: number
+        }
+        Insert: {
+          footer_height?: number
+          footer_logo?: string
+          header_height?: number
+          header_logo?: string
+          id?: number
+        }
+        Update: {
+          footer_height?: number
+          footer_logo?: string
+          header_height?: number
+          header_logo?: string
+          id?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
       wishlists: {
         Row: {
@@ -295,45 +412,21 @@ export type Database = {
           },
         ]
       }
-      profiles: {
-        Row: {
-          id: string
-          full_name: string | null
-          whatsapp_number: string | null
-          interested_products: Json | null
-          is_onboarded: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          full_name?: string | null
-          whatsapp_number?: string | null
-          interested_products?: Json | null
-          is_onboarded?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          full_name?: string | null
-          whatsapp_number?: string | null
-          interested_products?: Json | null
-          is_onboarded?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -349,12 +442,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -378,11 +471,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -403,11 +496,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -428,11 +521,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -445,11 +538,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -463,6 +556,8 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const

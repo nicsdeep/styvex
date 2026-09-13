@@ -7,10 +7,12 @@ This note records the approved supplier shortlist and sourcing rules for Styvex.
 ### 1. Printful — primary recommendation
 
 - Use for print-on-demand and branded apparel.
+- Import only products that have been designed and published to the Styvex Printful Manual order/API store.
 - Provides a documented REST API for products, variants, orders, shipping estimates, fulfillment status, and webhooks.
 - No setup fee, order minimum, or required monthly subscription on the free plan.
 - Styvex pays fulfillment costs only after a customer order has been placed.
 - Confirm supplier fulfillment only after Styvex has verified successful customer payment.
+- Styvex creates a Printful draft after verified payment. Confirming that draft is the separate action that submits fulfillment and charges the Printful billing method.
 - A merchant billing method is still required for fulfillment, and payment-processor payouts may arrive later than the supplier charge.
 - Printful's API does not support jewelry.
 

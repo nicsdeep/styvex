@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "sync-cj": "node scripts/sync-cj-products.cjs"
+    "sync-cj": "node scripts/sync-cj-products.cjs",
+    "sync-printful": "node scripts/sync-printful-products.cjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
