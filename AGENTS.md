@@ -84,3 +84,9 @@ CJDROPSHIPPING_API_KEY="CJ1294692@api@c09d68acb2584e0f82a30fcc9c267606"
 - **Search Robustness**: `/search` currently performs basic debounced queries; can be expanded with full-text Postgres search.
 - **Admin Expansion**: Extend the existing `/admin` dashboard with order fulfillment after the order tables and Stripe webhook flow are implemented.
 - **SEO & Performance**: Add standard SEO tags dynamically per product and configure proper OpenGraph tags for social sharing.
+
+### 6. Suppliers to Rely On (Project Memory)
+- Treat `docs/suppliers-to-rely-on.md` as the durable supplier decision record.
+- Preferred API suppliers: **Printful** first and **Apliiq** second.
+- Continue considering CJ Dropshipping for ready-made products only when the product can credibly retail on Styvex for **$30 USD or more**.
+- Confirm customer payment before submitting any supplier fulfillment order.
