@@ -12,6 +12,7 @@
 - AGENTS.md section 3.3 requires policy updates and backend verification in every affected task.
 
 ## Unresolved release blockers — do not claim full payment parity
+- 2026-09-14 supplier repair: 60 products verified against CJ product IDs and existing SKU provenance; 12 variants mapped unambiguously. Five legacy/manual products and 92 variants remain unmapped (including legacy variants). See `cj-mapping-audit.json` for unresolved options and previous mapping values. No prices or stock were changed. Real option/stock import and destination/quantity freight integration remain pending.
 - Checkout now persists an authoritative pending order before redirecting to Stripe and adds the displayed shipping charge to the Stripe session. The deployed behavior still requires an end-to-end paid test.
 - The server mock-success fallback was removed; checkout fails closed when Stripe is not configured.
 - Paid Stripe webhooks create Printful draft orders only after `payment_status=paid`. Drafts do not submit fulfillment or charge the Printful billing method.

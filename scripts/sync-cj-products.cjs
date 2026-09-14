@@ -177,29 +177,10 @@ async function run() {
         display_order: 1
       }]);
 
-      // Sync Variants (mocking variants for simplicity as listV2 doesn't return full variant matrix)
-      await supabaseRequest("DELETE", "product_variants", null, `?product_id=eq.${productId}`);
-      
-      const variantsToInsert = [];
-      if (cat.name === "Women's Clothing") {
-        const sizes = ["S", "M", "L"];
-        for (const size of sizes) {
-          variantsToInsert.push({
-            product_id: productId,
-            sku: `${item.sku}-${size}`.substring(0, 50),
-            size: size,
-            inventory_quantity: item.warehouseInventoryNum || 100
-          });
-        }
-      } else {
-        variantsToInsert.push({
-          product_id: productId,
-          sku: `${item.sku}-DEFAULT`.substring(0, 50),
-          inventory_quantity: item.warehouseInventoryNum || 100
-        });
-      }
-      
-      await supabaseRequest("POST", "product_variants", variantsToInsert);
+      // listV2 does not provide the actual variant matrix. Never delete existing
+      // variant UUIDs or invent sizes/stock: carts and supplier mappings depend on them.
+      // Existing variants are preserved. New options require verified detail/stock import.
+      console.log("Preserved variants; run the supplier mapping audit before fulfillment.");
       console.log(`Inserted: ${item.nameEn}`);
     }
   }
