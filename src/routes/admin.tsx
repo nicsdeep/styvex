@@ -52,6 +52,11 @@ const fields: Record<Table, Field[]> = {
     { key: "description", label: "Description", type: "textarea" },
     { key: "supplier_cost", label: "Supplier Cost (Read-Only)", type: "number", readOnly: true },
     { key: "price", label: "Retail Price (Auto-calculated)", type: "number", readOnly: true },
+    {
+      key: "retail_price_override",
+      label: "Retail price override ($; blank uses category markup)",
+      type: "number",
+    },
     { key: "category_id", label: "Category ID" },
     { key: "is_featured", label: "Featured product", type: "checkbox" },
   ],
@@ -199,7 +204,10 @@ function AdminPage() {
           {tab === "dashboard" ? (
             <DashboardOverview setTab={setTab} />
           ) : tab === "brand" ? (
-            <BrandSettings />
+            <>
+              <ShippingSettings />
+              <BrandSettings />
+            </>
           ) : tab === "orders" ? (
             <OrdersAdmin />
           ) : (
@@ -421,6 +429,95 @@ function BrandSettings() {
   );
 }
 
+function ShippingSettings() {
+  const client = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const query = useQuery({
+    queryKey: ["admin-shipping-rules"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("supplier_shipping_rules")
+        .select("*")
+        .eq("supplier", "cj")
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+  return (
+    <section className="mb-10 rounded-xl border bg-white p-6">
+      <h2 className="text-xl font-bold">CJ shipping pricing</h2>
+      <p className="my-3 text-sm text-muted-foreground">
+        Supplier freight × (1 + markup %) + handling once per order. Standard U.S. shipping is free
+        above $600 after discounts, excluding tax and shipping. STYVEX pays the supplier freight in
+        full.
+      </p>
+      {query.isError ? (
+        <p>Unable to load shipping settings.</p>
+      ) : !query.data ? (
+        <p>Loading…</p>
+      ) : (
+        <form
+          key={query.data.markup_percentage + "-" + query.data.handling_fee}
+          className="grid gap-4 sm:grid-cols-3"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const form = new FormData(e.currentTarget);
+            setBusy(true);
+            try {
+              const { data, error } = await (supabase as any)
+                .from("supplier_shipping_rules")
+                .update({
+                  markup_percentage: Number(form.get("markup")),
+                  handling_fee: Number(form.get("handling")),
+                })
+                .eq("supplier", "cj")
+                .select("supplier");
+              if (error || !data?.length) throw new Error("Shipping settings were not saved.");
+              await client.invalidateQueries({ queryKey: ["admin-shipping-rules"] });
+              toast.success("Shipping settings saved");
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Save failed");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <label className="text-sm">
+            Shipping markup (%)
+            <input
+              className={input}
+              name="markup"
+              type="number"
+              min="0"
+              max="1000"
+              step="0.01"
+              required
+              defaultValue={query.data.markup_percentage}
+            />
+          </label>
+          <label className="text-sm">
+            Handling per order ($)
+            <input
+              className={input}
+              name="handling"
+              type="number"
+              min="0"
+              max="1000"
+              step="0.01"
+              required
+              defaultValue={query.data.handling_fee}
+            />
+          </label>
+          <button className={button} disabled={busy}>
+            {busy ? "Saving…" : "Save shipping rules"}
+          </button>
+        </form>
+      )}
+    </section>
+  );
+}
+
 function CatalogEditor({ table }: { table: Table }) {
   const client = useQueryClient();
   const [page, setPage] = useState(0);
@@ -602,7 +699,9 @@ function CatalogEditor({ table }: { table: Table }) {
                     field.type === "checkbox"
                       ? value === "on"
                       : field.type === "number"
-                        ? Number(value)
+                        ? value === "" || value === null
+                          ? null
+                          : Number(value)
                         : String(value ?? "").trim() || null;
                 }
                 if (payload["image_url"] && !String(payload["image_url"]).startsWith("https://")) {
@@ -649,7 +748,11 @@ function CatalogEditor({ table }: { table: Table }) {
                       />
                     ) : (
                       <input
-                        className={cn(input, "mt-2", field.readOnly && "bg-slate-100 text-slate-500 cursor-not-allowed")}
+                        className={cn(
+                          input,
+                          "mt-2",
+                          field.readOnly && "bg-slate-100 text-slate-500 cursor-not-allowed",
+                        )}
                         name={field.key}
                         type={field.type ?? "text"}
                         required={field.required}

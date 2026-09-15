@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { estimateShipping, DELIVERY_COPY } from "@/lib/store-policy";
+import { DELIVERY_COPY } from "@/lib/store-policy";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -44,19 +44,60 @@ function CheckoutPage() {
   const [zip, setZip] = useState("");
   const [phone, setPhone] = useState("");
 
-  const shippingCost = useMemo(() => {
-    if (items.length === 0) return 0;
-    return estimateShipping(country, subtotal);
-  }, [country, items.length, subtotal]);
+  const [quote, setQuote] = useState<{
+    quoteId: string;
+    expiresAt: string;
+    subtotal: number;
+    shipping: number;
+    total: number;
+    prices: { id: string; price: number }[];
+    key: string;
+  } | null>(null);
+  const [quoting, setQuoting] = useState(false);
+  const shipping = {
+    name: `${firstName} ${lastName}`,
+    address: { line1: address, line2: address2, city, state, country, postal_code: zip },
+    phone,
+  };
+  const quoteKey = JSON.stringify({ items, email, shipping });
+  const validQuote =
+    quote?.key === quoteKey && Date.parse(quote.expiresAt) > Date.now() ? quote : null;
+  const shippingCost = validQuote?.shipping;
+  const calculateShipping = async () => {
+    setQuoting(true);
+    setQuote(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+        body: { mode: "quote", items, email, shipping },
+      });
+      if (error || !data?.quoteId) {
+        const body = error?.context ? await error.context.json().catch(() => null) : null;
+        throw new Error(
+          body?.error ||
+            data?.error ||
+            "Unable to calculate shipping. Check your address and sign in.",
+        );
+      }
+      setQuote({ ...data, key: quoteKey });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Shipping unavailable.");
+    } finally {
+      setQuoting(false);
+    }
+  };
 
   const shippingProvider = useMemo(() => {
     return country === "US" ? "Standard U.S. shipping" : "Standard international shipping";
   }, [country]);
 
-  const total = subtotal + shippingCost;
+  const total = validQuote?.total;
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validQuote) {
+      toast.error("Calculate shipping and review the total first.");
+      return;
+    }
 
     if (items.length === 0) {
       toast.error("Your cart is empty");
@@ -71,6 +112,7 @@ function CheckoutPage() {
         body: {
           items,
           email,
+          quoteId: validQuote.quoteId,
           shipping: {
             name: `${firstName} ${lastName}`,
             address: {
@@ -87,18 +129,21 @@ function CheckoutPage() {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to initiate checkout");
+        const body = error.context ? await error.context.json().catch(() => null) : null;
+        setQuote(null);
+        throw new Error(body?.error || error.message || "Failed to initiate checkout");
       }
 
       if (data?.url && new URL(data.url).hostname === "checkout.stripe.com") {
         window.location.href = data.url;
       } else {
-        throw new Error("Payment is currently unavailable. Your bag has been saved; please try again later.");
+        throw new Error(
+          "Payment is currently unavailable. Your bag has been saved; please try again later.",
+        );
       }
     } catch (error: any) {
       console.error(error);
       toast.error(error.message || "An error occurred during checkout.");
-
     } finally {
       setIsProcessing(false);
     }
@@ -111,7 +156,6 @@ function CheckoutPage() {
     <div className="flex min-h-screen flex-col bg-[#fffdfb]">
       <SiteHeader />
       <main className="flex-1 pb-24 pt-0">
-
         <div className="mx-auto max-w-[1200px] px-5 py-8 md:px-10 lg:px-14 lg:py-12">
           <nav className="mb-8 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
             <Link to="/cart" className="hover:text-ink transition">
@@ -125,7 +169,11 @@ function CheckoutPage() {
 
           <div className="grid gap-12 lg:grid-cols-[1.25fr_1fr]">
             <div className="space-y-10">
-              <form id="checkout-form" onSubmit={handleCheckout} className="space-y-6 [&_input]:h-11 [&_input]:min-w-0 [&_input]:rounded-lg [&_input]:px-3 [&_input]:py-2 [&_input]:text-base [&_input::placeholder]:text-xs [&_select]:h-11 [&_select]:min-w-0 [&_select]:rounded-lg [&_select]:px-3 [&_select]:py-2 [&_select]:text-base [&_label]:block [&_label]:text-[11px] [&_label]:normal-case [&_label]:tracking-normal [&_h2]:mb-3 [&_h2]:font-sans [&_h2]:text-lg">
+              <form
+                id="checkout-form"
+                onSubmit={handleCheckout}
+                className="space-y-6 [&_input]:h-11 [&_input]:min-w-0 [&_input]:rounded-lg [&_input]:px-3 [&_input]:py-2 [&_input]:text-base [&_input::placeholder]:text-xs [&_select]:h-11 [&_select]:min-w-0 [&_select]:rounded-lg [&_select]:px-3 [&_select]:py-2 [&_select]:text-base [&_label]:block [&_label]:text-[11px] [&_label]:normal-case [&_label]:tracking-normal [&_h2]:mb-3 [&_h2]:font-sans [&_h2]:text-lg"
+              >
                 <section>
                   <h2 className="font-display text-2xl font-semibold tracking-tight text-ink mb-5">
                     Contact Information
@@ -141,7 +189,9 @@ function CheckoutPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                        placeholder="you@example.com" aria-label="Email address" autoComplete="email"
+                        placeholder="you@example.com"
+                        aria-label="Email address"
+                        autoComplete="email"
                       />
                     </div>
                   </div>
@@ -159,7 +209,9 @@ function CheckoutPage() {
                       <input
                         type="text"
                         required
-                        value={firstName} aria-label="First name" autoComplete="given-name"
+                        value={firstName}
+                        aria-label="First name"
+                        autoComplete="given-name"
                         onChange={(e) => setFirstName(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
@@ -171,7 +223,9 @@ function CheckoutPage() {
                       <input
                         type="text"
                         required
-                        value={lastName} aria-label="Last name" autoComplete="family-name"
+                        value={lastName}
+                        aria-label="Last name"
+                        autoComplete="family-name"
                         onChange={(e) => setLastName(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
@@ -186,7 +240,9 @@ function CheckoutPage() {
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                        placeholder="Street address" aria-label="Street address" autoComplete="street-address"
+                        placeholder="Street address"
+                        aria-label="Street address"
+                        autoComplete="street-address"
                       />
                     </div>
                     <div className="space-y-2 col-span-2">
@@ -195,7 +251,9 @@ function CheckoutPage() {
                       </label>
                       <select
                         required
-                        value={country} aria-label="Country or region" autoComplete="country"
+                        value={country}
+                        aria-label="Country or region"
+                        autoComplete="country"
                         onChange={(e) => setCountry(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand appearance-none"
                       >
@@ -212,7 +270,9 @@ function CheckoutPage() {
                       </label>
                       <input
                         type="text"
-                        value={address2} aria-label="Apartment, suite, or unit" autoComplete="address-line2"
+                        value={address2}
+                        aria-label="Apartment, suite, or unit"
+                        autoComplete="address-line2"
                         onChange={(e) => setAddress2(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
@@ -224,7 +284,9 @@ function CheckoutPage() {
                       <input
                         type="text"
                         required
-                        value={city} aria-label="City" autoComplete="address-level2"
+                        value={city}
+                        aria-label="City"
+                        autoComplete="address-level2"
                         onChange={(e) => setCity(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
@@ -236,7 +298,9 @@ function CheckoutPage() {
                       <input
                         type="text"
                         required={country === "US" || country === "CA"}
-                        value={state} aria-label="State or province" autoComplete="address-level1"
+                        value={state}
+                        aria-label="State or province"
+                        autoComplete="address-level1"
                         onChange={(e) => setState(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
@@ -248,7 +312,9 @@ function CheckoutPage() {
                       <input
                         type="text"
                         required
-                        value={zip} aria-label="Postal code" autoComplete="postal-code"
+                        value={zip}
+                        aria-label="Postal code"
+                        autoComplete="postal-code"
                         onChange={(e) => setZip(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
@@ -259,14 +325,16 @@ function CheckoutPage() {
                       </label>
                       <input
                         type="tel"
-                        value={phone} aria-label="Phone number" autoComplete="tel"
+                        value={phone}
+                        aria-label="Phone number"
+                        autoComplete="tel"
                         onChange={(e) => setPhone(e.target.value)}
                         className="w-full rounded-xl border border-border/60 bg-white px-4 py-3.5 text-sm transition focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
                       />
                     </div>
                   </div>
                 </section>
-                
+
                 <section>
                   <h2 className="font-display text-2xl font-semibold tracking-tight text-ink mb-5 flex items-center gap-2">
                     <Truck className="h-5 w-5 text-brand" /> Shipping Method
@@ -276,12 +344,34 @@ function CheckoutPage() {
                       <div className="h-4 w-4 rounded-full border-4 border-brand bg-white" />
                       <div>
                         <p className="font-bold text-sm text-ink">{shippingProvider}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">Estimate · confirmed at payment</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {validQuote
+                            ? "Rechecked before payment"
+                            : "Enter your address to calculate shipping"}
+                        </p>
                       </div>
                     </div>
-                    <span className="font-extrabold text-sm text-ink">{formatPrice(shippingCost)}</span>
+                    <span className="font-extrabold text-sm text-ink">
+                      {shippingCost == null ? "—" : formatPrice(shippingCost)}
+                    </span>
                   </div>
                   <p className="mt-2 text-xs leading-5 text-muted-foreground">{DELIVERY_COPY}</p>
+                  <button
+                    type="button"
+                    onClick={calculateShipping}
+                    disabled={quoting || isProcessing || !items.length}
+                    className="mt-3 rounded-lg bg-ink px-4 py-3 text-sm font-semibold text-white disabled:opacity-50"
+                  >
+                    {quoting ? "Calculating…" : "Calculate shipping"}
+                  </button>
+                  {!user && (
+                    <p className="mt-2 text-sm">
+                      <Link to="/account" className="underline">
+                        Sign in
+                      </Link>{" "}
+                      to calculate shipping and check out.
+                    </p>
+                  )}
                 </section>
               </form>
             </div>
@@ -313,7 +403,9 @@ function CheckoutPage() {
                           {item.color} / {item.size}
                         </span>
                         <span className="font-bold text-sm text-ink mt-2">
-                          {formatPrice(item.price)}
+                          {formatPrice(
+                            validQuote?.prices.find((p) => p.id === item.id)?.price ?? item.price,
+                          )}
                         </span>
                       </div>
                     </div>
@@ -323,22 +415,28 @@ function CheckoutPage() {
                 <div className="space-y-4 border-t border-border/60 pt-6 text-sm">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span className="font-semibold text-ink">{formatPrice(subtotal)}</span>
+                    <span className="font-semibold text-ink">
+                      {formatPrice(validQuote?.subtotal ?? subtotal)}
+                    </span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>Estimated shipping</span>
-                    <span className="font-semibold text-ink">{formatPrice(shippingCost)}</span>
+                    <span>Shipping</span>
+                    <span className="font-semibold text-ink">
+                      {shippingCost == null ? "Calculate shipping" : formatPrice(shippingCost)}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t border-border/60 pt-4 text-lg">
-                    <span className="font-bold text-ink">Estimated total</span>
-                    <span className="font-extrabold text-ink">{formatPrice(total)}</span>
+                    <span className="font-bold text-ink">Total</span>
+                    <span className="font-extrabold text-ink">
+                      {total == null ? "—" : formatPrice(total)}
+                    </span>
                   </div>
                 </div>
 
                 <button
                   type="submit"
                   form="checkout-form"
-                  disabled={isProcessing || items.length === 0}
+                  disabled={isProcessing || quoting || !validQuote || items.length === 0}
                   className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-4 text-xs font-extrabold uppercase tracking-widest text-white transition hover:bg-ink/90 active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <CreditCard className="h-4 w-4" />
@@ -347,7 +445,8 @@ function CheckoutPage() {
 
                 <div className="mt-6 flex flex-col gap-3 text-center text-[11px] font-semibold text-muted-foreground">
                   <p className="flex items-center justify-center gap-1.5">
-                    <CreditCard className="h-4 w-4 text-muted-foreground" /> Review charges before payment
+                    <CreditCard className="h-4 w-4 text-muted-foreground" /> Review charges before
+                    payment
                   </p>
                   <p className="flex items-center justify-center gap-1.5">
                     <Box className="h-4 w-4 text-amber-600" /> 30-day return policy
@@ -362,4 +461,3 @@ function CheckoutPage() {
     </div>
   );
 }
-

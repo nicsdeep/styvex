@@ -107,8 +107,7 @@ function ProductPage() {
       const { data, error: relatedError } = await request;
       if (relatedError) throw relatedError;
       return (data || []).map((item) => {
-        const markup = item.categories?.retail_markup_percentage || 0;
-        const retailPrice = item.price * (1 + markup / 100);
+        const retailPrice = item.price;
         return {
           ...item,
           price: retailPrice,
@@ -216,8 +215,7 @@ function ProductPage() {
 
   const productPrice = useMemo(() => {
     if (!product) return 0;
-    const markup = product.categories?.retail_markup_percentage || 0;
-    return product.price * (1 + markup / 100);
+    return product.price;
   }, [product]);
 
   const reviewsCount = useMemo(() => {
