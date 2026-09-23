@@ -93,28 +93,39 @@ USING (EXISTS (SELECT 1 FROM public.orders WHERE orders.id = shipping_addresses.
 CREATE POLICY "Users can insert their own shipping addresses" ON public.shipping_addresses FOR INSERT
 WITH CHECK (EXISTS (SELECT 1 FROM public.orders WHERE orders.id = shipping_addresses.order_id AND orders.user_id = auth.uid()));
 
-CREATE POLICY "Service role can manage shipping addresses" ON public.shipping_addresses USING (true);
+CREATE POLICY "Admins can manage shipping addresses" ON public.shipping_addresses USING (
+    EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
 
 -- Payments
 CREATE POLICY "Users can view their own payments" ON public.payments FOR SELECT
 USING (EXISTS (SELECT 1 FROM public.orders WHERE orders.id = payments.order_id AND orders.user_id = auth.uid()));
 
-CREATE POLICY "Service role can manage payments" ON public.payments USING (true);
+CREATE POLICY "Admins can manage payments" ON public.payments USING (
+    EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
 
 -- Order Status History
 CREATE POLICY "Users can view their own order status history" ON public.order_status_history FOR SELECT
 USING (EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_status_history.order_id AND orders.user_id = auth.uid()));
 
-CREATE POLICY "Service role can manage order status history" ON public.order_status_history USING (true);
+CREATE POLICY "Admins can manage order status history" ON public.order_status_history USING (
+    EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
 
 -- Shipments
 CREATE POLICY "Users can view their own shipments" ON public.shipments FOR SELECT
 USING (EXISTS (SELECT 1 FROM public.orders WHERE orders.id = shipments.order_id AND orders.user_id = auth.uid()));
 
-CREATE POLICY "Service role can manage shipments" ON public.shipments USING (true);
+CREATE POLICY "Admins can manage shipments" ON public.shipments USING (
+    EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
 
 -- Refunds
 CREATE POLICY "Users can view their own refunds" ON public.refunds FOR SELECT
 USING (EXISTS (SELECT 1 FROM public.orders WHERE orders.id = refunds.order_id AND orders.user_id = auth.uid()));
 
-CREATE POLICY "Service role can manage refunds" ON public.refunds USING (true);
+CREATE POLICY "Admins can manage refunds" ON public.refunds USING (
+    EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
+

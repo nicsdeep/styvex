@@ -37,14 +37,31 @@ serve(async (req) => {
       .single();
 
     if (orderError || !order) throw new Error("Order not found");
-    if (order.status === "paid" || order.payment_status === "paid") {
+    // 1. Atomically try to mark the order as paid (Idempotency Lock)
+    // If it's already paid, this will return 0 rows
+    const { data: updatedOrder, error: updateOrderError } = await service
+      .from("orders")
+      .update({
+        status: "paid",
+        payment_status: "paid",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", order.id)
+      .neq("status", "paid")
+      .select("id")
+      .maybeSingle();
+
+    if (updateOrderError) throw updateOrderError;
+
+    // If updatedOrder is null, it means the order was already paid or being paid concurrently
+    if (!updatedOrder) {
       return new Response(JSON.stringify({ success: true, message: "Order already paid" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
 
-    // 1. Create payment record
+    // 2. Create payment record now that we have the 'lock'
     const { data: payment, error: paymentError } = await service.from("payments").insert({
       order_id: order.id,
       provider: "mock",
@@ -53,18 +70,13 @@ serve(async (req) => {
       transaction_id: `mock_tx_${Date.now()}`,
     }).select().single();
 
-    if (paymentError) throw paymentError;
+    if (paymentError) {
+      // Revert status if payment fails (should be rare)
+      await service.from("orders").update({ status: "pending", payment_status: "pending" }).eq("id", order.id);
+      throw paymentError;
+    }
 
-    // 2 & 3. Mark order paid and record timestamp (updated_at)
-    const { error: updateOrderError } = await service.from("orders").update({
-      status: "paid",
-      payment_status: "paid",
-      updated_at: new Date().toISOString(),
-    }).eq("id", order.id);
-
-    if (updateOrderError) throw updateOrderError;
-
-    // 4. Add transition to order_status_history
+    // 3. Add transition to order_status_history
     await service.from("order_status_history").insert({
       order_id: order.id,
       previous_status: order.status,
@@ -73,7 +85,7 @@ serve(async (req) => {
       notes: "Mock payment confirmed automatically",
     });
 
-    // 5. Reserve/deduct inventory
+    // 4. Reserve/deduct inventory safely
     for (const item of order.order_items) {
       if (item.variant_id) {
         // Fetch current inventory
@@ -93,8 +105,8 @@ serve(async (req) => {
       }
     }
 
-    // 6. Make order available for admin fulfillment
-    // (This is implicitly done by setting status to 'paid' and fulfillment_status to 'unsubmitted' which was already set during order creation)
+    // 5. Make order available for admin fulfillment
+    // (This is implicitly done by setting status to 'paid')
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
