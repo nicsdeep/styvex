@@ -22,7 +22,7 @@ function SearchPage() {
       if (!debouncedSearchTerm) return [];
 
       const { data, error } = await supabase
-        .from("products")
+        .from("storefront_products")
         .select(
           `
           id,

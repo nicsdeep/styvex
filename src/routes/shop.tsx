@@ -35,7 +35,7 @@ function ShopComponent() {
     queryKey: ["shop-products", selectedCategory, priceRange, sortBy],
     queryFn: async () => {
       let query = supabase
-        .from("products")
+        .from("storefront_products")
         .select(
           `id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name, slug), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
         )

@@ -16,6 +16,7 @@ import {
   Search,
   Plus,
   ArrowLeft,
+  Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OrdersManager } from "@/components/admin/orders-manager";
@@ -97,7 +98,7 @@ function AdminPage() {
   const navigate = useNavigate();
   const { user, isLoading, signOut } = useAuth();
   const role = useAdmin();
-  const [tab, setTab] = useState<"dashboard" | "brand" | "orders" | Table>("dashboard");
+  const [tab, setTab] = useState<"dashboard" | "brand" | "orders" | "pricing" | Table>("dashboard");
 
   useEffect(() => {
     if (!isLoading && (!user || (role.isSuccess && !role.data))) {
@@ -128,6 +129,7 @@ function AdminPage() {
     { id: "dashboard", label: "Overview", icon: LayoutDashboard },
     { id: "orders", label: "Orders", icon: ShoppingCart },
     { id: "products", label: "Products", icon: Box },
+    { id: "pricing", label: "Pricing Engine", icon: Calculator },
     { id: "categories", label: "Categories", icon: Tag },
     { id: "product_variants", label: "Variants", icon: BarChart3 },
     { id: "product_images", label: "Images", icon: ImageIcon },
@@ -204,6 +206,8 @@ function AdminPage() {
         <div className="max-w-[1200px] mx-auto">
           {tab === "dashboard" ? (
             <DashboardOverview setTab={setTab} />
+          ) : tab === "pricing" ? (
+            <GlobalPricingSettings />
           ) : tab === "brand" ? (
             <>
               <ShippingSettings />
@@ -924,6 +928,134 @@ function OrdersAdmin() {
           </button>
         </div>
       </div>
+    </section>
+  );
+}
+
+function GlobalPricingSettings() {
+  const client = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [previewCost, setPreviewCost] = useState(2.12);
+  const [multiplier, setMultiplier] = useState(2.0);
+  const [fixed, setFixed] = useState(5.00);
+  const [rounding, setRounding] = useState('99_cents');
+  
+  const query = useQuery({
+    queryKey: ['store_pricing_config'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('store_pricing_config').select('*').eq('id', 1).single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (query.data) {
+      setMultiplier(Number(query.data.markup_multiplier));
+      setFixed(Number(query.data.fixed_markup));
+      setRounding(query.data.rounding_rule);
+    }
+  }, [query.data]);
+
+  const calcPreview = () => {
+    let price = (previewCost * multiplier) + fixed;
+    if (rounding === '99_cents') price = Math.floor(price) + 0.99;
+    else if (rounding === '00_cents') price = Math.ceil(price);
+    return price.toFixed(2);
+  };
+
+  const handleSave = async () => {
+    setBusy(true);
+    try {
+      const { error } = await supabase.from('store_pricing_config').update({
+        markup_multiplier: multiplier,
+        fixed_markup: fixed,
+        rounding_rule: rounding
+      }).eq('id', 1);
+      if (error) throw error;
+      await client.invalidateQueries();
+      toast.success('Global pricing rules updated');
+      setShowConfirm(false);
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to save rules');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <header className="mb-10">
+        <h2 className="text-3xl font-bold tracking-tight text-violet-950">Pricing Engine</h2>
+        <p className="text-muted-foreground mt-2 text-sm">Configure the global retail markup strategy.</p>
+      </header>
+
+      {query.isPending ? <p>Loading pricing rules...</p> : (
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="rounded-xl border border-border/50 bg-white p-8 shadow-sm">
+            <h3 className="text-lg font-bold mb-6">Global Strategy</h3>
+            <div className="space-y-6">
+              <label className="block text-sm font-bold text-foreground">
+                Markup Multiplier (e.g. 2.0x)
+                <input type="number" min="1" step="0.01" className={cn(input, "mt-2")} value={multiplier} onChange={(e) => setMultiplier(Number(e.target.value))} />
+              </label>
+              <label className="block text-sm font-bold text-foreground">
+                Fixed Markup Addition ($)
+                <input type="number" min="0" step="0.01" className={cn(input, "mt-2")} value={fixed} onChange={(e) => setFixed(Number(e.target.value))} />
+              </label>
+              <label className="block text-sm font-bold text-foreground">
+                Retail Rounding Rule
+                <select className={cn(input, "mt-2")} value={rounding} onChange={(e) => setRounding(e.target.value)}>
+                  <option value="none">Exact (No rounding)</option>
+                  <option value="99_cents">End in .99</option>
+                  <option value="00_cents">End in .00</option>
+                </select>
+              </label>
+              <div className="pt-4 border-t border-border/50">
+                <button className={button} onClick={() => setShowConfirm(true)} disabled={busy}>Review & Save</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border-2 border-violet-100 bg-violet-50/30 p-8 shadow-sm h-fit">
+            <h3 className="text-lg font-bold mb-6 flex items-center gap-2"><Calculator className="w-5 h-5 text-violet-600" /> Live Preview</h3>
+            <div className="space-y-6">
+              <label className="block text-sm font-semibold text-slate-600">
+                Test Supplier Cost ($)
+                <input type="number" step="0.01" className={cn(input, "mt-2 bg-white")} value={previewCost} onChange={(e) => setPreviewCost(Number(e.target.value))} />
+              </label>
+              
+              <div className="rounded-lg bg-white p-5 border border-violet-100 shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-1">Calculated Styvex Price</p>
+                  <p className="text-3xl font-extrabold text-violet-950"></p>
+                </div>
+                <div className="text-right text-xs text-slate-500 space-y-1">
+                  <p> × {multiplier} = </p>
+                  <p>+  fixed = </p>
+                  <p>Rounding applied</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
+            <h3 className="text-xl font-bold text-violet-950">Confirm Store-Wide Change</h3>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+              You are about to change the global pricing strategy. This will immediately recalculate and update public retail prices for all products that do not have a category-level override.
+            </p>
+            <div className="mt-8 flex justify-end gap-3">
+              <button className={buttonOutline} onClick={() => setShowConfirm(false)} disabled={busy}>Cancel</button>
+              <button className={button} onClick={handleSave} disabled={busy}>{busy ? "Applying..." : "Apply Pricing Rule"}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -47,6 +47,48 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
+  // Revalidate prices against the database on initial load to purge stale caches
+  useEffect(() => {
+    const revalidatePrices = async () => {
+      if (items.length === 0) return;
+      const productIds = [...new Set(items.map((item) => item.productId))];
+      try {
+        const { data, error } = await supabase
+          .from("storefront_products")
+          .select("id, price")
+          .in("id", productIds);
+        
+        if (error) {
+          console.error("Failed to revalidate cart prices:", error);
+          return;
+        }
+
+        const priceMap = new Map(data.map((p) => [p.id, p.price]));
+        let hasChanges = false;
+        
+        const validatedItems = items.map((item) => {
+          const freshPrice = priceMap.get(item.productId);
+          if (freshPrice !== undefined && freshPrice !== item.price) {
+            hasChanges = true;
+            return { ...item, price: freshPrice };
+          }
+          return item;
+        });
+
+        if (hasChanges) {
+          setItems(validatedItems);
+          console.log("Cart prices revalidated and updated against live backend.");
+        }
+      } catch (err) {
+        console.error("Error revalidating prices:", err);
+      }
+    };
+    
+    revalidatePrices();
+    // Intentionally only run on mount to revalidate hydration, not on every item change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const addItem = (newItem: CartItem) => {
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === newItem.id);

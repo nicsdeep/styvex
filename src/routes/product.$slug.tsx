@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/product/$slug")({
   loader: async ({ params: { slug } }) => {
     const { data } = await supabase
-      .from("products")
+      .from("storefront_products")
       .select("name, description, product_images(image_url)")
       .eq("slug", slug)
       .maybeSingle();
@@ -81,7 +81,7 @@ function ProductPage() {
     queryKey: ["product", slug],
     queryFn: async () => {
       const { data, error: productError } = await supabase
-        .from("products")
+        .from("storefront_products")
         .select(
           "id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name, slug), product_images(id, image_url, display_order), product_variants(id,sku,color,size,inventory_quantity)",
         )
@@ -97,7 +97,7 @@ function ProductPage() {
     queryFn: async () => {
       if (!product) return [];
       let request = supabase
-        .from("products")
+        .from("storefront_products")
         .select(
           "id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)",
         )

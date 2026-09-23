@@ -29,18 +29,24 @@ serve(async (req) => {
     const {
       data: { user },
     } = await authClient.auth.getUser(authHeader.replace(/^Bearer\s+/i, ""));
-    if (!user) throw new Error("Unauthorized");
+    // Guest checkout is allowed, so we don't throw if !user
 
     const address = shipping?.address || {};
     const country = String(address.country || "").toUpperCase();
-    if (
-      !shipping?.name ||
-      !address.line1 ||
-      !address.city ||
-      !address.postal_code ||
-      !ALLOWED_COUNTRIES.has(country)
-    ) {
-      throw new Error("Complete the shipping address before payment.");
+    if (mode !== "quote") {
+      if (
+        !shipping?.name ||
+        !address.line1 ||
+        !address.city ||
+        !address.postal_code ||
+        !ALLOWED_COUNTRIES.has(country)
+      ) {
+        throw new Error("Complete the shipping address before payment.");
+      }
+    } else {
+      if (!address.postal_code || !ALLOWED_COUNTRIES.has(country)) {
+        throw new Error("Country and postal code are required to estimate shipping.");
+      }
     }
     if (["US", "CA"].includes(country) && !address.state)
       throw new Error("State or province is required for this destination.");
@@ -73,15 +79,25 @@ serve(async (req) => {
     });
     const productIds = [...new Set(requested.map((item: any) => item.productId))];
     const variantIds = [...new Set(requested.map((item: any) => item.variantId))];
-    const [{ data: products, error: productsError }, { data: variants, error: variantsError }] =
-      await Promise.all([
-        service.from("products").select("id, name, price, supplier").in("id", productIds),
-        service
-          .from("product_variants")
-          .select("id, product_id, supplier_variant_id, inventory_quantity")
-          .in("id", variantIds),
-      ]);
-    if (productsError || variantsError) throw new Error("Unable to verify the cart.");
+    const [
+      { data: storefrontProducts, error: storefrontError },
+      { data: rawProducts, error: rawError },
+      { data: variants, error: variantsError }
+    ] = await Promise.all([
+      service.from("storefront_products").select("id, name, price").in("id", productIds),
+      service.from("products").select("id, supplier").in("id", productIds),
+      service
+        .from("product_variants")
+        .select("id, product_id, supplier_variant_id, inventory_quantity")
+        .in("id", variantIds),
+    ]);
+    if (storefrontError || rawError || variantsError) throw new Error("Unable to verify the cart.");
+
+    const rawMap = new Map((rawProducts || []).map((p: any) => [p.id, p]));
+    const products = (storefrontProducts || []).map((p: any) => ({
+      ...p,
+      supplier: rawMap.get(p.id)?.supplier || "manual"
+    }));
 
     const productMap = new Map((products || []).map((product: any) => [product.id, product]));
     const variantMap = new Map((variants || []).map((variant: any) => [variant.id, variant]));
@@ -125,7 +141,7 @@ serve(async (req) => {
       const { data: quote, error } = await service
         .from("checkout_shipping_quotes")
         .insert({
-          user_id: user.id,
+          user_id: user?.id || null,
           fingerprint,
           subtotal,
           customer_shipping: shippingCost,
@@ -147,12 +163,18 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
-    const { data: accepted, error: acceptedError } = await service
+    let acceptedQuery = service
       .from("checkout_shipping_quotes")
       .select("*")
-      .eq("id", quoteId || "")
-      .eq("user_id", user.id)
-      .single();
+      .eq("id", quoteId || "");
+      
+    if (user?.id) {
+      acceptedQuery = acceptedQuery.eq("user_id", user.id);
+    } else {
+      acceptedQuery = acceptedQuery.is("user_id", null);
+    }
+    
+    const { data: accepted, error: acceptedError } = await acceptedQuery.single();
     if (
       acceptedError ||
       !accepted ||
@@ -184,13 +206,13 @@ serve(async (req) => {
       country_code: country,
       zip: String(address.postal_code).trim(),
       phone: String(shipping.phone || "").trim() || null,
-      email: String(email || user.email || "").trim(),
+      email: String(email || user?.email || "").trim(),
     };
 
     const { data: order, error: orderError } = await service
       .from("orders")
       .insert({
-        user_id: user.id,
+        user_id: user?.id || null,
         customer_email: storedAddress.email,
         subtotal_amount: subtotal,
         shipping_amount: shippingCost,
@@ -257,9 +279,9 @@ serve(async (req) => {
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cart`,
       customer_email: storedAddress.email,
-      client_reference_id: user.id,
-      metadata: { user_id: user.id, order_id: order.id },
-      payment_intent_data: { metadata: { user_id: user.id, order_id: order.id } },
+      client_reference_id: user?.id || order.id,
+      metadata: { user_id: user?.id || "guest", order_id: order.id },
+      payment_intent_data: { metadata: { user_id: user?.id || "guest", order_id: order.id } },
     });
     const { error: sessionError } = await service
       .from("orders")

@@ -59,7 +59,7 @@ function Hero() {
     queryKey: ["hero-catalog-products"],
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
-      const { data, error } = await supabase.from("products")
+      const { data, error } = await supabase.from("storefront_products")
         .select("id, name, slug, product_images(image_url, display_order)")
         .order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
@@ -477,7 +477,7 @@ function Index() {
     queryKey: ["products-new"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("products")
+        .from("storefront_products")
         .select(
           `id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
         )
@@ -498,7 +498,7 @@ function Index() {
     queryKey: ["products-trending"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("products")
+        .from("storefront_products")
         .select(
           `id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
         )
