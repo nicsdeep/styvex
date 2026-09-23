@@ -37,7 +37,7 @@ function ShopComponent() {
       let query = supabase
         .from("products")
         .select(
-          `*, categories(name, slug), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
+          `id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name, slug), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
         )
         .order("created_at", { ascending: false });
 
@@ -297,7 +297,6 @@ function ShopComponent() {
                       id={product.id}
                       name={product.name}
                       price={product.price}
-                      compareAtPrice={Math.round(product.price * 1.2 * 100) / 100}
                       slug={product.slug}
                       imageUrl={product.product_images?.[0]?.image_url || null}
                       secondaryImageUrl={product.product_images?.[1]?.image_url || null}

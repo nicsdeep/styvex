@@ -83,7 +83,7 @@ function ProductPage() {
       const { data, error: productError } = await supabase
         .from("products")
         .select(
-          "*, categories(name, slug, retail_markup_percentage), product_images(id, image_url, display_order), product_variants(*)",
+          "id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name, slug), product_images(id, image_url, display_order), product_variants(id,sku,color,size,inventory_quantity)",
         )
         .eq("slug", slug)
         .single();
@@ -99,7 +99,7 @@ function ProductPage() {
       let request = supabase
         .from("products")
         .select(
-          "*, categories(name, retail_markup_percentage), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)",
+          "id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)",
         )
         .neq("id", product.id)
         .limit(8);
@@ -298,8 +298,7 @@ function ProductPage() {
     );
   }
 
-  const compareAtPrice = Math.round(productPrice * 1.2 * 100) / 100;
-  const discount = Math.round((1 - productPrice / compareAtPrice) * 100);
+  const discount = 0; // No discount without a genuine merchant reference price.
   const totalInventory = inStockVariants.reduce(
     (sum, variant) => sum + variant.inventory_quantity,
     0,
@@ -473,9 +472,6 @@ function ProductPage() {
               <div className="mt-5 flex items-end gap-3 border-b border-border/60 pb-6">
                 <span className="text-3xl font-extrabold tracking-tight text-ink">
                   {formatPrice(productPrice)}
-                </span>
-                <span className="pb-1 text-sm text-muted-foreground line-through">
-                  {formatPrice(compareAtPrice)}
                 </span>
               </div>
 
@@ -734,7 +730,6 @@ function ProductPage() {
                   id={item.id}
                   name={item.name}
                   price={item.price}
-                  compareAtPrice={Math.round(item.price * 1.2 * 100) / 100}
                   slug={item.slug}
                   imageUrl={item.product_images?.[0]?.image_url}
                   secondaryImageUrl={item.product_images?.[1]?.image_url}

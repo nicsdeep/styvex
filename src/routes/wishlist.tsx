@@ -109,7 +109,6 @@ function WishlistPage() {
                     id={product.id}
                     name={product.name}
                     price={product.price}
-                    compareAtPrice={Math.round(product.price * 1.2 * 100) / 100}
                     imageUrl={primaryImage}
                     secondaryImageUrl={secondaryImage}
                     slug={product.slug}

@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useMemo, useEffect } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { AddressAssistance } from '@/components/address-assistance';
 import { ChevronRight, Lock, MapPin, Truck, Box, ShieldCheck, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
@@ -29,6 +30,7 @@ const COUNTRIES = [
 ];
 
 function CheckoutPage() {
+  const navigate = useNavigate();
   const { items, subtotal } = useCart();
   const { user } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -43,6 +45,29 @@ function CheckoutPage() {
   const [country, setCountry] = useState("US");
   const [zip, setZip] = useState("");
   const [phone, setPhone] = useState("");
+  useEffect(()=>{
+    try {
+      const draft=JSON.parse(sessionStorage.getItem('styvex-checkout-draft') || 'null');
+      sessionStorage.removeItem('styvex-checkout-draft');
+      if (!draft || Date.now()-draft.savedAt>30*60*1000) return;
+      const values=draft.values;
+      [setEmail,setFirstName,setLastName,setAddress,setAddress2,setCity,setState,setCountry,setZip,setPhone].forEach((setter,i)=>{if(typeof values[i]==='string') setter(values[i]);});
+    } catch { /* Manual entry remains available. */ }
+  },[]);
+  useEffect(()=>{if(user?.email) setEmail(current=>current || user.email || '');},[user?.email]);
+  const signInForCheckout=()=>{
+    sessionStorage.setItem('styvex-checkout-draft',JSON.stringify({savedAt:Date.now(),values:[email,firstName,lastName,address,address2,city,state,country,zip,phone]}));
+    sessionStorage.setItem('styvex-return-to','/checkout');
+    void navigate({to:'/account'});
+  };
+  const checkoutToken=async()=>{
+    let {data:{session}}=await supabase.auth.getSession();
+    if(session && (session.expires_at || 0)*1000<Date.now()+60000) {
+      const refreshed=await supabase.auth.refreshSession(); session=refreshed.data.session;
+    }
+    if(!session) {signInForCheckout();throw new Error('Please sign in to calculate shipping. Your address has been saved for your return.');}
+    return session.access_token;
+  };
 
   const [quote, setQuote] = useState<{
     quoteId: string;
@@ -67,11 +92,15 @@ function CheckoutPage() {
     setQuoting(true);
     setQuote(null);
     try {
+      const token=await checkoutToken();
+      if (!(document.getElementById('checkout-form') as HTMLFormElement)?.reportValidity()) return;
       const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+        headers:{Authorization:`Bearer ${token}`},
         body: { mode: "quote", items, email, shipping },
       });
       if (error || !data?.quoteId) {
         const body = error?.context ? await error.context.json().catch(() => null) : null;
+        if(error?.context?.status===401 || body?.error==='Unauthorized') {signInForCheckout();throw new Error('Your session has expired. Please sign in again; your address is saved.');}
         throw new Error(
           body?.error ||
             data?.error ||
@@ -107,8 +136,10 @@ function CheckoutPage() {
     setIsProcessing(true);
 
     try {
+      const token=await checkoutToken();
       // Call the Edge Function
       const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+        headers:{Authorization:`Bearer ${token}`},
         body: {
           items,
           email,
@@ -202,6 +233,12 @@ function CheckoutPage() {
                     <MapPin className="h-5 w-5 text-brand" /> Shipping Address
                   </h2>
                   <div className="grid grid-cols-2 gap-3">
+                    <div className="col-span-2"><AddressAssistance country={country} zip={zip} onChoose={value=>{
+                      if(value.street) setAddress(value.street);
+                      if(value.city) setCity(value.city);
+                      if(value.state) setState(value.state);
+                      if(value.zip) setZip(value.zip);
+                    }} onPostal={value=>{if(value.city) setCity(current=>current || value.city!);if(value.state) setState(current=>current || value.state!);}}/></div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         First Name
@@ -362,7 +399,7 @@ function CheckoutPage() {
                     disabled={quoting || isProcessing || !items.length}
                     className="mt-3 rounded-lg bg-ink px-4 py-3 text-sm font-semibold text-white disabled:opacity-50"
                   >
-                    {quoting ? "Calculating…" : "Calculate shipping"}
+                    {quoting ? "Calculating…" : !user ? "Sign in to calculate shipping" : "Calculate shipping"}
                   </button>
                   {!user && (
                     <p className="mt-2 text-sm">

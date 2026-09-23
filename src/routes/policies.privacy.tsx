@@ -40,6 +40,7 @@ function PrivacyPolicy() {
           </ul>
 
           <h2 className="text-2xl font-serif text-foreground mt-8 mb-4">Data Security</h2>
+          <p>Optional checkout address assistance sends the place or street text you type to Photon (Komoot), and U.S. ZIP codes to Zippopotam.us, to suggest address fields. These requests also expose your IP address to the service. We do not include your name, email, telephone or payment information in these lookups. You may leave assistance off and enter your address manually. If you leave checkout to sign in, your address draft is temporarily stored in this browser tab and restored on return; drafts expire after 30 minutes.</p>
           <p>
             We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know.
           </p>

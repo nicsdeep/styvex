@@ -528,9 +528,9 @@ function CatalogEditor({ table }: { table: Table }) {
   const query = useQuery({
     queryKey: ["admin-catalog", table, page, search],
     queryFn: async () => {
-      let request = supabase
-        .from(table)
-        .select("*", { count: "exact" })
+      let request = (table === 'products'
+        ? (supabase as any).rpc('admin_catalog_products').select('*', {count:'exact'})
+        : supabase.from(table).select("*", { count: "exact" }))
         .order("id")
         .range(page * 20, page * 20 + 19);
       if (search.trim()) {

@@ -341,7 +341,6 @@ function ProductCarousel({
                     id={product.id}
                     name={product.name}
                     price={product.price}
-                    compareAtPrice={product.price * 1.2} // Simulate compare at price for layout
                     slug={product.slug}
                     imageUrl={product.product_images?.[0]?.image_url}
                     secondaryImageUrl={product.product_images?.[1]?.image_url}
@@ -480,7 +479,7 @@ function Index() {
       const { data, error } = await supabase
         .from("products")
         .select(
-          `*, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
+          `id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
         )
         .order("created_at", { ascending: false })
         .limit(10);
@@ -501,7 +500,7 @@ function Index() {
       const { data, error } = await supabase
         .from("products")
         .select(
-          `*, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
+          `id,name,slug,price,description,category_id,is_featured,created_at,base_review_count, categories(name), product_images(image_url, display_order), product_variants(id, color, size, inventory_quantity)`,
         )
         .order("price", { ascending: false })
         .limit(10);

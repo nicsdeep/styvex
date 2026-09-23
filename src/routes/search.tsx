@@ -102,7 +102,6 @@ function SearchPage() {
                       id={product.id}
                       name={product.name}
                       price={product.price}
-                      compareAtPrice={Math.round(product.price * 1.2 * 100) / 100}
                       slug={product.slug}
                       imageUrl={primaryImage}
                       secondaryImageUrl={secondaryImage}

@@ -32,6 +32,10 @@ function AccountPage() {
   useEffect(() => {
     if (user && !isLoading) {
       if (location.pathname === "/account") {
+        if(sessionStorage.getItem('styvex-return-to')==='/checkout') {
+          sessionStorage.removeItem('styvex-return-to');
+          void navigate({to:'/checkout',replace:true}); return;
+        }
         void navigate({ to: "/account/profile", replace: true });
       }
     }
