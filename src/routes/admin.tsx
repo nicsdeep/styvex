@@ -18,6 +18,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { OrdersManager } from "@/components/admin/orders-manager";
 
 export const Route = createFileRoute("/admin")({ component: AdminPage });
 
@@ -209,7 +210,7 @@ function AdminPage() {
               <BrandSettings />
             </>
           ) : tab === "orders" ? (
-            <OrdersAdmin />
+            <OrdersManager />
           ) : (
             <CatalogEditor key={tab} table={tab as Table} />
           )}

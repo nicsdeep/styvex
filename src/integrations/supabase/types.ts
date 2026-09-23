@@ -39,6 +39,230 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_status_history: {
+        Row: {
+          id: string
+          order_id: string
+          previous_status: string | null
+          new_status: string
+          changed_by: string | null
+          notes: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          previous_status?: string | null
+          new_status: string
+          changed_by?: string | null
+          notes?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          previous_status?: string | null
+          new_status?: string
+          changed_by?: string | null
+          notes?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          id: string
+          order_id: string
+          provider: string
+          status: string
+          amount: number
+          transaction_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          provider: string
+          status?: string
+          amount: number
+          transaction_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          provider?: string
+          status?: string
+          amount?: number
+          transaction_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      refunds: {
+        Row: {
+          id: string
+          order_id: string
+          payment_id: string
+          amount: number
+          reason: string | null
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          payment_id: string
+          amount: number
+          reason?: string | null
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          payment_id?: string
+          amount?: number
+          reason?: string | null
+          status?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipments: {
+        Row: {
+          id: string
+          order_id: string
+          carrier: string
+          tracking_number: string | null
+          tracking_url: string | null
+          status: string
+          shipped_at: string | null
+          delivered_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          carrier: string
+          tracking_number?: string | null
+          tracking_url?: string | null
+          status?: string
+          shipped_at?: string | null
+          delivered_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          carrier?: string
+          tracking_number?: string | null
+          tracking_url?: string | null
+          status?: string
+          shipped_at?: string | null
+          delivered_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipping_addresses: {
+        Row: {
+          id: string
+          order_id: string
+          first_name: string
+          last_name: string
+          address_line1: string
+          address_line2: string | null
+          city: string
+          state: string
+          postal_code: string
+          country: string
+          phone: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          first_name: string
+          last_name: string
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          state: string
+          postal_code: string
+          country: string
+          phone?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          first_name?: string
+          last_name?: string
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          state?: string
+          postal_code?: string
+          country?: string
+          phone?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipping_addresses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -80,6 +304,8 @@ export type Database = {
           supplier: string
           supplier_variant_id: string | null
           variant_id: string | null
+          unit_price: number | null
+          discount: number | null
         }
         Insert: {
           id?: string
@@ -91,6 +317,8 @@ export type Database = {
           supplier?: string
           supplier_variant_id?: string | null
           variant_id?: string | null
+          unit_price?: number | null
+          discount?: number | null
         }
         Update: {
           id?: string
@@ -102,6 +330,8 @@ export type Database = {
           supplier?: string
           supplier_variant_id?: string | null
           variant_id?: string | null
+          unit_price?: number | null
+          discount?: number | null
         }
         Relationships: [
           {
@@ -132,6 +362,12 @@ export type Database = {
           total_amount: number
           updated_at: string
           user_id: string
+          subtotal: number | null
+          tax: number | null
+          shipping_cost: number | null
+          discount: number | null
+          final_total: number | null
+          inventory_status: string | null
         }
         Insert: {
           created_at?: string
@@ -151,6 +387,12 @@ export type Database = {
           total_amount: number
           updated_at?: string
           user_id: string
+          subtotal?: number | null
+          tax?: number | null
+          shipping_cost?: number | null
+          discount?: number | null
+          final_total?: number | null
+          inventory_status?: string | null
         }
         Update: {
           created_at?: string
@@ -170,6 +412,12 @@ export type Database = {
           total_amount?: number
           updated_at?: string
           user_id?: string
+          subtotal?: number | null
+          tax?: number | null
+          shipping_cost?: number | null
+          discount?: number | null
+          final_total?: number | null
+          inventory_status?: string | null
         }
         Relationships: []
       }

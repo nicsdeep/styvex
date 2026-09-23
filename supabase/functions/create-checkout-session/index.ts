@@ -17,7 +17,8 @@ serve(async (req) => {
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (mode !== "quote" && !stripeKey) throw new Error("Payment is not configured.");
+    const paymentProvider = Deno.env.get("PAYMENT_PROVIDER") || "stripe";
+    if (mode !== "quote" && paymentProvider === "stripe" && !stripeKey) throw new Error("Payment is not configured.");
     if (!serviceRoleKey) throw new Error("Order storage is not configured.");
     if (!Array.isArray(items) || !items.length || items.length > 100)
       throw new Error("Your cart is empty or too large.");
@@ -238,8 +239,17 @@ serve(async (req) => {
         quantity: 1,
       });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    const origin = "https://styvex.vercel.app";
+    const origin = req.headers.get("origin") || "http://localhost:5173";
+
+    if (paymentProvider === "mock") {
+      // For mock provider, skip Stripe session creation entirely
+      return new Response(JSON.stringify({ url: `${origin}/checkout/success?session_id=mock_${order.id}` }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
+    const stripe = new Stripe(stripeKey!, { apiVersion: "2023-10-16" });
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
